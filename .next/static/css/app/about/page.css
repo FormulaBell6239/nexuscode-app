@@ -1,0 +1,96 @@
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/app/about/About.module.css ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+.About_main__uDcX5 {
+  padding: 2rem;
+  background: linear-gradient(120deg, #e0f7fa 0%, #f0f4ff 100%);
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  max-width: 700px;
+  margin: 2rem auto;
+  animation: About_fadeIn__nJF8L 1s;
+}
+
+@keyframes About_fadeIn__nJF8L {
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.About_title__VzB_Y {
+  color: #0070f3;
+  font-size: 2.3rem;
+  margin-bottom: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-align: center;
+  text-shadow: 0 2px 8px #b3e5fc;
+}
+
+.About_intro__zuc6j {
+  color: #333;
+  font-size: 1.15rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.About_card__20UCr {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-left: 6px solid #0070f3;
+  transition: box-shadow 0.2s;
+}
+
+.About_cardAlt__4o3xU {
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,112,243,0.10);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-left: 6px solid #ffd700;
+  text-align: center;
+}
+
+.About_sectionTitle__j3qYP {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #0070f3;
+  letter-spacing: 1px;
+}
+
+.About_featureList____fxZ {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.About_featureItem__JEQWZ {
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  margin-bottom: 0.7rem;
+  font-weight: 500;
+  background: #f5faff;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,112,243,0.05);
+  transition: background 0.2s;
+}
+
+.About_featureItem__JEQWZ:hover {
+  background: #e0f7fa;
+}
+
+.About_teamText__e3yTJ {
+  font-size: 1.1rem;
+  font-weight: 500;
+  margin-top: 1rem;
+  color: #fff;
+  text-shadow: 0 1px 6px #0097a7;
+}
+

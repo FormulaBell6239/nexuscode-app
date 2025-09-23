@@ -1,0 +1,173 @@
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/app/games/Games.module.css ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+.Games_main__BNq_S {
+  padding: 2rem;
+  background: linear-gradient(120deg, #e3f2fd 0%, #f0f4ff 100%);
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  max-width: 900px;
+  margin: 2rem auto;
+  animation: Games_fadeIn__EobW1 1s;
+}
+
+@keyframes Games_fadeIn__EobW1 {
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.Games_header__6rIwR {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.Games_title__PmnHh {
+  color: #00bcd4;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px #b3e5fc;
+}
+
+.Games_subtitle__aUk38 {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  text-shadow: 0 1px 4px #e0f7fa;
+}
+
+.Games_gamesSection__8qMcB {
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #00bcd4 0%, #0070f3 60%, #6a82fb 100%);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(106,130,251,0.12);
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Optional: add a subtle pattern overlay */
+.Games_gamesSection__8qMcB::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("https://www.transparenttextures.com/patterns/diamond-upholstery.png");
+  opacity: 0.07;
+  z-index: 0;
+  border-radius: 24px;
+}
+
+/* Make sure content sits above the background */
+.Games_sectionTitle__E6eoQ,
+.Games_gamesGrid__5kRwG {
+  position: relative;
+  z-index: 1;
+}
+
+.Games_sectionTitle__E6eoQ {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  color: #00bcd4;
+  letter-spacing: 1px;
+}
+
+.Games_gamesGrid__5kRwG {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 2rem;
+  gap: 2rem;
+}
+
+.Games_gameCard__6dAIV {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,188,212,0.07);
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.Games_gameCard__6dAIV:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(0,188,212,0.15);
+}
+
+.Games_gameIcon__hRIzb {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.Games_gameTitle__JhsJd {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0070f3;
+  margin-bottom: 0.5rem;
+}
+
+.Games_gameDesc__25ImP {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.Games_playButton__AwemF {
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,112,243,0.10);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.Games_playButton__AwemF:hover {
+  background: linear-gradient(90deg, #005bb5 60%, #0097a7 100%);
+  transform: scale(1.07);
+}
+
+.Games_progressSection__IqAy3 {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.Games_progressBar__ybhav {
+  background: #e0f7fa;
+  border-radius: 10px;
+  height: 18px;
+  width: 80%;
+  margin: 0.7rem auto 1.2rem auto;
+  box-shadow: 0 1px 4px rgba(0,188,212,0.07);
+  overflow: hidden;
+  position: relative;
+}
+
+.Games_progressFill__huUfW {
+  background: linear-gradient(90deg, #00bcd4 60%, #0070f3 100%);
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+  transition: width 0.4s;
+}
+
+.Games_stats__L6wRm {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0070f3;
+  margin-top: 1rem;
+}
+
+.Games_stat__iW8Mn {
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,112,243,0.07);
+}

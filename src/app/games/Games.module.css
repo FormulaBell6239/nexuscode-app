@@ -1,0 +1,169 @@
+.main {
+  padding: 2rem;
+  background: linear-gradient(120deg, #e3f2fd 0%, #f0f4ff 100%);
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  max-width: 900px;
+  margin: 2rem auto;
+  animation: fadeIn 1s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  color: #00bcd4;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px #b3e5fc;
+}
+
+.subtitle {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  text-shadow: 0 1px 4px #e0f7fa;
+}
+
+.gamesSection {
+  margin-bottom: 2rem;
+  background: linear-gradient(135deg, #00bcd4 0%, #0070f3 60%, #6a82fb 100%);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(106,130,251,0.12);
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Optional: add a subtle pattern overlay */
+.gamesSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("https://www.transparenttextures.com/patterns/diamond-upholstery.png");
+  opacity: 0.07;
+  z-index: 0;
+  border-radius: 24px;
+}
+
+/* Make sure content sits above the background */
+.sectionTitle,
+.gamesGrid {
+  position: relative;
+  z-index: 1;
+}
+
+.sectionTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  color: #00bcd4;
+  letter-spacing: 1px;
+}
+
+.gamesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.gameCard {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,188,212,0.07);
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.gameCard:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 6px 24px rgba(0,188,212,0.15);
+}
+
+.gameIcon {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.gameTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0070f3;
+  margin-bottom: 0.5rem;
+}
+
+.gameDesc {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.playButton {
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,112,243,0.10);
+  transition: background 0.3s, transform 0.2s;
+}
+
+.playButton:hover {
+  background: linear-gradient(90deg, #005bb5 60%, #0097a7 100%);
+  transform: scale(1.07);
+}
+
+.progressSection {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.progressBar {
+  background: #e0f7fa;
+  border-radius: 10px;
+  height: 18px;
+  width: 80%;
+  margin: 0.7rem auto 1.2rem auto;
+  box-shadow: 0 1px 4px rgba(0,188,212,0.07);
+  overflow: hidden;
+  position: relative;
+}
+
+.progressFill {
+  background: linear-gradient(90deg, #00bcd4 60%, #0070f3 100%);
+  height: 100%;
+  border-radius: 10px 0 0 10px;
+  transition: width 0.4s;
+}
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0070f3;
+  margin-top: 1rem;
+}
+
+.stat {
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0 1px 4px rgba(0,112,243,0.07);
+}
