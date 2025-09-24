@@ -1,0 +1,422 @@
+.main {
+  padding: 2.4rem;
+  background: linear-gradient(180deg, #2b2447af 0%, #1a2541 100%);
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  max-width: 650px;
+  margin: 2rem auto;
+  animation: fadeIn 1s;
+  position: relative;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.card {
+  background: rgba(248, 249, 249, 0.615);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 24px;
+  box-shadow: 0 0 0 2px rgba(151, 170, 228, 0.1) inset, 0 8px 32px rgba(44,62,80,0.18);
+  padding: 2rem 1.5rem;
+  margin: 0 auto;
+  text-align: center;
+  border: 1.5px solid rgba(200,220,255,0.25);
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  opacity: 0.13;
+  pointer-events: none;
+  background: url("https://www.transparenttextures.com/patterns/squairy-light.png");
+  mix-blend-mode: lighten;
+}
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  pointer-events: none;
+  border: 2px solid rgba(127,156,245,0.18);
+  box-shadow: 0 0 24px 2px rgba(127,156,245,0.12);
+  opacity: 0.7;
+}
+
+.cover {
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(90deg, #7f9cf5 0%, #b3c7f9 100%);
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.coverIcon {
+  font-size: 3rem;
+  opacity: 0.7;
+}
+
+.avatar {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+  animation: avatarGlow 2s infinite alternate;
+}
+@keyframes avatarGlow {
+  from { text-shadow: 0 0 8px #00bcd4, 0 0 16px #0070f3; }
+  to { text-shadow: 0 0 24px #ffd700, 0 0 32px #00bcd4; }
+}
+.name {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #0070f3;
+  margin-bottom: 0.5rem;
+}
+.streak {
+  font-size: 1.2rem;
+  color: #ff9800;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0070f3;
+  margin-bottom: 1rem;
+}
+.stats span {
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+.achievements {
+  margin: 1rem 0;
+}
+.badge {
+  font-size: 2rem;
+  margin: 0 0.5rem;
+  transition: transform 0.2s;
+}
+.badge:hover {
+  transform: scale(1.3) rotate(-10deg);
+  filter: drop-shadow(0 0 8px #ffd700);
+}
+.editBtn {
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0,112,243,0.10);
+  animation: pulseBtn 2s infinite;
+}
+@keyframes pulseBtn {
+  0% { box-shadow: 0 0 0 0 #00bcd4; }
+  70% { box-shadow: 0 0 16px 8px #00bcd4; }
+  100% { box-shadow: 0 0 0 0 #00bcd4; }
+}
+.progressBar {
+  width: 80%;
+  height: 12px;
+  background: rgba(200,220,255,0.25);
+  border-radius: 8px;
+  margin: 1rem auto;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(127,156,245,0.10);
+}
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  border-radius: 8px;
+  transition: width 0.5s;
+}
+
+.quote {
+  font-style: italic;
+  color: #4d67b0;
+  margin: 1.5rem 0 0.5rem 0;
+  opacity: 0.85;
+}
+
+.avatarPicker {
+  font-size: 2.2rem;
+  padding: 0.3rem 1rem;
+  border-radius: 16px;
+  border: 1.5px solid #b3c7f9;
+  background: rgba(255,255,255,0.7);
+  box-shadow: 0 2px 12px rgba(127,156,245,0.10);
+  margin-bottom: 0.5rem;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+.avatarPicker:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 0 2px #0070f3;
+}
+
+.nameInput, .usernameInput {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2050be;
+  background: rgba(255,255,255,0.85);
+  border: 1.5px solid #b3c7f9;
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  margin: 0.5rem 0;
+  box-shadow: 0 2px 12px rgba(127,156,245,0.10);
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.nameInput:focus, .usernameInput:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 0 2px #0070f3;
+}
+
+.username {
+  font-size: 1.1rem;
+  color: #4d67b0;
+  background: linear-gradient(90deg, #e3eafc 0%, #b3c7f9 100%);
+  border-radius: 8px;
+  padding: 0.2rem 0.7rem;
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  opacity: 0.85;
+}
+
+.profileActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.2rem;
+}
+
+.privacyToggle {
+  font-size: 1rem;
+  color: #2050be;
+  font-weight: 600;
+  background: rgba(255,255,255,0.7);
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  box-shadow: 0 2px 8px rgba(127,156,245,0.10);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1.5px solid #b3c7f9;
+  transition: border 0.2s;
+}
+.privacyToggle input[type="checkbox"] {
+  accent-color: #0070f3;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.coverPicker {
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 1.5px solid #b3c7f9;
+  background: rgba(255,255,255,0.7);
+  padding: 0.3rem 1rem;
+  margin-left: 1rem;
+  box-shadow: 0 2px 8px rgba(127,156,245,0.10);
+  transition: border 0.2s;
+}
+.coverPicker:focus {
+  border-color: #0070f3;
+}
+
+.bio {
+  font-size: 1.1rem;
+  color: #2050be;
+  margin-bottom: 0.5rem;
+  font-style: italic;
+  opacity: 0.85;
+}
+.bioInput {
+  font-size: 1.1rem;
+  color: #2050be;
+  background: rgba(255,255,255,0.85);
+  border: 1.5px solid #b3c7f9;
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  margin: 0.5rem 0;
+  box-shadow: 0 2px 12px rgba(127,156,245,0.10);
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.bioInput:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 0 2px #0070f3;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  margin: 1rem 0;
+}
+.socialLinks a {
+  font-size: 1.7rem;
+  transition: transform 0.2s, filter 0.2s;
+  filter: drop-shadow(0 2px 8px #b3c7f9);
+}
+.socialLinks a:hover {
+  transform: scale(1.2) rotate(-8deg);
+  filter: drop-shadow(0 0 12px #0070f3);
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 1rem;
+    max-width: 98vw;
+    margin: 1rem auto;
+  }
+  .card {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+  .cover {
+    height: 80px;
+    margin-bottom: 1rem;
+  }
+}
+
+.title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #0070f3;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 6px #072635;
+}
+.subtitle {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #93beff;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 2px 4px #020a12;
+}
+.list {
+  list-style: none;
+  padding: 1rem;
+  margin: 1rem auto;
+  max-width: 500px;
+}
+.item {
+  display: flex;
+  align-items: center;
+  background: #42537d;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 1rem 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  animation: fadeInUp 0.7s;
+  opacity: 0.85;
+}
+.item:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 24px rgba(0,112,243,0.15);
+  opacity: 1;
+}
+.icon {
+  font-size: 2rem;
+  margin-right: 1rem;
+}
+.name, .username, .callingCardLabel, .streak, .stats {
+  font-weight: 700;
+  color: #0070f3;
+  margin-right: 1rem;
+}
+.badge {
+  font-size: 2rem;
+  margin: 0 0.3rem;
+  transition: transform 0.2s;
+}
+.badge:hover {
+  transform: scale(1.3) rotate(-10deg);
+  filter: drop-shadow(0 0 8px #ffd700);
+}
+.avatarPicker, .nameInput, .usernameInput, .callingCardPicker {
+  font-size: 1.1rem;
+  border-radius: 12px;
+  border: 1.5px solid #b3c7f9;
+  background: rgba(255,255,255,0.7);
+  padding: 0.3rem 1rem;
+  box-shadow: 0 2px 8px rgba(127,156,245,0.10);
+  margin-right: 1rem;
+  transition: border 0.2s;
+}
+.avatarPicker:focus, .nameInput:focus, .usernameInput:focus, .callingCardPicker:focus {
+  border-color: #0070f3;
+}
+.profileActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.2rem;
+}
+.editBtn {
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,112,243,0.10);
+  transition: background 0.3s, transform 0.2s;
+  animation: pulseBtn 2s infinite;
+}
+@keyframes pulseBtn {
+  0% { box-shadow: 0 0 0 0 #00bcd4; }
+  70% { box-shadow: 0 0 16px 8px #00bcd4; }
+  100% { box-shadow: 0 0 0 0 #00bcd4; }
+}
+.privacyToggle {
+  font-size: 1rem;
+  color: #2050be;
+  font-weight: 600;
+  background: rgba(255,255,255,0.7);
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  box-shadow: 0 2px 8px rgba(127,156,245,0.10);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1.5px solid #b3c7f9;
+  transition: border 0.2s;
+}
+.privacyToggle input[type="checkbox"] {
+  accent-color: #0070f3;
+  width: 1.2em;
+  height: 1.2em;
+}
+.quote {
+  font-style: italic;
+  color: #4d67b0;
+  margin: 1.5rem 0 0.5rem 0;
+  opacity: 0.85;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
+}

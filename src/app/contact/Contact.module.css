@@ -1,6 +1,10 @@
 .main {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, #2b2447af 0%, #1a2541 100%);
   padding: 2rem;
-  background: linear-gradient(120deg, #fffbe7 0%, #e0f7fa 100%);
   border-radius: 24px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.10);
   max-width: 700px;
@@ -14,36 +18,64 @@
 }
 
 .title {
-  color: #ff9800;
-  font-size: 2.2rem;
+  color: #2050beb8;
+  font-size: 2rem;
   margin-bottom: 1.2rem;
-  font-weight: 800;
-  letter-spacing: 2px;
+  font-weight: 700;
+  letter-spacing: 1px;
   text-align: center;
   text-shadow: 0 2px 8px #ffe082;
 }
 
 .intro {
-  color: #333;
-  font-size: 1.15rem;
-  margin-bottom: 1.5rem;
-  font-weight: 500;
+  color: #191818;
+  font-size: 1.08rem;
+  margin-bottom: 1.2rem;
+  font-weight: 800;
   text-align: center;
 }
 
 .card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
-  padding: 1.5rem;
-  margin: 2rem 0;
-  border-left: 6px solid #ff9800;
-  transition: box-shadow 0.2s;
+  background: rgba(248, 249, 249, 0.612);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  border-radius: 24px;
+  box-shadow: 0 0 0 2px rgba(151, 170, 228, 0.1) inset, 0 8px 32px rgba(44,62,80,0.18);
+  padding: 2.7rem 2.3rem;
+  width: 370px;
+  text-align: center;
+  border: 1.5px solid rgba(200,220,255,0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle texture using a pseudo-element */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  opacity: 0.18;
+  pointer-events: none;
+  background: url("https://www.transparenttextures.com/patterns/squairy-light.png");
+  mix-blend-mode: lighten;
+}
+
+/* Optional: glowing border for extra pop */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  pointer-events: none;
+  border: 2px solid rgba(127,156,245,0.18);
+  box-shadow: 0 0 24px 2px rgba(127,156,245,0.12);
+  opacity: 0.7;
 }
 
 .cardAlt {
   background: linear-gradient(90deg, #ff9800 60%, #ffd700 100%);
-  color: #fff;
+  color: #7e6e6e;
   border-radius: 16px;
   box-shadow: 0 2px 16px rgba(255,152,0,0.10);
   padding: 1.5rem;
@@ -56,7 +88,7 @@
   font-size: 1.3rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #ff9800;
+  color: #172433;
   letter-spacing: 1px;
 }
 
@@ -80,7 +112,7 @@
 }
 
 .infoItem:hover {
-  background: #ffe082;
+  background: #312e25;
 }
 
 .infoText {
@@ -104,51 +136,65 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
-  margin-bottom: 1.2rem;
+  gap: 1.1rem;
+  margin-bottom: 1rem;
 }
 
 .label {
   font-weight: 600;
-  color: #fff;
-  margin-bottom: 0.5rem;
+  color: #2a3a5e;
+  margin-bottom: 0.3rem;
+  text-align: left;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
 
 .input {
-  padding: 0.8rem;
-  border-radius: 10px;
-  border: 1px solid #cfd8dc;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #dbeafe;
   font-size: 1.05rem;
-  background: #fffde7;
-  transition: border 0.2s;
+  background: rgba(240,244,255,0.6);
+  box-shadow: 0 2px 8px rgba(44,62,80,0.05);
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
   width: 100%;
   margin-top: 0.5rem;
 }
 
 .input:focus {
-  border: 1.5px solid #ffd700;
-  outline: none;
+  border: 1.5px solid #7f9cf5;
+  box-shadow: 0 4px 16px rgba(44,62,80,0.10);
+  background: #e5dddd;
 }
 
 .button {
-  background: linear-gradient(90deg, #ffd700 60%, #ff9800 100%);
-  color: #222;
+  background: linear-gradient(180deg, #607ed7 45%, #a1b8f3 100%);
+  color: #020202;
   border: none;
   border-radius: 10px;
   padding: 13px 0;
-  font-size: 1.15rem;
+  font-size: 1.12rem;
   font-weight: bold;
   cursor: pointer;
   margin-top: 1rem;
   transition: background 0.3s, transform 0.2s;
   width: 100%;
-  box-shadow: 0 2px 8px rgba(255,152,0,0.10);
+  box-shadow: 0 2px 8px rgba(127,156,245,0.10);
 }
 
 .button:hover {
-  background: linear-gradient(90deg, #ff9800 60%, #ffd700 100%);
+  background: linear-gradient(90deg, #506cc8 60%, #a3bffa 100%);
   transform: scale(1.04);
+}
+
+@media (max-width: 500px) {
+  .card {
+    width: 98vw;
+    padding: 1.2rem 0.5rem;
+  }
+  .main {
+    padding: 1rem 0;
+  }
 }

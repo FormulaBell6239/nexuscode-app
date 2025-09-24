@@ -2,49 +2,181 @@
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/Navbar.module.css ***!
   \****************************************************************************************************************************************************************************************************************************************************************************/
 .Navbar_navbar__fk_p7 {
-  background: linear-gradient(90deg, #222 60%, #0070f3 100%);
-  color: #fff;
-  padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  padding: 1rem 2rem;
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  color: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  border-radius: 0 0 16px 16px;
 }
 
 .Navbar_logo__UM0Ax {
-  font-size: 1.5rem;
+  font-size: 2rem;
+  font-weight: bold;
   color: #fff;
   text-decoration: none;
+  margin-right: 2rem;
+  letter-spacing: 2px;
+  transition: color 0.2s;
+}
+.Navbar_logo__UM0Ax:hover {
+  color: #ffd700;
 }
 
 .Navbar_navLinks__F_HK7 {
-  list-style: none;
   display: flex;
-  gap: 1rem;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.Navbar_navLinks__F_HK7 li a {
-  color: #fff;
-  text-decoration: none;
-  transition: color 0.2s;
+.Navbar_navLinks__F_HK7 li {
+  position: relative;
 }
 
-.Navbar_navLinks__F_HK7 li a:hover {
+.Navbar_navLinks__F_HK7 a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.Navbar_navLinks__F_HK7 a:hover {
+  background: rgba(255,255,255,0.15);
+  color: #ffd700;
+}
+
+.Navbar_dropdown__ztbRD {
+  cursor: pointer;
+}
+
+.Navbar_dropdownToggle__Uq9zX {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #00bcd4 0%, #0070f3 100%);
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.05rem;
+  box-shadow: 0 2px 8px rgba(0,112,243,0.10);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  outline: none;
+  letter-spacing: 1px;
+}
+
+.Navbar_dropdownToggle__Uq9zX:hover,
+.Navbar_dropdownToggle__Uq9zX:focus {
+  background: linear-gradient(90deg, #0070f3 0%, #00bcd4 100%);
+  color: #ffd700;
+  box-shadow: 0 4px 16px rgba(0,112,243,0.15);
+}
+
+.Navbar_dropdownMenu__S49hn {
+  position: absolute;
+  top: 2.5rem;
+  left: 0;
+  min-width: 200px;
+  z-index: 100;
+  background: rgba(248, 249, 249, 0.65);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44,62,80,0.18), 0 1.5px 0 0 rgba(127,156,245,0.08);
+  border: 1.5px solid rgba(200,220,255,0.25);
+  padding: 0.5rem 0;
+  animation: Navbar_fadeIn__ujN3_ 0.3s;
+  overflow: hidden;
+  /* Optional: subtle texture overlay */
+}
+.Navbar_dropdownMenu__S49hn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  opacity: 0.13;
+  pointer-events: none;
+  background: url("https://www.transparenttextures.com/patterns/squairy-light.png");
+  mix-blend-mode: lighten;
+}
+
+@keyframes Navbar_fadeIn__ujN3_ {
+  from { opacity: 0; transform: translateY(-10px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.Navbar_dropdownMenu__S49hn li {
+  padding: 0.7rem 1.2rem;
+  margin: 0;
+}
+
+.Navbar_dropdownMenu__S49hn li:not(:last-child) {
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.Navbar_dropdownMenu__S49hn li.Navbar_divider__qV6dl {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 0.3rem;
+  padding-top: 0.3rem;
+}
+
+.Navbar_dropdownMenu__S49hn li a {
+  color: #0070f3;
+  font-weight: 500;
+  display: block;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+  padding: 0.3rem 0.8rem;
+}
+
+.Navbar_dropdownMenu__S49hn li a:hover {
+  background: #e3f2fd;
   color: #00bcd4;
 }
 
+.Navbar_loginLink__w9JAd {
+  background: linear-gradient(90deg, #ffd700 60%, #ff9800 100%);
+  color: #222 !important;
+  font-weight: bold;
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(255,152,0,0.10);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  text-decoration: none;
+  margin-left: 0.5rem;
+  border: none;
+  outline: none;
+  display: inline-block;
+}
+
+.Navbar_loginLink__w9JAd:hover,
+.Navbar_loginLink__w9JAd:focus {
+  background: linear-gradient(90deg, #ff9800 60%, #ffd700 100%);
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(255,152,0,0.15);
+  text-decoration: none;
+}
+
 .Navbar_profile__nLiKp {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 1rem;
+  margin-left: 2rem;
 }
 
 .Navbar_streak__losJa {
-  color: #ff9800;
+  background: #ffd700;
+  color: #222;
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
   font-weight: bold;
+  box-shadow: 0 2px 8px rgba(255,215,0,0.10);
 }
 /*!********************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./src/styles/globals.css ***!
@@ -68,8 +200,8 @@ html {
 }
 
 .card, .main {
-  -webkit-backdrop-filter: blur(8px);
-          backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(12px);
+          backdrop-filter: blur(12px);
   background: rgba(255,255,255,0.85);
   box-shadow: 0 8px 32px rgba(106, 130, 255, 0.12);
 }

@@ -1,0 +1,60 @@
+.main {
+  padding: 2.4rem;
+  background: linear-gradient(180deg, #2b2447af 60%, #1a2541 100%);
+  border-radius: 24px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.10);
+  max-width: 600px;
+  margin: 2rem auto;
+  animation: fadeIn 1s;
+  text-align: center;
+}
+.title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #0070f3;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 6px #032738;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.intro {
+  font-size: 1.2rem;
+  color: #b3cce8;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 4px 6px #032738;
+}
+
+.steps {
+  text-align: center;
+  margin: 0 auto 1rem auto;
+  max-width: 450px;
+  font-size: 1.2rem;
+  color: #0070f3;
+  font-weight: 500;
+  border-radius: 24px;
+  background: linear-gradient(90deg, #062a47a3 40%, #0b4591af 100%);
+  padding: 1.4rem 3rem;
+  box-shadow: 0 2px 4px rgba(0,112,243,0.05);
+}
+
+.startBtn {
+  background: linear-gradient(90deg, #ffd700 60%, #ff9800 100%);
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 32px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255,152,0,0.10);
+  transition: background 0.3s, transform 0.2s;
+  margin-top: 1.5rem;
+}
+.startBtn:hover {
+  background: linear-gradient(90deg, #ff9800 60%, #ffd700 100%);
+  transform: scale(1.07);
+}
