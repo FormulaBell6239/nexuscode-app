@@ -1,0 +1,40 @@
+{
+  "html": [
+    {
+      "key": "html-headings",
+      "label": "Headings",
+      "lesson": {
+        "title": "HTML Basics: Headings",
+        "instructions": "Write an <h1> heading with the text 'Welcome to NexusCode'.",
+        "starterCode": "<!-- Write your HTML below -->\n"
+      },
+      "language": "html"
+    }
+
+  ],
+  "css": [
+    {
+      "key": "css-selectors",
+      "label": "Selectors",
+      "lesson": {
+        "title": "CSS Basics: Selectors",
+        "instructions": "Style the <h1> to be blue using CSS.",
+        "starterCode": "h1 {\n  color: blue;\n}\n"
+      },
+      "language": "css"
+    }
+
+  ],
+  "javascript": [
+    {
+      "key": "js-variables",
+      "label": "Variables",
+      "lesson": {
+        "title": "JavaScript Basics: Variables",
+        "instructions": "Declare a variable called 'name' and assign it your name.",
+        "starterCode": "// Write your JavaScript below\n"
+      },
+      "language": "javascript"    
+    }
+  ]
+}

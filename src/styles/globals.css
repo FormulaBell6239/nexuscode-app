@@ -21,3 +21,45 @@ html {
   background: rgba(255,255,255,0.85);
   box-shadow: 0 8px 32px rgba(106, 130, 255, 0.12);
 }
+
+.monaco-editor .suggest-widget {
+  background: #222 !important;
+  color: #fff !important;
+  border: 1px solid #444 !important;
+}
+
+/* All suggestion rows (default) */
+.monaco-editor .suggest-widget .monaco-list-row {
+  background: #071f57 !important;
+  color: #440b0b !important;
+}
+
+/* Target the inner content for even higher specificity */
+.monaco-editor .suggest-widget .monaco-list-row .monaco-highlighted-label {
+  background: #331465 !important;
+  color: #66a0ec !important;
+}
+
+/* Selected/focused suggestion row */
+.monaco-editor .suggest-widget .monaco-list-row.focused,
+.monaco-editor .suggest-widget .monaco-list-row.selected {
+  background: #010e2a !important;
+  color: #0080ff !important;
+}
+
+/* Selected/focused inner content */
+.monaco-editor .suggest-widget .monaco-list-row.focused .monaco-highlighted-label,
+.monaco-editor .suggest-widget .monaco-list-row.selected .monaco-highlighted-label {
+  background: #041848 !important;
+  color: #00a6ff !important;
+}
+
+/* Hovered suggestion row */
+.monaco-editor .suggest-widget .monaco-list-row:hover {
+  background: #02091a !important;
+  color: #758aff !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list-row span {
+  color: #0b0101 !important; /* suggestion text color */
+}
