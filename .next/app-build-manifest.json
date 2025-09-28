@@ -6,12 +6,6 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/curriculum/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/curriculum/page.css",
-      "static/chunks/app/curriculum/page.js"
-    ],
     "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -36,17 +30,29 @@
       "static/css/app/achievements/page.css",
       "static/chunks/app/achievements/page.js"
     ],
-    "/onboarding/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/onboarding/page.css",
-      "static/chunks/app/onboarding/page.js"
-    ],
     "/contact/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/contact/page.css",
       "static/chunks/app/contact/page.js"
+    ],
+    "/auth/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/auth/page.css",
+      "static/chunks/app/auth/page.js"
+    ],
+    "/curriculum/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/curriculum/page.css",
+      "static/chunks/app/curriculum/page.js"
+    ],
+    "/games/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/games/page.css",
+      "static/chunks/app/games/page.js"
     ],
     "/about/page": [
       "static/chunks/webpack.js",
@@ -54,11 +60,11 @@
       "static/css/app/about/page.css",
       "static/chunks/app/about/page.js"
     ],
-    "/games/page": [
+    "/playground/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/games/page.css",
-      "static/chunks/app/games/page.js"
+      "static/css/app/playground/page.css",
+      "static/chunks/app/playground/page.js"
     ]
   }
 }

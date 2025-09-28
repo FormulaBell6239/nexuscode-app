@@ -33,13 +33,25 @@ const Navbar: React.FC = () => {
           </button>
           {dropdownOpen && (
             <ul className={styles.dropdownMenu}>
-              <li><Link href="/profile">Profile</Link></li>
-              <li><Link href="/leaderboard">Leaderboard</Link></li>
-              <li><Link href="/achievements">Achievements</Link></li>
-              <li><Link href="/onboarding">Onboarding</Link></li>
+              <li>
+                <Link href="/profile" onClick={() => setDropdownOpen(false)}>Profile</Link>
+              </li>
+              <li>
+                <Link href="/leaderboard" onClick={() => setDropdownOpen(false)}>Leaderboard</Link>
+              </li>
+              <li>
+                <Link href="/achievements" onClick={() => setDropdownOpen(false)}>Achievements</Link>
+              </li>
+              <li>
+                <Link href="/playground" onClick={() => setDropdownOpen(false)}>Playground</Link>
+              </li>
               <li className={styles.divider}></li>
-              <li><Link href="/contact">Contact</Link></li>
-              <li><Link href="/about">About</Link></li>
+              <li>
+                <Link href="/contact" onClick={() => setDropdownOpen(false)}>Contact</Link>
+              </li>
+              <li>
+                <Link href="/about" onClick={() => setDropdownOpen(false)}>About</Link>
+              </li>
             </ul>
           )}
         </li>

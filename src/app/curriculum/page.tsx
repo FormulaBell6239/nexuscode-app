@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
+import { css } from "@codemirror/lang-css";
 import { oneDark } from "@codemirror/theme-one-dark";
 import styles from "./Curriculum.module.css";
 
@@ -11,17 +12,21 @@ const checkers: {
   "html-headings": (code: string) => /<h1>\s*Welcome to NexusCode\s*<\/h1>/i.test(code),
   "css-selectors": (code: string) => /h1\s*{[^}]*color\s*:\s*blue\s*;?[^}]*}/i.test(code),
   "js-variables": (code: string, log?: any) => /let|const|var\s+name\s*=/.test(code),
-  // ...etc
+  // ...add more checkers as needed
 };
 
 export default function CurriculumPage() {
   const [curriculum, setCurriculum] = useState<any>(null);
   const [category, setCategory] = useState("html");
   const [sectionIndex, setSectionIndex] = useState(0);
-  const [code, setCode] = useState("");
+  const [activeTab, setActiveTab] = useState<"html" | "css" | "js" | "browser">("html");
+  const [htmlCode, setHtmlCode] = useState("");
+  const [cssCode, setCssCode] = useState("");
+  const [jsCode, setJsCode] = useState("");
   const [output, setOutput] = useState("");
   const [hasFocused, setHasFocused] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [showHint, setShowHint] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
@@ -30,14 +35,17 @@ export default function CurriculumPage() {
       .then(data => setCurriculum(data));
   }, []);
 
-  // Only run this effect when curriculum and lesson are available
   useEffect(() => {
     if (curriculum) {
       const lessons = curriculum[category];
       const currentLesson = lessons[sectionIndex];
-      setCode(currentLesson.lesson.starterCode);
+      if (currentLesson.language === "html") setHtmlCode(currentLesson.lesson.starterCode || "");
+      if (currentLesson.language === "css") setCssCode(currentLesson.lesson.starterCode || "");
+      if (currentLesson.language === "javascript") setJsCode(currentLesson.lesson.starterCode || "");
       setOutput("");
       setHasFocused(false);
+      setFeedback("");
+      setShowHint(false);
     }
   }, [curriculum, category, sectionIndex]);
 
@@ -49,140 +57,203 @@ export default function CurriculumPage() {
   const currentLesson = lessons[sectionIndex];
 
   const handleEditorFocus = () => {
-    if (!hasFocused && code === currentLesson.lesson.starterCode) {
-      setCode("");
+    if (!hasFocused && htmlCode === currentLesson.lesson.starterCode) {
+      setHtmlCode("");
       setHasFocused(true);
     }
   };
 
   const handleRun = () => {
-    let isCorrect = false;
-    if (currentLesson.language === "html") {
-      setOutput(code);
-      if (currentLesson.lesson.check) {
-        isCorrect = currentLesson.lesson.check(code);
-      }
-    } else if (currentLesson.language === "css") {
-      setOutput(`<style>${code}</style><h1>Welcome to NexusCode</h1>`);
-      if (currentLesson.lesson.check) {
-        isCorrect = currentLesson.lesson.check(code);
-      }
-    } else if (currentLesson.language === "javascript") {
-      try {
-        let log = "";
-        const customConsole = { log: (msg: any) => (log += msg + "\n") };
-        // eslint-disable-next-line no-new-func
-        new Function("console", code)(customConsole);
-        setOutput(log || "No output.");
-        if (currentLesson.lesson.check) {
-          isCorrect = currentLesson.lesson.check(code, log);
-        }
-      } catch (err: any) {
-        setOutput("Error: " + err.message);
-      }
-    }
-    const checker = checkers[currentLesson.key];
-    if (checker) isCorrect = checker(code, output);
-    setFeedback(isCorrect ? "✅ Correct!" : "❌ Try again.");
+    const html = htmlCode;
+    const css = `<style>${cssCode}</style>`;
+    const js = `<script>${jsCode}</script>`;
+    setOutput(`${css}${html}${js}`);
   };
 
-  const getExtensions = () => {
-    if (currentLesson.language === "html") return [html()];
-    // Add CSS/JS extensions here if needed
-    return [];
+  const handleTabClick = (tab: "html" | "css" | "js" | "browser") => {
+    if (tab === "browser") {
+      handleRun();
+    }
+    setActiveTab(tab);
   };
+
+  const handleCheckAnswer = () => {
+    const checkerKey = currentLesson.key;
+    let code = "";
+    if (currentLesson.language === "html") code = htmlCode;
+    if (currentLesson.language === "css") code = cssCode;
+    if (currentLesson.language === "javascript") code = jsCode;
+    const isCorrect = checkers[checkerKey]?.(code);
+    setFeedback(isCorrect ? "✅ Correct! Great job!" : "❌ Not quite right. Try again or get a hint.");
+  };
+
+  console.log('sectionIndex:', sectionIndex, 'lessons:', lessons);
 
   return (
     <main className={styles.main}>
-      {/* Section Toggle Card (top, its own box) */}
-      <div className={styles.sectionToggleCard}>
-        {Object.keys(curriculum).map((cat) => (
-          <button
-            key={cat}
-            onClick={() => {
-              setCategory(cat);
-              setSectionIndex(0);
+      {/* Progress Bar */}
+      <div className={styles.progressBar}>
+        <span>
+          <strong>Lesson {sectionIndex + 1} of {lessons.length}</strong>
+        </span>
+        <div className={styles.progressTrack}>
+          <div
+            className={styles.progressFill}
+            style={{
+              width: `${((sectionIndex + 1) / lessons.length) * 100}%`
             }}
-            className={
-              category === cat
-                ? `${styles.toggleButton} ${styles.toggleButtonActive}`
-                : styles.toggleButton
-            }
-          >
-            {cat.toUpperCase()}
-          </button>
-        ))}
+          />
+        </div>
       </div>
 
-      {/* Lesson Toggle Card (separate box below) */}
-      <div className={styles.lessonToggleCard}>
-        {lessons.map((s: any, i: number) => (
+      {/* Category Navigation */}
+      <div className={styles.topNavCard}>
+        <nav className={styles.sectionToggleCard}>
+          {Object.keys(curriculum).map((cat) => (
+            <button
+              key={cat}
+              onClick={() => {
+                setCategory(cat);
+                setSectionIndex(0);
+              }}
+              className={
+                category === cat
+                  ? `${styles.toggleButton} ${styles.toggleButtonActive}`
+                  : styles.toggleButton
+              }
+            >
+              {cat.toUpperCase()}
+            </button>
+          ))}
+        </nav>
+        <div className={styles.lessonToggleCard}>
+          {lessons.map((s: any, i: number) => (
+            <button
+              key={s.key}
+              onClick={() => setSectionIndex(i)}
+              className={
+                sectionIndex === i
+                  ? `${styles.toggleButton} ${styles.toggleButtonActive}`
+                  : styles.toggleButton
+              }
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Lesson Card */}
+      <div className={styles.lessonCard}>
+        <h1 className={styles.title}>{currentLesson.lesson.title}</h1>
+        <ul className={styles.instructionsList}>
+          {currentLesson.lesson.instructions.split('\n').map((step: string, i: number) => (
+            <li key={i} className={styles.instructionStep}>{step}</li>
+          ))}
+        </ul>
+        {/* Hint Section */}
+        {showHint && currentLesson.lesson.hint && (
+          <div className={styles.hintBox}>
+            <strong>Hint:</strong> {currentLesson.lesson.hint}
+          </div>
+        )}
+      </div>
+
+      {/* Code Editor */}
+      <div className={styles.editorSection}>
+        <h2 className={styles.editorHeader}>Your Solution</h2>
+        <div className={styles.editorTabs}>
           <button
-            key={s.key}
-            onClick={() => setSectionIndex(i)}
-            className={
-              sectionIndex === i
-                ? `${styles.toggleButton} ${styles.toggleButtonActive}`
-                : styles.toggleButton
-            }
-          >
-            {s.label}
-          </button>
-        ))}
+            className={activeTab === "html" ? styles.activeTab : styles.tab}
+            onClick={() => handleTabClick("html")}
+          >HTML</button>
+          <button
+            className={activeTab === "css" ? styles.activeTab : styles.tab}
+            onClick={() => handleTabClick("css")}
+          >CSS</button>
+          <button
+            className={activeTab === "js" ? styles.activeTab : styles.tab}
+            onClick={() => handleTabClick("js")}
+          >JavaScript</button>
+          <button
+            className={activeTab === "browser" ? styles.activeTab : styles.tab}
+            onClick={() => handleTabClick("browser")}
+          >Browser</button>
+        </div>
+        <div className={styles.editorContainer}>
+          {activeTab === "html" && (
+            <CodeMirror
+              value={htmlCode}
+              height="400px"
+              theme={oneDark}
+              extensions={[html()]}
+              onChange={value => setHtmlCode(value)}
+              onFocus={handleEditorFocus}
+            />
+          )}
+          {activeTab === "css" && (
+            <CodeMirror
+              value={cssCode}
+              height="400px"
+              theme={oneDark}
+              extensions={[css()]}
+              onChange={value => setCssCode(value)}
+            />
+          )}
+          {activeTab === "js" && (
+            <CodeMirror
+              value={jsCode}
+              height="400px"
+              theme={oneDark}
+              extensions={[]} // Add JS extensions if needed
+              onChange={value => setJsCode(value)}
+            />
+          )}
+          {activeTab === "browser" && (
+            <iframe
+              title="output"
+              style={{
+                width: "100%",
+                minHeight: "400px",
+                border: "1px solid #eee",
+                borderRadius: "8px",
+                background: "#fff"
+              }}
+              srcDoc={output}
+              ref={iframeRef}
+            />
+          )}
+        </div>
       </div>
 
-      <h1 className={styles.title}>{currentLesson.lesson.title}</h1>
-      <p className={styles.instructions}>{currentLesson.lesson.instructions}</p>
-      <div className={styles.editorContainer}>
-        <CodeMirror
-          value={code}
-          height="200px"
-          theme={oneDark}
-          extensions={getExtensions()}
-          onFocus={handleEditorFocus}
-          onChange={value => setCode(value)}
-        />
+      {/* Show Sample Output only when hint is shown */}
+      {showHint && currentLesson.lesson.sampleOutput && (
+        <div className={styles.sampleOutput}>
+          <strong>Sample Output:</strong>
+          <div>{currentLesson.lesson.sampleOutput}</div>
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className={styles.actions}>
+        <button onClick={handleCheckAnswer} className={styles.checkButton}>Check Answer</button>
+        <button onClick={() => setShowHint(true)} className={styles.hintButton}>Get Hint</button>
+        <button
+          onClick={() => {
+            if (sectionIndex < lessons.length - 1) setSectionIndex(sectionIndex + 1);
+          }}
+          className={styles.nextButton}
+        >
+          Next Lesson
+        </button>
       </div>
-      <button
-        style={{
-          marginTop: "1rem",
-          padding: "0.5rem 1.2rem",
-          borderRadius: "8px",
-          background: "#00bcd4",
-          color: "#fff",
-          border: "none",
-          cursor: "pointer",
-          fontWeight: "bold"
-        }}
-        onClick={handleRun}
-      >
-        Run
-      </button>
+
+      {/* Feedback */}
       {feedback && (
-        <div style={{ margin: "1rem 0", fontWeight: "bold", color: feedback.includes("Correct") ? "green" : "red" }}>
+        <div className={styles.feedback}>
           {feedback}
         </div>
       )}
-      <div style={{ marginTop: "2rem" }}>
-        {currentLesson.language === "javascript" ? (
-          <pre style={{ background: "#222", color: "#fff", padding: "1rem", borderRadius: "8px" }}>
-            {output}
-          </pre>
-        ) : (
-          <iframe
-            ref={iframeRef}
-            title="output"
-            style={{
-              width: "100%",
-              minHeight: "120px",
-              border: "1px solid #eee",
-              borderRadius: "8px",
-              background: "#fff"
-            }}
-            srcDoc={output}
-          />
-        )}
-      </div>
     </main>
   );
 }

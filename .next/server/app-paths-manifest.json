@@ -1,6 +1,8 @@
 {
+  "/about/page": "app/about/page.js",
   "/page": "app/page.js",
+  "/curriculum/page": "app/curriculum/page.js",
   "/profile/page": "app/profile/page.js",
-  "/achievements/page": "app/achievements/page.js",
-  "/curriculum/page": "app/curriculum/page.js"
+  "/playground/page": "app/playground/page.js",
+  "/leaderboard/page": "app/leaderboard/page.js"
 }
