@@ -81,10 +81,46 @@ type LayoutConfig<Route extends LayoutRoutes = LayoutRoutes> = {
   type __Unused = __Check
 }
 
+// Validate ../../src/app/games/code-quiz/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/games/code-quiz">> = Specific
+  const handler = {} as typeof import("../../src/app/games/code-quiz/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/games/debugging-challenge/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/games/debugging-challenge">> = Specific
+  const handler = {} as typeof import("../../src/app/games/debugging-challenge/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/games/logic-puzzles/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/games/logic-puzzles">> = Specific
+  const handler = {} as typeof import("../../src/app/games/logic-puzzles/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../src/app/games/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/games">> = Specific
   const handler = {} as typeof import("../../src/app/games/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../src/app/games/speed-coding/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/games/speed-coding">> = Specific
+  const handler = {} as typeof import("../../src/app/games/speed-coding/page.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

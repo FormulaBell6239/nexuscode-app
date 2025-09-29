@@ -1,4 +1,6 @@
 import styles from './Games.module.css';
+import ProgressBar from '../../components/ProgressBar';
+import Link from 'next/link';
 
 export default function Games() {
   return (
@@ -16,33 +18,39 @@ export default function Games() {
             <span className={styles.gameIcon}>🧠</span>
             <h3 className={styles.gameTitle}>Code Quiz</h3>
             <p className={styles.gameDesc}>Test your programming knowledge</p>
-            <button className={styles.playButton}>Play</button>
+            <Link href="/games/code-quiz" passHref>
+              <button className={styles.playButton}>Play</button>
+            </Link>
           </div>
           <div className={styles.gameCard}>
             <span className={styles.gameIcon}>🐞</span>
             <h3 className={styles.gameTitle}>Debugging Challenge</h3>
             <p className={styles.gameDesc}>Find and fix code errors</p>
-            <button className={styles.playButton}>Play</button>
+            <Link href="/games/debugging-challenge" passHref>
+              <button className={styles.playButton}>Play</button>
+            </Link>
           </div>
           <div className={styles.gameCard}>
             <span className={styles.gameIcon}>⚡</span>
             <h3 className={styles.gameTitle}>Speed Coding</h3>
             <p className={styles.gameDesc}>Solve problems against the clock</p>
-            <button className={styles.playButton}>Play</button>
+            <Link href="/games/speed-coding" passHref>
+              <button className={styles.playButton}>Play</button>
+            </Link>
           </div>
           <div className={styles.gameCard}>
             <span className={styles.gameIcon}>🔗</span>
             <h3 className={styles.gameTitle}>Logic Puzzles</h3>
             <p className={styles.gameDesc}>Strengthen your problem-solving skills</p>
-            <button className={styles.playButton}>Play</button>
+            <Link href="/games/logic-puzzles" passHref>
+              <button className={styles.playButton}>Play</button>
+            </Link>
           </div>
         </div>
       </section>
       <section className={styles.progressSection}>
         <h2 className={styles.sectionTitle}>Your Progress</h2>
-        <div className={styles.progressBar}>
-          <div className={styles.progressFill} style={{ width: '60%' }}></div>
-        </div>
+        <ProgressBar value={6} max={10} label="Game Progress" />
         <div className={styles.stats}>
           <span className={styles.stat}><strong>Level:</strong> 3</span>
           <span className={styles.stat}><strong>Badges:</strong> 5</span>

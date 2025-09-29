@@ -1,36 +1,53 @@
+.main,
+.splitContainer {
+  box-sizing: border-box;
+}
+
 .main {
-  max-width: 700px;
+  max-width: 1200px;
   margin: 2rem auto;
-  padding: 2rem;
-  background: rgba(219, 214, 236, 0.7);
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(44,62,80,0.10);
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .title {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #00bcd4;
+  margin-bottom: 0.7rem;
+  letter-spacing: 0.02em;
 }
 
 .instructions {
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
+  font-size: 1.08rem;
+  color: #e0e6ed;
+  margin-bottom: 1rem;
+  line-height: 1.6;
 }
 
 .editorContainer {
-  background: #232b3e;
+  flex: 1 1 0;      /* <-- Change from auto to 0 for better fill */
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0; /* Important for flex children */
+  background: #566589;
   border-radius: 12px;
   box-shadow: 0 2px 8px #0004;
-  padding: 1.2rem;
-  margin-bottom: 2rem;
+  padding: 0.25rem;
 }
 
 .codeEditor {
-  font-family: 'Fira Mono', 'Menlo', 'Monaco', monospace;
-  font-size: 1rem;
+  flex: 1 1 0;
+  height: 100%;
+  min-height: 0;
+  font-size: 0.95rem;
   background: transparent;
   color: #fff;
-  min-height: 120px;
+  border: none;
+  resize: none;
 }
 
 .editorTabs {
@@ -40,8 +57,8 @@
 }
 
 .tab {
-  background: #29314a;
-  color: #e0e6ed;
+  background: #323b57;
+  color: #ccddf0;
   border: none;
   border-radius: 8px 8px 0 0;
   padding: 0.5rem 1.2rem;
@@ -58,35 +75,43 @@
 .lessonNavGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.2rem;
+  margin-bottom: 1.2rem;
   align-items: center;
-  margin-bottom: 2rem;
 }
 
 .sectionToggleCard {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   justify-content: center;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.2rem;
 }
 
 .lessonToggleCard {
+  background: #566589;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0004;
+  padding: 0.75rem;
+  margin: 0.75rem auto; /* Only bottom margin */
   display: flex;
-  gap: 1rem;
   justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .toggleButton {
   background: #29314a;
   color: #e0e6ed;
   border: none;
-  border-radius: 999px;
-  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 500;
-  margin: 0 0.25rem;
-  box-shadow: 0 2px 8px rgba(44,62,80,0.10);
+  margin: 0.15rem 0.15rem.15rem;
+  box-shadow: none;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
   outline: none;
 }
@@ -100,12 +125,12 @@
 }
 
 .toggleButtonActive {
-  background: linear-gradient(90deg, #00bcd4 60%, #0070f3 100%);
+  background: #00bcd4;
   color: #fff;
   font-weight: bold;
-  box-shadow: 0 4px 16px rgba(0,188,212,0.18);
-  border: 2px solid #fff;
-  transform: scale(1.08);
+  border-bottom: 2px solid #232b3e;
+  box-shadow: none;
+  transform: scale(1.05);
 }
 
 .modeToggle {
@@ -113,34 +138,6 @@
   justify-content: center;
   gap: 1rem;
   margin: 1rem auto;
-}
-
-.playgroundActions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin: 1rem auto;
-}
-
-.playgroundActionsWrapper {
-  background: linear-gradient(120deg, rgba(44,62,80,0.18) 60%, rgba(0,188,212,0.10) 100%);
-  border: 1.5px solid rgba(0,188,212,0.35);
-  border-radius: 12px;
-  box-shadow: 0 6px 24px rgba(44,62,80,0.13);
-  padding: 1rem 1.5rem;
-  margin: 2rem auto 1.5rem auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: fit-content;
-  min-width: 340px;
-  transition: box-shadow 0.2s, border 0.2s;
-}
-
-.playgroundActionsWrapper:hover {
-  box-shadow: 0 10px 32px rgba(0,188,212,0.18);
-  border-color: #00bcd4;
 }
 
 .projectInput {
@@ -195,9 +192,10 @@
 
 .actions {
   display: flex;
-  gap: 1.2rem;
+  gap: 1rem;
   justify-content: center;
-  margin: 2rem 0 1.5rem 0;
+  margin-top: auto; /* Pushes buttons to the bottom of the card */
+  margin-bottom: 1.2rem;
 }
 
 .runButton,
@@ -262,11 +260,11 @@
   background: #232b3e;
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(44,62,80,0.07);
-  padding: 1.2rem 1.5rem;
-  margin-bottom: 2rem;
+  padding: 1rem 1.5rem;
+  margin-bottom: 0.15rem;
   display: flex;
   flex-direction: column;
-  gap: 0.7rem;
+  gap: 0.5rem;
   align-items: center;
 }
 
@@ -275,11 +273,66 @@
 }
 
 .editorHeader {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #0070f3;
   margin-bottom: 0.7rem;
   text-align: center;
 }
+
+.splitContainer {
+  display: flex;
+  width: 100%;
+  height: 100vh; /* Fill the viewport */
+  box-sizing: border-box;
+}
+
+.leftPane {
+  flex: 0 0 400px;
+  background: #232b3e;
+  border-right: 2px solid #1a2541;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  overflow: auto;
+}
+
+.learningCard {
+  background: #566589;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0004;
+  padding: 1.5rem;
+  margin: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  min-height: 500px;   /* <-- Increase this value for a taller card */
+  height: 600px;       /* <-- Optional: use a fixed height for consistency */
+}
+
+.rightPane {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  background: #232b3e;
+}
+
+.divider {
+  width: 8px;
+  min-width: 8px;
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  cursor: ew-resize;
+  user-select: none;
+  z-index: 1;
+  border-radius: 4px;
+  margin: 0;
+}
+
+/* You can further style .title, .instructions, .editorTabs, .tab, .activeTab, .actions, .feedback, etc. as needed for clarity and consistency. */
+
 
 
