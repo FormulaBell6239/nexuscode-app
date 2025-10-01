@@ -12,49 +12,17 @@
       "static/css/app/page.css",
       "static/chunks/app/page.js"
     ],
-    "/games/page": [
+    "/profile/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/games/page.css",
-      "static/chunks/app/games/page.js"
+      "static/css/app/profile/page.css",
+      "static/chunks/app/profile/page.js"
     ],
     "/curriculum/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/curriculum/page.css",
       "static/chunks/app/curriculum/page.js"
-    ],
-    "/achievements/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/achievements/page.css",
-      "static/chunks/app/achievements/page.js"
-    ],
-    "/games/code-quiz/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/code-quiz/page.js"
-    ],
-    "/games/debugging-challenge/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/debugging-challenge/page.js"
-    ],
-    "/games/speed-coding/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/speed-coding/page.js"
-    ],
-    "/games/logic-puzzles/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/games/logic-puzzles/page.js"
-    ],
-    "/profile/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/profile/page.css",
-      "static/chunks/app/profile/page.js"
     ],
     "/playground/page": [
       "static/chunks/webpack.js",
