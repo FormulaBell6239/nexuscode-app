@@ -6,6 +6,9 @@ import { css } from "@codemirror/lang-css";
 import { oneDark } from "@codemirror/theme-one-dark";
 import styles from "./Curriculum.module.css";
 
+// ---------------------------------------------
+// Checker Functions for Lesson Validation
+// ---------------------------------------------
 const checkers: {
   [key: string]: (code: string, log?: any) => boolean;
 } = {
@@ -16,6 +19,9 @@ const checkers: {
 };
 
 export default function CurriculumPage() {
+  // ---------------------------------------------
+  // State Variables
+  // ---------------------------------------------
   const [curriculum, setCurriculum] = useState<any>(null);
   const [category, setCategory] = useState("html");
   const [sectionIndex, setSectionIndex] = useState(0);
@@ -27,16 +33,26 @@ export default function CurriculumPage() {
   const [hasFocused, setHasFocused] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [showHint, setShowHint] = useState(false);
+
+  // ---------------------------------------------
+  // Refs for Split Layout and Divider
+  // ---------------------------------------------
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const leftPaneRef = useRef<HTMLDivElement>(null);
   const dividerRef = useRef<HTMLDivElement>(null);
 
+  // ---------------------------------------------
+  // Fetch Curriculum Data
+  // ---------------------------------------------
   useEffect(() => {
     fetch("/curriculum.json")
       .then(res => res.json())
       .then(data => setCurriculum(data));
   }, []);
 
+  // ---------------------------------------------
+  // Reset Lesson State on Change
+  // ---------------------------------------------
   useEffect(() => {
     if (curriculum) {
       const lessons = curriculum[category];
@@ -51,6 +67,9 @@ export default function CurriculumPage() {
     }
   }, [curriculum, category, sectionIndex]);
 
+  // ---------------------------------------------
+  // Split Pane Drag Logic
+  // ---------------------------------------------
   useEffect(() => {
     const divider = dividerRef.current;
     let isDragging = false;
@@ -86,13 +105,22 @@ export default function CurriculumPage() {
     };
   }, []);
 
+  // ---------------------------------------------
+  // Loading State
+  // ---------------------------------------------
   if (!curriculum) {
     return <div>Loading curriculum...</div>;
   }
 
+  // ---------------------------------------------
+  // Lesson Data
+  // ---------------------------------------------
   const lessons = curriculum[category];
   const currentLesson = lessons[sectionIndex];
 
+  // ---------------------------------------------
+  // Editor Handlers
+  // ---------------------------------------------
   const handleEditorFocus = () => {
     if (!hasFocused && htmlCode === currentLesson.lesson.starterCode) {
       setHtmlCode("");
@@ -114,6 +142,9 @@ export default function CurriculumPage() {
     setActiveTab(tab);
   };
 
+  // ---------------------------------------------
+  // Lesson Checker Handler
+  // ---------------------------------------------
   const handleCheckAnswer = () => {
     const checkerKey = currentLesson.key;
     let code = "";
@@ -124,16 +155,18 @@ export default function CurriculumPage() {
     setFeedback(isCorrect ? "✅ Correct! Great job!" : "❌ Not quite right. Try again or get a hint.");
   };
 
-  console.log('sectionIndex:', sectionIndex, 'lessons:', lessons);
-
+  // ---------------------------------------------
+  // Main Render
+  // ---------------------------------------------
   return (
     <main className={styles.main}>
+      {/* Split Layout Container */}
       <div className={styles.splitContainer}>
+        {/* ------------------ Left Pane: Lessons ------------------ */}
         <section className={styles.leftPane} ref={leftPaneRef}>
-          {/* Top category toggles */}
+          {/* Category Navigation */}
           <div className={styles.topNavCard}>
             <nav className={styles.sectionToggleCard}>
-              {/* Category toggles (HTML, CSS, JAVASCRIPT) */}
               {Object.keys(curriculum).map((cat) => (
                 <button
                   key={cat}
@@ -153,7 +186,7 @@ export default function CurriculumPage() {
             </nav>
           </div>
 
-          {/* NEW: Lesson toggles card */}
+          {/* Lesson Navigation */}
           <div className={styles.lessonToggleCard}>
             <div className={styles.lessonToggleRow}>
               {lessons.map((s: any, i: number) => (
@@ -172,7 +205,7 @@ export default function CurriculumPage() {
             </div>
           </div>
 
-          {/* Lesson card with title and content */}
+          {/* Lesson Content Card */}
           <div className={styles.learningCard}>
             <h1 className={styles.title}>{currentLesson.lesson.title}</h1>
             <span className={styles.lessonNumber}>
@@ -183,11 +216,13 @@ export default function CurriculumPage() {
                 <li key={i} className={styles.instructionStep}>{step}</li>
               ))}
             </ul>
+            {/* Hint Section */}
             {showHint && currentLesson.lesson.hint && (
               <div className={styles.hintBox}>
                 <strong>Hint:</strong> {currentLesson.lesson.hint}
               </div>
             )}
+            {/* Lesson Actions */}
             <div className={styles.actions}>
               <button onClick={handleCheckAnswer} className={styles.checkButton}>Check Answer</button>
               <button onClick={() => setShowHint(true)} className={styles.hintButton}>Get Hint</button>
@@ -200,6 +235,7 @@ export default function CurriculumPage() {
                 Next Lesson
               </button>
             </div>
+            {/* Feedback Section */}
             {feedback && (
               <div className={styles.feedback}>
                 {feedback}
@@ -207,9 +243,13 @@ export default function CurriculumPage() {
             )}
           </div>
         </section>
+
+        {/* ------------------ Divider (Draggable) ------------------ */}
         <div className={styles.divider} id="drag-divider" ref={dividerRef} />
+
+        {/* ------------------ Right Pane: Editor ------------------ */}
         <section className={styles.rightPane}>
-          {/* Optional: Tabs/Header */}
+          {/* Editor Tabs */}
           <div className={styles.editorTabs}>
             <button
               className={activeTab === "html" ? styles.activeTab : styles.tab}
@@ -228,7 +268,7 @@ export default function CurriculumPage() {
               onClick={() => handleTabClick("browser")}
             >Browser</button>
           </div>
-          {/* Editor fills the rest */}
+          {/* Editor/Browser Preview */}
           <div className={styles.editorContainer}>
             {activeTab === "html" && (
               <CodeMirror
@@ -276,7 +316,7 @@ export default function CurriculumPage() {
               />
             )}
           </div>
-          {/* Optional: Output/Preview */}
+          {/* Sample Output (Hint) */}
           {showHint && currentLesson.lesson.sampleOutput && (
             <div className={styles.sampleOutput}>
               <strong>Sample Output:</strong>

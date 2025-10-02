@@ -27,7 +27,7 @@ export default function Home() {
         <button className={styles.button}>Start Learning</button>
       </section>
       <footer className={styles.footer}>
-        <span className={styles.footerText}>🚀 NexusCode &copy; 2025</span>
+        <span className={styles.footerText}>🚀 NexusCode | &copy; 2025 all rights reserved</span>
       </footer>
     </main>
   );

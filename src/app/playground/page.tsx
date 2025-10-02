@@ -140,105 +140,107 @@ export default function PlaygroundPage() {
           />
         )}
       </div>
-      <div className={styles.playgroundActionsWrapper}>
-        <div className={styles.PlaygroundActions}>
-          <button onClick={handleSaveProject} className={styles.toggleButton}>
-            Save
-          </button>
-          <button
-            onClick={() => {
-              setProjectName("");
-              setHtmlCode("");
-              setCssCode("");
-              setJsCode("");
-            }}
-            className={styles.toggleButton}
-          >
-            New Project
-          </button>
-          <button
-            onClick={() => setShowProjects(!showProjects)}
-            className={styles.toggleButton}
-          >
-            {showProjects ? "Close Projects" : "Open Projects"}
-          </button>
+      <div className={styles.cardWrapper}>
+        <div className={styles.playgroundActionsWrapper}>
+          <div className={styles.PlaygroundActions}>
+            <button onClick={handleSaveProject} className={styles.toggleButton}>
+              Save
+            </button>
+            <button
+              onClick={() => {
+                setProjectName("");
+                setHtmlCode("");
+                setCssCode("");
+                setJsCode("");
+              }}
+              className={styles.toggleButton}
+            >
+              New Project
+            </button>
+            <button
+              onClick={() => setShowProjects(!showProjects)}
+              className={styles.toggleButton}
+            >
+              {showProjects ? "Close Projects" : "Open Projects"}
+            </button>
+          </div>
+          {/* Show Project Name input ONLY when projects are open */}
+          {showProjects && (
+            <input
+              type="text"
+              placeholder="Project name"
+              value={projectName}
+              onChange={e => setProjectName(e.target.value)}
+              className={styles.projectInput}
+              style={{ marginTop: "1rem" }}
+            />
+          )}
         </div>
-        {/* Show Project Name input ONLY when projects are open */}
-        {showProjects && (
-          <input
-            type="text"
-            placeholder="Project name"
-            value={projectName}
-            onChange={e => setProjectName(e.target.value)}
-            className={styles.projectInput}
-            style={{ marginTop: "1rem" }}
-          />
+        {/* Preview first matching project */}
+        {searchTerm && previewProject && (
+          <div className={styles.projectCard}>
+            <div className={styles.projectPreview}>
+              <strong>{previewProject.name}</strong>
+              <pre className={styles.projectCodePreview}>
+                {previewProject.html?.slice(0, 120) || ""}
+                {previewProject.html && previewProject.html.length > 120 ? "..." : ""}
+              </pre>
+              <pre className={styles.projectCodePreview}>
+                {previewProject.css?.slice(0, 80) || ""}
+                {previewProject.css && previewProject.css.length > 80 ? "..." : ""}
+              </pre>
+              <pre className={styles.projectCodePreview}>
+                {previewProject.js?.slice(0, 80) || ""}
+                {previewProject.js && previewProject.js.length > 80 ? "..." : ""}
+              </pre>
+            </div>
+            <button
+              className={styles.toggleButton}
+              onClick={() => {
+                setHtmlCode(previewProject.html);
+                setCssCode(previewProject.css);
+                setJsCode(previewProject.js);
+              }}
+            >
+              Load Project
+            </button>
+          </div>
+        )}
+        {/* Show all projects only when Open Projects is clicked and no search term */}
+        {showProjects && !searchTerm && (
+          <div className={styles.projectsList}>
+            {projects.map((proj, idx) => (
+              <div key={idx} className={styles.projectCard}>
+                <div className={styles.projectPreview}>
+                  <strong>{proj.name}</strong>
+                  <pre className={styles.projectCodePreview}>
+                    {proj.html?.slice(0, 120) || ""}
+                    {proj.html && proj.html.length > 120 ? "..." : ""}
+                  </pre>
+                  <pre className={styles.projectCodePreview}>
+                    {proj.css?.slice(0, 80) || ""}
+                    {proj.css && proj.css.length > 80 ? "..." : ""}
+                  </pre>
+                  <pre className={styles.projectCodePreview}>
+                    {proj.js?.slice(0, 80) || ""}
+                    {proj.js && proj.js.length > 80 ? "..." : ""}
+                  </pre>
+                </div>
+                <button
+                  className={styles.toggleButton}
+                  onClick={() => {
+                    setHtmlCode(proj.html);
+                    setCssCode(proj.css);
+                    setJsCode(proj.js);
+                  }}
+                >
+                  Load Project
+                </button>
+              </div>
+            ))}
+          </div>
         )}
       </div>
-      {/* Preview first matching project */}
-      {searchTerm && previewProject && (
-        <div className={styles.projectCard}>
-          <div className={styles.projectPreview}>
-            <strong>{previewProject.name}</strong>
-            <pre className={styles.projectCodePreview}>
-              {previewProject.html?.slice(0, 120) || ""}
-              {previewProject.html && previewProject.html.length > 120 ? "..." : ""}
-            </pre>
-            <pre className={styles.projectCodePreview}>
-              {previewProject.css?.slice(0, 80) || ""}
-              {previewProject.css && previewProject.css.length > 80 ? "..." : ""}
-            </pre>
-            <pre className={styles.projectCodePreview}>
-              {previewProject.js?.slice(0, 80) || ""}
-              {previewProject.js && previewProject.js.length > 80 ? "..." : ""}
-            </pre>
-          </div>
-          <button
-            className={styles.toggleButton}
-            onClick={() => {
-              setHtmlCode(previewProject.html);
-              setCssCode(previewProject.css);
-              setJsCode(previewProject.js);
-            }}
-          >
-            Load Project
-          </button>
-        </div>
-      )}
-      {/* Show all projects only when Open Projects is clicked and no search term */}
-      {showProjects && !searchTerm && (
-        <div className={styles.projectsList}>
-          {projects.map((proj, idx) => (
-            <div key={idx} className={styles.projectCard}>
-              <div className={styles.projectPreview}>
-                <strong>{proj.name}</strong>
-                <pre className={styles.projectCodePreview}>
-                  {proj.html?.slice(0, 120) || ""}
-                  {proj.html && proj.html.length > 120 ? "..." : ""}
-                </pre>
-                <pre className={styles.projectCodePreview}>
-                  {proj.css?.slice(0, 80) || ""}
-                  {proj.css && proj.css.length > 80 ? "..." : ""}
-                </pre>
-                <pre className={styles.projectCodePreview}>
-                  {proj.js?.slice(0, 80) || ""}
-                  {proj.js && proj.js.length > 80 ? "..." : ""}
-                </pre>
-              </div>
-              <button
-                className={styles.toggleButton}
-                onClick={() => {
-                  setHtmlCode(proj.html);
-                  setCssCode(proj.css);
-                  setJsCode(proj.js);
-                }}
-              >
-                Load Project
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
       <div className={`${styles.tipsBox} ${fade ? styles.fadeIn : styles.fadeOut}`}>
         <strong>Tips:</strong> {tips[tipIndex]}
       </div>

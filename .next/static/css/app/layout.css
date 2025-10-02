@@ -1,3 +1,75 @@
+/*!********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./src/styles/globals.css ***!
+  \********************************************************************************************************************************************************************************************************************************************************************/
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap');
+
+body {
+  min-height: 100vh;
+  background:
+    linear-gradient(120deg, #6a82fb 0%, #fc5c7d 100%),
+    url("https://www.transparenttextures.com/patterns/cubes.png");
+  background-repeat: repeat;
+  background-size: cover;
+  font-family: 'Fira Mono', 'Menlo', 'Monaco', monospace, sans-serif;
+}
+
+html {
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.card, .main {
+  -webkit-backdrop-filter: blur(12px);
+          backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.85);
+  box-shadow: 0 8px 32px rgba(106, 130, 255, 0.12);
+}
+
+.monaco-editor .suggest-widget {
+  background: #222 !important;
+  color: #fff !important;
+  border: 1px solid #444 !important;
+}
+
+/* All suggestion rows (default) */
+.monaco-editor .suggest-widget .monaco-list-row {
+  background: #071f57 !important;
+  color: #440b0b !important;
+}
+
+/* Target the inner content for even higher specificity */
+.monaco-editor .suggest-widget .monaco-list-row .monaco-highlighted-label {
+  background: #331465 !important;
+  color: #66a0ec !important;
+}
+
+/* Selected/focused suggestion row */
+.monaco-editor .suggest-widget .monaco-list-row.focused,
+.monaco-editor .suggest-widget .monaco-list-row.selected {
+  background: #010e2a !important;
+  color: #0080ff !important;
+}
+
+/* Selected/focused inner content */
+.monaco-editor .suggest-widget .monaco-list-row.focused .monaco-highlighted-label,
+.monaco-editor .suggest-widget .monaco-list-row.selected .monaco-highlighted-label {
+  background: #041848 !important;
+  color: #00a6ff !important;
+}
+
+/* Hovered suggestion row */
+.monaco-editor .suggest-widget .monaco-list-row:hover {
+  background: #02091a !important;
+  color: #758aff !important;
+}
+
+.monaco-editor .suggest-widget .monaco-list-row span {
+  color: #0b0101 !important; /* suggestion text color */
+}
+
 /*!****************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/components/Navbar.module.css ***!
   \****************************************************************************************************************************************************************************************************************************************************************************/
@@ -5,15 +77,17 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 1rem 3rem;
+  padding: 1rem 2rem;
   background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
   color: #fff;
   box-shadow: 0 2px 12px rgba(0,0,0,0.07);
   border-radius: 0 0 16px 16px;
+  box-sizing: border-box;
 }
 
 .Navbar_logo__UM0Ax {
-  font-size: 2rem;
+  font-family: 'Orbitron', Arial, sans-serif;
+  font-size: 1.7rem;
   font-weight: bold;
   color: #fff;
   text-decoration: none;
@@ -155,26 +229,27 @@
 }
 
 .Navbar_loginLink__w9JAd {
-  background: linear-gradient(90deg, #ffd700 60%, #ff9800 100%);
-  color: #222 !important;
-  font-weight: bold;
+  color: #8b8d90;                /* Soft grey */
+  background: rgba(55, 60, 50, 0.25);
+  font-weight: 600;
+  font-size: 1rem;
   padding: 0.5rem 1.2rem;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(255,152,0,0.10);
-  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
   text-decoration: none;
-  margin-left: 0.5rem;
-  border: none;
-  outline: none;
+  letter-spacing: 0.03em;
+  box-shadow: 0 0.05rem 0.05rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: inline-block;
 }
 
 .Navbar_loginLink__w9JAd:hover,
 .Navbar_loginLink__w9JAd:focus {
-  background: linear-gradient(90deg, #ff9800 60%, #ffd700 100%);
-  color: #fff !important;
-  box-shadow: 0 4px 16px rgba(255,152,0,0.15);
-  text-decoration: none;
+  background: #232b3e;
+  color: #fff;
+  outline: none;
 }
 
 .Navbar_profile__nLiKp {
@@ -208,73 +283,3 @@
     padding: 0.5rem 0.5rem;
   }
 }
-/*!********************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./src/styles/globals.css ***!
-  \********************************************************************************************************************************************************************************************************************************************************************/
-body {
-  min-height: 100vh;
-  background:
-    linear-gradient(120deg, #6a82fb 0%, #fc5c7d 100%),
-    url("https://www.transparenttextures.com/patterns/cubes.png");
-  background-repeat: repeat;
-  background-size: cover;
-  font-family: 'Fira Mono', 'Menlo', 'Monaco', monospace, sans-serif;
-}
-
-html {
-  height: 100%;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.card, .main {
-  -webkit-backdrop-filter: blur(12px);
-          backdrop-filter: blur(12px);
-  background: rgba(255,255,255,0.85);
-  box-shadow: 0 8px 32px rgba(106, 130, 255, 0.12);
-}
-
-.monaco-editor .suggest-widget {
-  background: #222 !important;
-  color: #fff !important;
-  border: 1px solid #444 !important;
-}
-
-/* All suggestion rows (default) */
-.monaco-editor .suggest-widget .monaco-list-row {
-  background: #071f57 !important;
-  color: #440b0b !important;
-}
-
-/* Target the inner content for even higher specificity */
-.monaco-editor .suggest-widget .monaco-list-row .monaco-highlighted-label {
-  background: #331465 !important;
-  color: #66a0ec !important;
-}
-
-/* Selected/focused suggestion row */
-.monaco-editor .suggest-widget .monaco-list-row.focused,
-.monaco-editor .suggest-widget .monaco-list-row.selected {
-  background: #010e2a !important;
-  color: #0080ff !important;
-}
-
-/* Selected/focused inner content */
-.monaco-editor .suggest-widget .monaco-list-row.focused .monaco-highlighted-label,
-.monaco-editor .suggest-widget .monaco-list-row.selected .monaco-highlighted-label {
-  background: #041848 !important;
-  color: #00a6ff !important;
-}
-
-/* Hovered suggestion row */
-.monaco-editor .suggest-widget .monaco-list-row:hover {
-  background: #02091a !important;
-  color: #758aff !important;
-}
-
-.monaco-editor .suggest-widget .monaco-list-row span {
-  color: #0b0101 !important; /* suggestion text color */
-}
-
