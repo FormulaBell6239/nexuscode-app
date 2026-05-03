@@ -1,0 +1,44 @@
+{
+  "name": "nexuscode-backend",
+  "version": "1.0.0",
+  "description": "Backend for NexusCode gamified coding learning app",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/main.ts",
+    "start": "node dist/main.js",
+    "build": "tsc",
+    "seed": "ts-node-dev --transpile-only src/seed.ts"
+  },
+  "dependencies": {
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.3.4",
+    "@nestjs/core": "^9.0.0",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/typeorm": "^9.0.1",
+    "bcrypt": "^5.1.1",
+    "class-transformer": "^0.4.0",
+    "class-validator": "^0.13.1",
+    "express": "^5.1.0",
+    "pg": "^8.7.1",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.0.0",
+    "typeorm": "^0.3.28",
+    "typescript": "^4.5.0"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^9.0.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^4.17.23",
+    "@types/node": "^16.0.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.5.1",
+    "ts-node-dev": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "license": "MIT"
+}
