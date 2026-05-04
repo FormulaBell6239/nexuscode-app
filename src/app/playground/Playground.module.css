@@ -1,0 +1,234 @@
+.editorContainer {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  min-height: 500px;
+  max-height: 80vh;
+  background: #566589;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px #0004;
+  padding: 0.5rem;
+}
+
+.codeEditor {
+  flex: 1 1 0;
+  height: 100%;
+  min-height: 0;
+  font-size: 0.95rem;
+  background: transparent;
+  color: #fff;
+  resize: none;
+}
+
+.editorTabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.browserFrame {
+  width: 100%;
+  height: 500px;
+  min-height: 500px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background: #fff;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.tab {
+  background: #323b57;
+  color: #ccddf0;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.activeTab {
+  background: #00bcd4;
+  color: #fff;
+  border-bottom: 2px solid #232b3e;
+}
+
+.projectActionsWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  background: rgba(44, 62, 80, 0.38);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(44,62,80,0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 1rem 2rem;
+  margin: 0 auto 2rem auto;
+  max-width: 480px;
+}
+
+.projectInput {
+  padding: 0.6rem 1rem;
+  border: 1px solid #00bcd4;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #232b3e;
+  color: #fff;
+  outline: none;
+  transition: border 0.2s;
+  margin-bottom: 0;
+}
+
+.projectInput:focus {
+  border-color: #0070f3;
+}
+
+.toggleButton {
+  background: linear-gradient(90deg, #00bcd4 25%, #232b3e 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+}
+
+.toggleButton:hover,
+.toggleButton:focus {
+  background: linear-gradient(90deg, #0070f3 25%, #232b3e 100%);
+  box-shadow: 0 4px 16px rgba(0, 112, 243, 0.2);
+  transform: scale(1.05);
+}
+
+.cardWrapper {
+  background: rgba(44, 62, 80, 0.38);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(0, 188, 212, 0.18);
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 700px;
+}
+
+.projectsList {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-height: 350px;
+  overflow-y: auto;
+  padding: 1.5rem 2rem;
+  background: #232b3e;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px #0002;
+}
+
+.projectCard {
+  background: #323b57;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px #0003;
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.2s, transform 0.2s;
+  border: 1px solid #2e3a5e;
+}
+
+.projectCard:hover {
+  box-shadow: 0 4px 16px #00bcd455;
+  transform: translateY(-2px) scale(1.01);
+  border-color: #03a2b7;
+}
+
+.projectPreview {
+  width: 100%;
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.projectPreview strong {
+  color: #00bcd4;
+  font-size: 1.08rem;
+  letter-spacing: 0.02em;
+}
+
+.projectCodePreview {
+  background: #262b36;
+  color: #c3d8f0;
+  border-radius: 6px;
+  padding: 0.5rem 0.8rem;
+  margin: 0.3rem 1rem;
+  font-size: 0.95rem;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  border: 1px solid #2e3a5e;
+}
+
+.tipsBox {
+  margin-top: 2rem;
+  background: #323b57;
+  color: #ccddf0;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 8px #0002;
+  transition: opacity 0.9s;
+}
+
+.fadeIn {
+  opacity: 1;
+}
+
+.fadeOut {
+  opacity: 0.1;
+}
+
+.feedbackBox {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 500px;
+  min-height: 60px;
+  border-radius: 8px;
+  border: 1px solid #00bcd4;
+  padding: 0.6rem 1rem;
+  background: #232b3e;
+  color: #fff;
+  font-size: 1rem;
+  resize: vertical;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sendFeedbackButton {
+  margin-top: 1rem;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive improvements */
+@media (max-width: 700px) {
+  .cardWrapper {
+    padding: 1rem;
+    max-width: 98vw;
+  }
+  .projectActionsWrapper {
+    padding: 1rem;
+    max-width: 98vw;
+  }
+  .projectsList {
+    padding: 1rem;
+    max-width: 98vw;
+  }
+}

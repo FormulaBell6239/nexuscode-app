@@ -1,0 +1,175 @@
+/*!*******************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[5].use[3]!./src/app/page.module.css ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************/
+.page_main__GlU4n {
+  padding: 2.2rem;
+  background: 
+    linear-gradient(180deg, #8bb3f3 15%, #446ad2 65%, #011937 100%),
+    url("https://www.transparenttextures.com/patterns/cubes.png"); /* subtle texture */
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  max-width: 700px;
+  margin: 1.5rem auto;
+  animation: page_fadeIn__wvzG6 1s;
+  position: relative;
+  overflow: hidden;
+}
+
+.page_main__GlU4n::before {
+  content: "";
+  position: absolute;
+  top: -80px;
+  left: -80px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, #fdf2be74 8%, transparent 65%);
+  z-index: 0;
+}
+
+.page_main__GlU4n::after {
+  content: "";
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, #2f9cd674 5%, transparent 70%);
+  z-index: 0;
+}
+
+.page_header__kVzhN, .page_card__QV0Om, .page_cardAlt__3tMC_, .page_footer__sHKi3 {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes page_fadeIn__wvzG6 {
+  from { opacity: 0; transform: translateY(30px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.page_header__kVzhN {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.page_title__3jonF {
+  color: #114a95;
+  font-size: 2.7rem;
+  margin-bottom: 1rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-shadow: 0 1px 3px #039fe7;
+}
+
+.page_subtitle__iAJUg {
+  color: #2d2e2e;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  text-shadow: 0 1px 2px #d3e9fb;
+}
+
+.page_card__QV0Om {
+  background: rgba(24, 62, 80, 0.38);
+  -webkit-backdrop-filter: blur(20px);
+          backdrop-filter: blur(20px);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(44, 62, 80, 0.1) inset;
+  padding: 2rem 1.5rem;
+  margin: 1.5rem 1.5rem;
+  border-left: 6px solid #043268;
+  transition: box-shadow 0.2s;
+}
+
+.page_cardAlt__3tMC_ {
+  background: linear-gradient(180deg, #5885c9 20%, #2d4862 100%);
+  border-radius: 18px;
+  box-shadow: 0 0 2px rgba(151,170,228,0.10);
+  padding: 1.5rem;
+  margin: 2rem 2rem;
+  border-left: 6px solid #082770;
+  text-align: center;
+}
+
+.page_sectionTitle__hzsAh {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #aabdfc;
+  text-shadow: 0 1px 4px #0b1338;
+  letter-spacing: 1px;
+}
+
+.page_featureList___8ePa {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.page_featureItem__KOtcF {
+  display: flex;
+  align-items: center;
+  font-size: 1.15rem;
+  margin-bottom: 0.8rem;
+  font-weight: 500;
+  background: #a4c0dd;
+  border-radius: 14px;
+  padding: 0.8rem 1.2rem;
+  box-shadow: 0 1px 2px rgba(0,112,243,0.05);
+  transition: background 0.2s;
+}
+
+.page_featureItem__KOtcF:hover {
+  background: #455152;
+}
+
+.page_featureText__0lch2 {
+  margin-left: 0.5rem;
+  color: #222;
+  font-family: 'Fira Mono', 'Menlo', 'Monaco', monospace;
+  font-size: 1.05rem;
+}
+
+.page_ctaText__ew5hH {
+  font-size: 1.15rem;
+  margin-bottom: 1.2rem;
+  font-weight: 600;
+  color: #27344f;
+  text-shadow: 0 1px 6px #c4d4d5;
+}
+
+.page_button__vnlhW {
+  background: linear-gradient(90deg, #5592ec 45%, #064384 100%);
+  color: #1e252c;
+  border-bottom: 0.005rem solid #5e6872;
+  border-top: 0.005rem  solid #d1e3ff;
+  border-left: 0.015rem solid #ffffff;
+  border-radius: 20px 2px;
+  padding: 10px 12px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 4px 4px 10px rgba(211, 211, 211, 0.1);
+  transition: background 0.3s, transform 0.2s;
+  display: block;
+  margin: 1.5rem auto 0 auto;
+}
+
+.page_button__vnlhW:hover {
+  background: linear-gradient(360deg, #6583c5 24%, #80aad7 100%);
+  transform: scale(1.05);
+}
+
+.page_footer__sHKi3 {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #78bcf4;
+}
+
+.page_footerText__OqpQ_ {
+  color: #0479ff;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}

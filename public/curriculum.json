@@ -1,0 +1,80 @@
+{
+  "html": [
+    {
+      "key": "html-headings",
+      "label": "Headings",
+      "lesson": {
+        "title": "HTML Headings",
+        "instructions": "Write an <h1> heading with text 'Welcome to NexusCode'.",
+        "starterCode": "<!-- Write your code here -->",
+        "sampleOutput": "<h1>Welcome to NexusCode</h1>",
+        "hint": "Use <h1> tags for main headings."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-paragraphs",
+      "label": "Paragraphs",
+      "lesson": {
+        "title": "HTML Paragraphs",
+        "instructions": "Add a paragraph below your heading with any text.",
+        "starterCode": "<h1>Welcome to NexusCode</h1>\n<!-- Write your paragraph below -->",
+        "sampleOutput": "<h1>Welcome to NexusCode</h1><p>This is a paragraph.</p>",
+        "hint": "Use <p> tags for paragraphs."
+      },
+      "language": "html"
+    }
+  ],
+  "css": [
+    {
+      "key": "css-selectors",
+      "label": "Selectors",
+      "lesson": {
+        "title": "CSS Selectors",
+        "instructions": "Change the color of your <h1> to blue using CSS.",
+        "starterCode": "h1 {\n  /* Add your styles here */\n}",
+        "sampleOutput": "h1 { color: blue; }",
+        "hint": "Use the color property inside the h1 selector."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-background",
+      "label": "Background",
+      "lesson": {
+        "title": "CSS Background",
+        "instructions": "Set the background color of the page to lightgray.",
+        "starterCode": "body {\n  /* Add your styles here */\n}",
+        "sampleOutput": "body { background-color: lightgray; }",
+        "hint": "Use background-color property."
+      },
+      "language": "css"
+    }
+  ],
+  "javascript": [
+    {
+      "key": "js-variables",
+      "label": "Variables",
+      "lesson": {
+        "title": "JavaScript Variables",
+        "instructions": "Create a variable called name and set it to your name.",
+        "starterCode": "// Write your code here",
+        "sampleOutput": "let name = 'Alex';",
+        "hint": "Use let, const, or var to declare a variable."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-console",
+      "label": "Console Log",
+      "lesson": {
+        "title": "Console Log",
+        "instructions": "Log your name variable to the console.",
+        "starterCode": "let name = 'Alex';\n// Log your variable",
+        "sampleOutput": "let name = 'Alex';\nconsole.log(name);",
+        "hint": "Use console.log() to print values."
+      },
+      "language": "javascript"
+    }
+  ]
+}

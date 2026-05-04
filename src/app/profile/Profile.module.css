@@ -1,0 +1,260 @@
+.main {
+  padding: 2.4rem;
+  background: linear-gradient(180deg, #2b2447af 0%, #1a2541 100%);
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  max-width: 650px;
+  margin: 2rem auto;
+  animation: fadeIn 1s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card {
+  background: linear-gradient(180deg, #324573 0%, #14327d 100%);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(44,62,80,0.28);
+  padding: 2rem 1.5rem;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 2rem;
+  text-align: center;
+  position: relative;
+  color: #e3eafc;
+  border: 1.5px solid rgba(127,156,245,0.18);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+
+.card::before,
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  pointer-events: none;
+}
+.card::before {
+  opacity: 0.13;
+  background: url("https://www.transparenttextures.com/patterns/squairy-light.png");
+  mix-blend-mode: lighten;
+}
+.card::after {
+  border: 2px solid rgba(127,156,245,0.18);
+  box-shadow: 0 0 24px 2px rgba(127,156,245,0.12);
+  opacity: 0.7;
+}
+
+.cover {
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(90deg, #7f9cf5 0%, #00bcd4 100%);
+  border-radius: 24px 24px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+
+.coverIcon {
+  font-size: 2.5rem;
+  opacity: 0.8;
+}
+
+.avatarSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.avatar {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  animation: avatarGlow 2s infinite alternate;
+}
+@keyframes avatarGlow {
+  from { text-shadow: 0 0 8px #00bcd4, 0 0 16px #0070f3; }
+  to { text-shadow: 0 0 24px #ffd700, 0 0 32px #00bcd4; }
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0070f3;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 6px #072635;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #93beff;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 2px 4px #020a12;
+}
+
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.label {
+  font-weight: 600;
+  color: #2050be;
+  margin-bottom: 0.3rem;
+  display: block;
+  text-align: left;
+}
+
+.nameInput,
+.usernameInput,
+.callingCardPicker,
+.avatarPicker {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #e3eafc;
+  background: #232b3e;
+  border: 1.5px solid #b3c7f9;
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  margin-top: 0.3rem;
+  box-shadow: 0 2px 8px rgba(127,156,245,0.10);
+  transition: border 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.nameInput:focus,
+.usernameInput:focus,
+.callingCardPicker:focus,
+.avatarPicker:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 0 2px #0070f3;
+}
+
+.statsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin-bottom: 1.2rem;
+  align-items: flex-start;
+}
+
+.statsLabel {
+  font-size: 1.1rem;
+  color: #4d67b0;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.statsValue {
+  font-size: 1.1rem;
+  color: #0070f3;
+  font-weight: 700;
+}
+
+.badges {
+  font-size: 1.5rem;
+  margin-left: 0.5rem;
+}
+
+.profileActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.2rem;
+}
+
+.editBtn {
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 28px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0,112,243,0.10);
+}
+.editBtn:hover {
+  background: linear-gradient(90deg, #00bcd4 60%, #0070f3 100%);
+  transform: scale(1.05);
+}
+
+.privacyToggle {
+  font-size: 1rem;
+  color: #2050be;
+  font-weight: 600;
+  background: #f8f9f9;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  box-shadow: 0 2px 8px rgba(127,156,245,0.10);
+  border: 1.5px solid #b3c7f9;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: border 0.2s;
+}
+.privacyToggle input[type="checkbox"] {
+  accent-color: #0070f3;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.quote {
+  font-style: italic;
+  color: #4d67b0;
+  margin: 1.5rem 0 0.5rem 0;
+  opacity: 0.85;
+  text-align: center;
+}
+
+.bioInput {
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #e3eafc;
+  background: #232b3e;
+  border: 1.5px solid #b3c7f9;
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  margin-top: 0.3rem;
+  box-shadow: 0 2px 8px rgba(127,156,245,0.10);
+  transition: border 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
+.bioInput:focus {
+  border-color: #0070f3;
+  box-shadow: 0 0 0 2px #0070f3;
+}
+
+.profileText {
+  color: #e3eafc;
+  background: #232b3e;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin-top: 0.3rem;
+  font-size: 1.05rem;
+  text-align: left;
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 1rem;
+    max-width: 98vw;
+    margin: 1rem auto;
+  }
+  .card {
+    margin: 1rem 0;
+    padding: 1rem;
+  }
+  .cover {
+    height: 60px;
+    margin-bottom: 1rem;
+  }
+}

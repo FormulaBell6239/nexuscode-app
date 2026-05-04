@@ -1,0 +1,4 @@
+// filepath: /Users/formulabell6239/NexusCode/nexuscode-app/frontend/.eslintrc.json
+{
+  "extends": "next"
+}

@@ -1,0 +1,45 @@
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(44,62,80,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.popup {
+  background: #232b3e;
+  color: #e3eafc;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(44,62,80,0.28);
+  padding: 2rem 2.5rem;
+  text-align: center;
+  min-width: 300px;
+}
+.icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.7rem;
+}
+.description {
+  font-size: 1.1rem;
+  margin-bottom: 1.2rem;
+}
+.closeBtn {
+  background: linear-gradient(90deg, #0070f3 60%, #00bcd4 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.closeBtn:hover {
+  background: linear-gradient(90deg, #00bcd4 60%, #0070f3 100%);
+}
