@@ -30,6 +30,19 @@ export class User {
     @Column({ nullable: true, default: 'indigo' })
     callingCard: string;
 
+    // Subscription & theme
+    @Column({ default: 'free' })
+    plan: string; // 'free' | 'quantum'
+
+    @Column({ default: 'default' })
+    theme: string; // 'default' | 'cyber-neon' | 'minimal-dark' | 'matrix-green'
+
+    @Column({ nullable: true })
+    stripeCustomerId: string;
+
+    @Column({ nullable: true })
+    stripeSubscriptionId: string;
+
     @CreateDateColumn()
     createdAt: Date;
 

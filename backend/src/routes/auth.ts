@@ -1,12 +1,3 @@
-import { Router } from "express";
-import { login } from "../controllers/authController";
-
-const router = Router();
-
-// POST /api/login
-router.post("/login", login);
-
-// You can add more routes, e.g. register, logout, etc.
-// router.post("/register", register);
-
-export default router;
+// Auth routing is handled by NestJS AuthModule (src/auth/).
+// This legacy Express router file is retained only as a placeholder.
+export {};

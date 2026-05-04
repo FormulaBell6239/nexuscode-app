@@ -21,6 +21,10 @@ export class Achievement {
   @Column({ default: 1 })
   requiredCount: number;
 
+  // One-time credit bonus awarded when this achievement is first earned
+  @Column({ default: 0 })
+  creditReward: number;
+
   @OneToMany(() => UserAchievement, (ua) => ua.achievement)
   userAchievements: UserAchievement[];
 }

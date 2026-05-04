@@ -29,8 +29,32 @@ export class UserProgress {
   @Column({ default: 0 })
   streak: number;
 
+  @Column({ default: 0 })
+  longestStreak: number;
+
   @Column({ type: 'timestamp', nullable: true })
   lastActiveDate: Date | null;
+
+  // Energy system
+  @Column({ default: 5 })
+  energy: number;
+
+  @Column({ default: 5 })
+  maxEnergy: number;
+
+  @Column({ type: 'timestamp', nullable: true })
+  energyLastRegen: Date | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  overclockActiveUntil: Date | null;
+
+  // Credits (unlocks games)
+  @Column({ default: 0 })
+  credits: number;
+
+  // Completed lessons (JSON array of lesson keys)
+  @Column({ type: 'text', default: '[]' })
+  completedLessons: string;
 
   @UpdateDateColumn()
   updatedAt: Date;

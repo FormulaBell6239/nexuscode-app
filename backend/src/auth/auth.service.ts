@@ -34,8 +34,13 @@ export class AuthService {
     const user = this.userRepo.create({ username, email, password: hashed });
     const saved = await this.userRepo.save(user);
 
-    // Create empty progress record for new user
-    const progress = this.progressRepo.create({ userId: saved.id });
+    // Create progress record with energy initialised
+    const progress = this.progressRepo.create({
+      userId: saved.id,
+      energy: 5,
+      maxEnergy: 5,
+      energyLastRegen: new Date(),
+    });
     await this.progressRepo.save(progress);
 
     return this.signToken(saved);
@@ -58,10 +63,10 @@ export class AuthService {
   }
 
   private signToken(user: User) {
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.username, plan: user.plan ?? 'free' };
     return {
       token: this.jwtService.sign(payload),
-      user: { id: user.id, username: user.username, email: user.email },
+      user: { id: user.id, username: user.username, email: user.email, plan: user.plan ?? 'free' },
     };
   }
 }

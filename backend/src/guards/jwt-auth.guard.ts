@@ -24,7 +24,7 @@ export class JwtAuthGuard implements CanActivate {
 
     try {
       const payload = this.jwtService.verify(token, {
-        secret: this.configService.get<string>('JWT_SECRET', 'change_me_in_production'),
+        secret: this.configService.getOrThrow<string>('JWT_SECRET'),
       });
       // Attach decoded payload to request so controllers can access it
       (request as any).user = payload;
