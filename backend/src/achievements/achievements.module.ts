@@ -6,9 +6,14 @@ import { Achievement } from '../entities/Achievement';
 import { UserAchievement } from '../entities/UserAchievement';
 import { UserProgress } from '../entities/UserProgress';
 import { AuthModule } from '../auth/auth.module';
+import { StoreModule } from '../store/store.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Achievement, UserAchievement, UserProgress]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([Achievement, UserAchievement, UserProgress]),
+    AuthModule,
+    StoreModule,
+  ],
   controllers: [AchievementsController],
   providers: [AchievementsService],
   exports: [AchievementsService],

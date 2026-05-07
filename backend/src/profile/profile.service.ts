@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { UserProgress } from '../entities/UserProgress';
+import { AchievementsService } from '../achievements/achievements.service';
 
 /** Safe JSON.parse — returns fallback if the string is null/corrupted */
 function safeParseJSON<T>(value: string | null | undefined, fallback: T): T {
@@ -52,6 +53,7 @@ export class ProfileService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(UserProgress)
     private readonly progressRepo: Repository<UserProgress>,
+    private readonly achievementsService: AchievementsService,
   ) {}
 
   async getProfile(userId: number) {
@@ -158,6 +160,9 @@ export class ProfileService {
 
     await this.progressRepo.save(progress);
 
+    // Track XP milestone achievements (fire-and-forget, don't block response)
+    this.achievementsService.incrementProgress(userId, 'xp_earned', dto.amount).catch(() => {});
+
     const completedLessons = safeParseJSON<string[]>(progress.completedLessons, []);
     return {
       xp: progress.xp,
@@ -192,5 +197,50 @@ export class ProfileService {
       callingCard: saved.callingCard,
       theme: saved.theme,
     };
+  }
+
+  async getHearts(userId: number) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    let progress = await this.progressRepo.findOne({ where: { userId } });
+    if (!progress) {
+      progress = this.progressRepo.create({ userId, energy: 5, maxEnergy: 5, energyLastRegen: new Date(), hearts: 5 });
+      await this.progressRepo.save(progress);
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    if (!progress.heartsLastRefilled || progress.heartsLastRefilled < today) {
+      progress.hearts = 5;
+      progress.heartsLastRefilled = today;
+      await this.progressRepo.save(progress);
+    }
+
+    return { hearts: progress.hearts, plan: user.plan };
+  }
+
+  async deductHeart(userId: number) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.plan === 'pro') {
+      return { hearts: null, pro: true };
+    }
+
+    let progress = await this.progressRepo.findOne({ where: { userId } });
+    if (!progress) {
+      progress = this.progressRepo.create({ userId, energy: 5, maxEnergy: 5, energyLastRegen: new Date(), hearts: 5 });
+    }
+
+    const today = new Date().toISOString().slice(0, 10);
+    if (!progress.heartsLastRefilled || progress.heartsLastRefilled < today) {
+      progress.hearts = 5;
+      progress.heartsLastRefilled = today;
+    }
+
+    progress.hearts = Math.max(0, progress.hearts - 1);
+    await this.progressRepo.save(progress);
+
+    return { hearts: progress.hearts };
   }
 }

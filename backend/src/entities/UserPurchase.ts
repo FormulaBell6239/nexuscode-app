@@ -28,6 +28,9 @@ export class UserPurchase {
   @Column()
   itemId: number;
 
+  @Column({ default: false })
+  isPrize: boolean;
+
   @CreateDateColumn()
   purchasedAt: Date;
 }

@@ -1,10 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Game } from '../entities/Game';
 import { UserProgress } from '../entities/UserProgress';
 import { UserAchievement } from '../entities/UserAchievement';
 import { Achievement } from '../entities/Achievement';
+import { UserPurchase } from '../entities/UserPurchase';
+import { StoreItem } from '../entities/StoreItem';
 
 const XP_PER_GAME = 100;
 
@@ -19,6 +21,10 @@ export class GameService {
     private readonly userAchievementRepo: Repository<UserAchievement>,
     @InjectRepository(Achievement)
     private readonly achievementRepo: Repository<Achievement>,
+    @InjectRepository(UserPurchase)
+    private readonly purchaseRepo: Repository<UserPurchase>,
+    @InjectRepository(StoreItem)
+    private readonly storeItemRepo: Repository<StoreItem>,
   ) {}
 
   findAllGames() {
@@ -32,6 +38,19 @@ export class GameService {
   async completeGame(gameId: number, userId: number) {
     const game = await this.gameRepo.findOne({ where: { id: gameId } });
     if (!game) throw new NotFoundException('Game not found');
+
+    // Access control: locked games require a matching store purchase
+    if (game.locked && game.slug) {
+      const storeItem = await this.storeItemRepo.findOne({ where: { gameSlug: game.slug } });
+      if (storeItem) {
+        const purchase = await this.purchaseRepo.findOne({
+          where: { userId, itemId: storeItem.id },
+        });
+        if (!purchase) {
+          throw new ForbiddenException('You do not own this game');
+        }
+      }
+    }
 
     let progress = await this.progressRepo.findOne({ where: { userId } });
     if (!progress) {

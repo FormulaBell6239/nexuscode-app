@@ -4,6 +4,19 @@ import { Repository } from 'typeorm';
 import { Achievement } from '../entities/Achievement';
 import { UserAchievement } from '../entities/UserAchievement';
 import { UserProgress } from '../entities/UserProgress';
+import { StoreService } from '../store/store.service';
+
+// Maps a credit reward amount to the tier skin applyValue
+function tierSkinForReward(creditReward: number): string {
+  if (creditReward <= 15) return 'ember';
+  if (creditReward <= 50) return 'matrix-green';
+  return 'solar';
+}
+
+export interface IncrementResult {
+  creditsAwarded: number;
+  prizes: { name: string; icon: string; applyValue: string }[];
+}
 
 @Injectable()
 export class AchievementsService {
@@ -14,6 +27,7 @@ export class AchievementsService {
     private readonly userAchievementRepo: Repository<UserAchievement>,
     @InjectRepository(UserProgress)
     private readonly progressRepo: Repository<UserProgress>,
+    private readonly storeService: StoreService,
   ) {}
 
   getAllAchievements() {
@@ -33,6 +47,7 @@ export class AchievementsService {
         name: a.name,
         description: a.description,
         icon: a.icon,
+        type: a.type,
         requiredCount: a.requiredCount,
         creditReward: a.creditReward,
         progress: ua?.progress ?? 0,
@@ -44,12 +59,12 @@ export class AchievementsService {
 
   /**
    * Increment progress toward an achievement type for a user.
-   * If the achievement is newly completed, credits are awarded.
-   * Returns the credit amount awarded (0 if nothing new earned).
+   * Awards credits and auto-grants the matching tier skin when a badge is first earned.
    */
-  async incrementProgress(userId: number, type: string, by = 1): Promise<number> {
+  async incrementProgress(userId: number, type: string, by = 1): Promise<IncrementResult> {
     const achievements = await this.achievementRepo.find({ where: { type } });
-    let totalCreditsAwarded = 0;
+    let creditsAwarded = 0;
+    const prizes: IncrementResult['prizes'] = [];
 
     for (const ach of achievements) {
       let ua = await this.userAchievementRepo.findOne({
@@ -66,7 +81,7 @@ export class AchievementsService {
         });
       }
 
-      if (ua.earned) continue; // already done, skip
+      if (ua.earned) continue;
 
       ua.progress = Math.min(ua.progress + by, ach.requiredCount);
 
@@ -80,14 +95,20 @@ export class AchievementsService {
           if (progress) {
             progress.credits = (progress.credits ?? 0) + ach.creditReward;
             await this.progressRepo.save(progress);
-            totalCreditsAwarded += ach.creditReward;
+            creditsAwarded += ach.creditReward;
           }
         }
+
+        // Auto-grant tier skin (first badge of that tier unlocks it)
+        const skinSlug = tierSkinForReward(ach.creditReward);
+        const prize = await this.storeService.grantPrizeSkin(userId, skinSlug).catch(() => null);
+        if (prize) prizes.push(prize);
       }
 
       await this.userAchievementRepo.save(ua);
     }
 
-    return totalCreditsAwarded;
+    return { creditsAwarded, prizes };
   }
 }
+

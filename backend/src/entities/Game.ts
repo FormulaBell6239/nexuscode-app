@@ -29,6 +29,10 @@ export class Game {
   @Column({ default: false })
   locked: boolean;
 
+  /** URL-safe identifier matching StoreItem.gameSlug — required for locked games */
+  @Column({ type: 'varchar', nullable: true, default: null })
+  slug: string | null;
+
   @CreateDateColumn()
   createdAt: Date;
 }

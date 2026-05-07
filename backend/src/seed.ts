@@ -63,35 +63,42 @@ const ACHIEVEMENTS = [
   { name: 'Level 5',        description: 'Reach Level 5',                                     icon: '⬆️', type: 'level',                  requiredCount: 5,   creditReward: 20  },
   { name: 'Level 10',       description: 'Reach Level 10',                                    icon: '🔷', type: 'level',                  requiredCount: 10,  creditReward: 50  },
   { name: 'Game On',        description: 'Play 5 game rounds',                                icon: '🎮', type: 'game_rounds_played',      requiredCount: 5,   creditReward: 15  },
-  { name: 'Arcade Legend',  description: 'Play 50 game rounds',                               icon: '🕹', type: 'game_rounds_played',      requiredCount: 50,  creditReward: 60  },
-];
+  { name: 'Arcade Legend',  description: 'Play 50 game rounds',                               icon: '🕹', type: 'game_rounds_played',      requiredCount: 50,  creditReward: 60  },  // XP milestones
+  { name: 'First Spark',    description: 'Earn your first 100 XP',                             icon: '⚡', type: 'xp_earned',              requiredCount: 100,  creditReward: 10  },
+  { name: 'XP Climber',     description: 'Accumulate 500 XP',                                  icon: '📈', type: 'xp_earned',              requiredCount: 500,  creditReward: 25  },
+  { name: 'XP Champion',    description: 'Accumulate 2,000 XP',                                icon: '🏆', type: 'xp_earned',              requiredCount: 2000, creditReward: 60  },
+  { name: 'XP Legend',      description: 'Accumulate 10,000 XP — true mastery',                icon: '👑', type: 'xp_earned',              requiredCount: 10000,creditReward: 150 },];
 
 const STORE_ITEMS = [
   // ── Games ────────────────────────────────────────────────────────────
-  { name: 'Syntax Showdown',  description: 'Spot syntax errors before time runs out',            icon: '⚗️',  category: 'game',     creditCost: 50,  gameSlug: 'syntax-showdown',  cosmeticType: null, applyValue: '/games/syntax-showdown',   oneTimePurchase: true },
-  { name: 'CS Theory',        description: 'Algorithms, data structures and CS fundamentals',    icon: '📐',  category: 'game',     creditCost: 150, gameSlug: 'cs-theory',        cosmeticType: null, applyValue: '/games/cs-theory',          oneTimePurchase: true },
-  { name: 'Error Hunt',       description: 'Track down runtime errors across multiple files',    icon: '🔍',  category: 'game',     creditCost: 100, gameSlug: 'error-hunt',       cosmeticType: null, applyValue: '/games/error-hunt',         oneTimePurchase: true },
-  { name: 'Stack Trace',      description: 'Decode error stack traces and find the break',       icon: '📡',  category: 'game',     creditCost: 75,  gameSlug: 'stack-trace',      cosmeticType: null, applyValue: '/games/stack-trace',        oneTimePurchase: true },
-  { name: 'Type Race',        description: 'Race others by typing code as fast as you can',      icon: '🏎',  category: 'game',     creditCost: 50,  gameSlug: 'type-race',        cosmeticType: null, applyValue: '/games/type-race',          oneTimePurchase: true },
-  { name: 'Chain Blitz',      description: '5 escalating rapid-fire problems back to back',      icon: '🔥',  category: 'game',     creditCost: 125, gameSlug: 'chain-blitz',      cosmeticType: null, applyValue: '/games/chain-blitz',        oneTimePurchase: true },
-  { name: 'Algorithm Arena',  description: 'Implement classic algorithms step by step',          icon: '♟',  category: 'game',     creditCost: 200, gameSlug: 'algorithm-arena',  cosmeticType: null, applyValue: '/games/algorithm-arena',    oneTimePurchase: true },
-  { name: 'Graph Navigator',  description: 'Trace BFS and DFS paths across interactive graphs',  icon: '🕸️',  category: 'game',     creditCost: 175, gameSlug: 'graph-navigator',  cosmeticType: null, applyValue: '/games/graph-navigator',    oneTimePurchase: true },
-  { name: 'CSS Battle',       description: 'Match a target design pixel-perfectly with CSS',     icon: '🎨',  category: 'game',     creditCost: 50,  gameSlug: 'css-battle',       cosmeticType: null, applyValue: '/games/css-battle',         oneTimePurchase: true },
-  { name: 'HTML Blitz',       description: 'Recreate page layouts from screenshots',             icon: '🌐',  category: 'game',     creditCost: 75,  gameSlug: 'html-blitz',       cosmeticType: null, applyValue: '/games/html-blitz',         oneTimePurchase: true },
-  { name: 'Mini Builder',     description: 'Build UI components from guided specs',              icon: '🏗',  category: 'game',     creditCost: 125, gameSlug: 'mini-builder',     cosmeticType: null, applyValue: '/games/mini-builder',       oneTimePurchase: true },
-  { name: 'Code Duel',        description: 'Go head-to-head with another coder in real time',    icon: '⚔️',  category: 'game',     creditCost: 200, gameSlug: 'code-duel',        cosmeticType: null, applyValue: '/games/code-duel',          oneTimePurchase: true },
-  { name: 'Pair Mode',        description: 'Collaborate on a challenge with a partner',          icon: '🤝',  category: 'game',     creditCost: 150, gameSlug: 'pair-mode',        cosmeticType: null, applyValue: '/games/pair-mode',          oneTimePurchase: true },
-  { name: 'Tournament',       description: 'Bracket-style competition across 8 players',         icon: '🏆',  category: 'game',     creditCost: 300, gameSlug: 'tournament',       cosmeticType: null, applyValue: '/games/tournament',         oneTimePurchase: true },
+  { name: 'Syntax Showdown',  description: 'Spot syntax errors before time runs out',            icon: '⚗️',  category: 'game',     creditCost: 50,  gameSlug: 'syntax-showdown',  cosmeticType: null, applyValue: '/games/syntax-showdown',   oneTimePurchase: true, milestoneOnly: false },
+  { name: 'CS Theory',        description: 'Algorithms, data structures and CS fundamentals',    icon: '📐',  category: 'game',     creditCost: 150, gameSlug: 'cs-theory',        cosmeticType: null, applyValue: '/games/cs-theory',          oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Error Hunt',       description: 'Track down runtime errors across multiple files',    icon: '🔍',  category: 'game',     creditCost: 100, gameSlug: 'error-hunt',       cosmeticType: null, applyValue: '/games/error-hunt',         oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Stack Trace',      description: 'Decode error stack traces and find the break',       icon: '📡',  category: 'game',     creditCost: 75,  gameSlug: 'stack-trace',      cosmeticType: null, applyValue: '/games/stack-trace',        oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Type Race',        description: 'Race others by typing code as fast as you can',      icon: '🏎',  category: 'game',     creditCost: 50,  gameSlug: 'type-race',        cosmeticType: null, applyValue: '/games/type-race',          oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Chain Blitz',      description: '5 escalating rapid-fire problems back to back',      icon: '🔥',  category: 'game',     creditCost: 125, gameSlug: 'chain-blitz',      cosmeticType: null, applyValue: '/games/chain-blitz',        oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Algorithm Arena',  description: 'Implement classic algorithms step by step',          icon: '♟',  category: 'game',     creditCost: 200, gameSlug: 'algorithm-arena',  cosmeticType: null, applyValue: '/games/algorithm-arena',    oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Graph Navigator',  description: 'Trace BFS and DFS paths across interactive graphs',  icon: '🕸️',  category: 'game',     creditCost: 175, gameSlug: 'graph-navigator',  cosmeticType: null, applyValue: '/games/graph-navigator',    oneTimePurchase: true, milestoneOnly: false },
+  { name: 'CSS Battle',       description: 'Match a target design pixel-perfectly with CSS',     icon: '🎨',  category: 'game',     creditCost: 50,  gameSlug: 'css-battle',       cosmeticType: null, applyValue: '/games/css-battle',         oneTimePurchase: true, milestoneOnly: false },
+  { name: 'HTML Blitz',       description: 'Recreate page layouts from screenshots',             icon: '🌐',  category: 'game',     creditCost: 75,  gameSlug: 'html-blitz',       cosmeticType: null, applyValue: '/games/html-blitz',         oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Mini Builder',     description: 'Build UI components from guided specs',              icon: '🏗',  category: 'game',     creditCost: 125, gameSlug: 'mini-builder',     cosmeticType: null, applyValue: '/games/mini-builder',       oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Code Duel',        description: 'Go head-to-head with another coder in real time',    icon: '⚔️',  category: 'game',     creditCost: 200, gameSlug: 'code-duel',        cosmeticType: null, applyValue: '/games/code-duel',          oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Pair Mode',        description: 'Collaborate on a challenge with a partner',          icon: '🤝',  category: 'game',     creditCost: 150, gameSlug: 'pair-mode',        cosmeticType: null, applyValue: '/games/pair-mode',          oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Tournament',       description: 'Bracket-style competition across 8 players',         icon: '🏆',  category: 'game',     creditCost: 300, gameSlug: 'tournament',       cosmeticType: null, applyValue: '/games/tournament',         oneTimePurchase: true, milestoneOnly: false },
   // ── Power-ups ─────────────────────────────────────────────────────────
-  { name: 'XP Boost',         description: '2× XP on all activities for 24 hours',               icon: '⚡',  category: 'powerup',  creditCost: 80,  gameSlug: null,               cosmeticType: null, applyValue: 'xp_boost_24h',              oneTimePurchase: false },
-  { name: 'Energy Refill',    description: 'Instantly restore all energy to full',               icon: '🔋',  category: 'powerup',  creditCost: 40,  gameSlug: null,               cosmeticType: null, applyValue: 'energy_refill',             oneTimePurchase: false },
-  { name: 'Streak Shield',    description: 'Protect your streak for one missed day',             icon: '🛡️',  category: 'powerup',  creditCost: 60,  gameSlug: null,               cosmeticType: null, applyValue: 'streak_shield',             oneTimePurchase: false },
+  { name: 'XP Boost',         description: '2× XP on all activities for 24 hours',               icon: '⚡',  category: 'powerup',  creditCost: 80,  gameSlug: null,               cosmeticType: null, applyValue: 'xp_boost_24h',              oneTimePurchase: false, milestoneOnly: false },
+  { name: 'Energy Refill',    description: 'Instantly restore all energy to full',               icon: '🔋',  category: 'powerup',  creditCost: 40,  gameSlug: null,               cosmeticType: null, applyValue: 'energy_refill',             oneTimePurchase: false, milestoneOnly: false },
+  { name: 'Streak Shield',    description: 'Protect your streak for one missed day',             icon: '🛡️',  category: 'powerup',  creditCost: 60,  gameSlug: null,               cosmeticType: null, applyValue: 'streak_shield',             oneTimePurchase: false, milestoneOnly: false },
   // ── Cosmetics ─────────────────────────────────────────────────────────
-  { name: 'Cyber Neon Theme', description: 'Unlock the Cyber Neon UI theme',                    icon: '🔮',  category: 'cosmetic', creditCost: 80,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'cyber-neon',                oneTimePurchase: true },
-  { name: 'Matrix Green Theme', description: 'Unlock the Matrix Green UI theme',                icon: '⍇',  category: 'cosmetic', creditCost: 80,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'matrix-green',              oneTimePurchase: true },
-  { name: 'Midnight Theme',   description: 'Unlock the Midnight UI theme',                      icon: '🌑',  category: 'cosmetic', creditCost: 60,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'minimal-dark',              oneTimePurchase: true },
-  { name: '⚡ Elite Card',     description: 'Exclusive calling card for dedicated coders',       icon: '🏦',  category: 'cosmetic', creditCost: 75,  gameSlug: null,               cosmeticType: 'callingCard', applyValue: 'elite',                     oneTimePurchase: true },
-  { name: '🔥 Inferno Card',  description: 'Calling card for players on a 30-day streak',      icon: '🏦',  category: 'cosmetic', creditCost: 100, gameSlug: null,               cosmeticType: 'callingCard', applyValue: 'inferno',                   oneTimePurchase: true },
+  { name: 'Cyber Neon Theme', description: 'Unlock the Cyber Neon UI theme',                    icon: '🔮',  category: 'cosmetic', creditCost: 80,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'cyber-neon',                oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Matrix Green Theme', description: 'Unlock the Matrix Green UI theme',                icon: '⍇',  category: 'cosmetic', creditCost: 80,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'matrix-green',              oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Midnight Theme',   description: 'Unlock the Midnight UI theme',                      icon: '🌑',  category: 'cosmetic', creditCost: 60,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'minimal-dark',              oneTimePurchase: true, milestoneOnly: false },
+  { name: '⚡ Elite Card',     description: 'Exclusive calling card for dedicated coders',       icon: '🏦',  category: 'cosmetic', creditCost: 75,  gameSlug: null,               cosmeticType: 'callingCard', applyValue: 'elite',                     oneTimePurchase: true, milestoneOnly: false },
+  { name: '🔥 Inferno Card',  description: 'Calling card for players on a 30-day streak',      icon: '🏦',  category: 'cosmetic', creditCost: 100, gameSlug: null,               cosmeticType: 'callingCard', applyValue: 'inferno',                   oneTimePurchase: true, milestoneOnly: false },
+  // ── Tier-exclusive milestone skins (earn-only, milestoneOnly: true) ────────
+  { name: 'Ember Skin',       description: 'Warm orange-red fire palette earned by reaching Bronze tier',        icon: '🔥',  category: 'cosmetic', creditCost: 0, gameSlug: null, cosmeticType: 'theme', applyValue: 'ember',        oneTimePurchase: true, milestoneOnly: true },
+  { name: 'Matrix Skin',      description: 'Terminal green hacker aesthetic earned by reaching Silver tier',     icon: '⌨️',  category: 'cosmetic', creditCost: 0, gameSlug: null, cosmeticType: 'theme', applyValue: 'matrix-green', oneTimePurchase: true, milestoneOnly: true },
+  { name: 'Solara Skin',      description: 'Gold-amber cosmic spacey palette earned by reaching Gold tier',     icon: '☀️',  category: 'cosmetic', creditCost: 0, gameSlug: null, cosmeticType: 'theme', applyValue: 'solar',        oneTimePurchase: true, milestoneOnly: true },
 ];
 
 async function seed() {
@@ -117,29 +124,27 @@ async function seed() {
     console.log(`Games already seeded (${existingGames} rows), skipping`);
   }
 
-  // Seed achievements (skip if already seeded)
-  const existingAchievements = await achievementRepo.count();
-  if (existingAchievements === 0) {
-    for (const a of ACHIEVEMENTS) {
-      const achievement = achievementRepo.create(a);
-      await achievementRepo.save(achievement);
+  // Seed achievements — upsert by name so new achievements are added on re-run
+  let newAchievements = 0;
+  for (const a of ACHIEVEMENTS) {
+    const existing = await achievementRepo.findOne({ where: { name: a.name } });
+    if (!existing) {
+      await achievementRepo.save(achievementRepo.create(a));
+      newAchievements++;
     }
-    console.log(`Seeded ${ACHIEVEMENTS.length} achievements`);
-  } else {
-    console.log(`Achievements already seeded (${existingAchievements} rows), skipping`);
   }
+  console.log(newAchievements > 0 ? `Seeded ${newAchievements} new achievements` : 'Achievements already up-to-date');
 
-  // Seed store items (skip if already seeded)
-  const existingItems = await storeItemRepo.count();
-  if (existingItems === 0) {
-    for (const s of STORE_ITEMS) {
-      const item = storeItemRepo.create(s as Partial<StoreItem>);
-      await storeItemRepo.save(item);
+  // Seed store items — upsert by name so new items are added on re-run
+  let newStoreItems = 0;
+  for (const s of STORE_ITEMS) {
+    const existing = await storeItemRepo.findOne({ where: { name: s.name } });
+    if (!existing) {
+      await storeItemRepo.save(storeItemRepo.create(s as unknown as Partial<StoreItem>));
+      newStoreItems++;
     }
-    console.log(`Seeded ${STORE_ITEMS.length} store items`);
-  } else {
-    console.log(`Store items already seeded (${existingItems} rows), skipping`);
   }
+  console.log(newStoreItems > 0 ? `Seeded ${newStoreItems} new store items` : 'Store items already up-to-date');
 
   await AppDataSource.destroy();
   console.log('Seed complete');

@@ -19,12 +19,17 @@ export class StoreService {
     private readonly userRepo: Repository<User>,
   ) {}
 
-  async getCatalog(userId: number) {
-    const items = await this.itemRepo.find({ where: { available: true } });
-    const purchases = await this.purchaseRepo.find({ where: { userId } });
-    const purchasedIds = new Set(purchases.map(p => p.itemId));
+  async getCatalog(userId: number | null) {
+    // milestoneOnly items are earn-only — never appear in the buyable catalog
+    const items = await this.itemRepo.find({ where: { available: true, milestoneOnly: false } });
+    const purchases = userId
+      ? await this.purchaseRepo.find({ where: { userId } })
+      : [];
+    const purchaseMap = new Map(purchases.map(p => [p.itemId, p]));
 
-    const progress = await this.progressRepo.findOne({ where: { userId } });
+    const progress = userId
+      ? await this.progressRepo.findOne({ where: { userId } })
+      : null;
     const credits = progress?.credits ?? 0;
 
     return {
@@ -40,7 +45,8 @@ export class StoreService {
         cosmeticType: item.cosmeticType,
         applyValue: item.applyValue,
         oneTimePurchase: item.oneTimePurchase,
-        owned: item.oneTimePurchase ? purchasedIds.has(item.id) : false,
+        owned: item.oneTimePurchase ? purchaseMap.has(item.id) : false,
+        isPrize: purchaseMap.get(item.id)?.isPrize ?? false,
       })),
     };
   }
@@ -103,7 +109,43 @@ export class StoreService {
       category: p.item.category,
       applyValue: p.item.applyValue,
       gameSlug: p.item.gameSlug,
+      isPrize: p.isPrize,
       purchasedAt: p.purchasedAt,
     }));
+  }
+
+  /**
+   * Award an item to a user for free (prize / milestone reward).
+   * Bypasses credit check. Safe to call multiple times — idempotent.
+   * Returns prize info if newly granted, null if already owned.
+   */
+  async grantPrizeSkin(
+    userId: number,
+    skinApplyValue: string,
+  ): Promise<{ name: string; icon: string; applyValue: string } | null> {
+    const item = await this.itemRepo.findOne({
+      where: { applyValue: skinApplyValue, available: true },
+    });
+    if (!item) return null;
+
+    // Idempotent — don't double-grant
+    const existing = await this.purchaseRepo.findOne({ where: { userId, itemId: item.id } });
+    if (existing) return null;
+
+    // Record as prize (no credit deduction)
+    const purchase = this.purchaseRepo.create({ userId, itemId: item.id, isPrize: true });
+    await this.purchaseRepo.save(purchase);
+
+    // Apply cosmetic to user profile
+    if (item.category === 'cosmetic' && item.cosmeticType && item.applyValue) {
+      const user = await this.userRepo.findOne({ where: { id: userId } });
+      if (user) {
+        if (item.cosmeticType === 'theme') user.theme = item.applyValue;
+        if (item.cosmeticType === 'callingCard') user.callingCard = item.applyValue;
+        await this.userRepo.save(user);
+      }
+    }
+
+    return { name: item.name, icon: item.icon, applyValue: item.applyValue };
   }
 }

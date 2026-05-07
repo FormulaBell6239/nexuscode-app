@@ -22,7 +22,6 @@ export class LeaderboardService {
 
     return entries.map((entry, i) => ({
       rank: i + 1,
-      userId: entry.userId,
       username: entry.user?.username ?? 'Unknown',
       avatar: entry.user?.avatar ?? '👾',
       xp: entry.xp,

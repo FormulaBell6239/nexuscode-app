@@ -39,4 +39,8 @@ export class StoreItem {
 
   @Column({ default: true })
   available: boolean;
+
+  // True for tier-skin cosmetics: earn-only, never appears in buy catalog
+  @Column({ default: false })
+  milestoneOnly: boolean;
 }

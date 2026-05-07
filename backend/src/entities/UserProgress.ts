@@ -52,6 +52,13 @@ export class UserProgress {
   @Column({ default: 0 })
   credits: number;
 
+  // Hearts (free users: 5/day, refill at midnight UTC)
+  @Column({ default: 5 })
+  hearts: number;
+
+  @Column({ type: 'varchar', nullable: true, default: null })
+  heartsLastRefilled: string | null; // ISO date 'YYYY-MM-DD'
+
   // Completed lessons (JSON array of lesson keys)
   @Column({ type: 'text', default: '[]' })
   completedLessons: string;
