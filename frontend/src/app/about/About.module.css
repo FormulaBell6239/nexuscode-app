@@ -1,0 +1,137 @@
+/* ── Layout ─────────────────────────────────── */
+.main { min-height: 100vh; position: relative; overflow: hidden; padding: 0 0 6rem; }
+
+/* ── Container ───────────────────────────────── */
+.container {
+  position: relative; z-index: 1;
+  max-width: 900px; margin: 0 auto; padding: 5rem 2rem 2rem;
+  animation: fadeUp 0.6s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ──────────────────────────────────── */
+.header { text-align: center; margin-bottom: 3rem; }
+.badge {
+  display: inline-block; padding: 4px 14px;
+  border: 1px solid rgba(99,102,241,0.35); border-radius: 999px;
+  font-size: 0.68rem; font-weight: 700; color: #818cf8;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 1.25rem; background: rgba(99,102,241,0.07);
+}
+.title { font-size: clamp(2.2rem,6vw,3.8rem); font-weight: 800; margin: 0 0 0.75rem; letter-spacing: -2px; }
+.titleGradient {
+  background: linear-gradient(135deg, #e0e7ff 0%, #818cf8 45%, #06b6d4 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.subtitle { color: #4b5563; font-size: 0.95rem; line-height: 1.75; max-width: 540px; margin: 0 auto; }
+
+/* ── Section labels ────────────────────────────── */
+.sectionLabel {
+  font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #1e293b;
+  margin: 2.5rem 0 1.25rem; text-align: center;
+}
+
+/* ── Feature grid (Why) ────────────────────────── */
+.featureGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1px; background: #111827;
+  border: 1px solid #111827; border-radius: 12px; overflow: hidden;
+}
+.featureCard { background: #080d17; padding: 1.75rem 1.5rem; transition: background 0.18s; }
+.featureCard:hover { background: #0d1424; }
+.featureIcon { display: block; font-size: 1.3rem; color: #4f46e5; margin-bottom: 0.75rem; }
+.featureTitle { font-size: 0.9rem; font-weight: 600; color: #e2e8f0; margin: 0 0 0.4rem; }
+.featureDesc  { font-size: 0.8rem; color: #374151; line-height: 1.65; margin: 0; }
+
+/* ── Team grid ────────────────────────────────── */
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1px; background: #111827;
+  border: 1px solid #111827; border-radius: 12px; overflow: hidden;
+}
+.teamCard {
+  background: #080d17; padding: 1.75rem 1rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  transition: background 0.18s;
+}
+.teamCard:hover { background: #0d1424; }
+.teamAvatar { font-size: 2rem; }
+.teamName   { font-size: 0.9rem; font-weight: 700; color: #e2e8f0; }
+.teamRole   { font-size: 0.72rem; color: #374151; letter-spacing: 0.04em; }
+
+.title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #0070f3;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 6px #072635;
+}
+
+.intro {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #93beff;
+  margin-bottom: 0.4rem;
+  text-shadow: 0 2px 4px #020a12;
+}
+
+.card, .cardAlt {
+  background: #23335a;
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  padding: 1rem 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cardAlt {
+  background: linear-gradient(90deg, #183455 60%, #0f7a88 96%);
+  color: #fff;
+  border-left: 6px solid #1a5389;
+  text-align: center;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #b5c4f0;
+  margin-bottom: 1rem;
+}
+
+.featureList {
+  list-style: none;
+  padding: 1rem;
+  margin: 1rem auto;
+  max-width: 500px;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  background: #7f8698;
+  border-radius: 16px;
+  box-shadow: 4px 2px 2px 12px rgba(0,12,0,0.07);
+  padding: 1rem 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.featureItem:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 24px rgba(0,112,243,0.15);
+}
+
+.teamText {
+  margin-right: 1.5rem;
+  color: #c9c7c4;
+  font-weight: 600;
+}

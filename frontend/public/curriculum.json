@@ -1,0 +1,1106 @@
+{
+  "html": [
+    {
+      "key": "html-headings",
+      "label": "Headings",
+      "lesson": {
+        "title": "HTML Headings",
+        "instructions": "🧱 Every webpage starts with structure — and headings are the foundation.\nHTML uses <h1> through <h6> tags to create headings. <h1> is the biggest and most important.\n👉 Your mission: type an <h1> tag, write Welcome to NexusCode inside it, then close it with </h1>.\nIt should look like: <h1>Welcome to NexusCode</h1>",
+        "starterCode": "<!-- Write your heading below -->\n",
+        "sampleOutput": "<h1>Welcome to NexusCode</h1>",
+        "hint": "Open with <h1>, write the text, then close with </h1>. Make sure the text is exactly: Welcome to NexusCode"
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-paragraphs",
+      "label": "Paragraphs",
+      "lesson": {
+        "title": "HTML Paragraphs",
+        "instructions": "📝 Headings grab attention — paragraphs tell the story.\nThe <p> tag wraps a block of regular text. Browsers add spacing around it automatically.\n👉 Your mission: below the existing <h1>, add a <p> tag with any sentence you like.\nExample: <p>I am learning HTML!</p>",
+        "starterCode": "<h1>Welcome to NexusCode</h1>\n<!-- Add your paragraph below -->\n",
+        "sampleOutput": "<h1>Welcome to NexusCode</h1>\n<p>I am learning HTML!</p>",
+        "hint": "Type <p> then your text then </p> on the line below the heading."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-links",
+      "label": "Links",
+      "lesson": {
+        "title": "HTML Links",
+        "instructions": "🔗 Links are what make the web a web — they connect pages together.\nThe <a> tag creates a clickable link. The href attribute tells the browser where to go.\n👉 Your mission: create a link that points to https://nexuscode.app\nThe clickable text can be anything you want, like: Visit NexusCode\nStructure: <a href=\"URL\">your text here</a>",
+        "starterCode": "<!-- Create a clickable link below -->\n",
+        "sampleOutput": "<a href=\"https://nexuscode.app\">Visit NexusCode</a>",
+        "hint": "Type <a href=\"https://nexuscode.app\"> then your link text then </a>"
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-images",
+      "label": "Images",
+      "lesson": {
+        "title": "HTML Images",
+        "instructions": "🖼️ Images make pages come alive. The <img> tag embeds a picture.\n<img> is self-closing — it doesn't need a closing tag.\nIt needs two attributes:\n  • src — the path or URL of the image\n  • alt — a text description (used if the image fails to load)\n👉 Your mission: add an <img> tag with any src value and any alt value.\nExample: <img src=\"cat.jpg\" alt=\"A cute cat\">",
+        "starterCode": "<!-- Add your image below -->\n",
+        "sampleOutput": "<img src=\"cat.jpg\" alt=\"A cute cat\">",
+        "hint": "Type <img src=\"anything.jpg\" alt=\"any description\"> — both attributes are required."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-lists",
+      "label": "Lists",
+      "lesson": {
+        "title": "HTML Lists",
+        "instructions": "📋 Lists organise information — menus, steps, features — they're everywhere.\nAn unordered list uses <ul> as the container, and each item goes inside a <li> tag.\n👉 Your mission: build a <ul> list with at least 2 items inside it.\nStructure:\n<ul>\n  <li>First item</li>\n  <li>Second item</li>\n</ul>",
+        "starterCode": "<!-- Build your list below -->\n",
+        "sampleOutput": "<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n</ul>",
+        "hint": "Start with <ul>, add at least two <li>items</li> inside, then close with </ul>."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-forms",
+      "label": "Forms",
+      "lesson": {
+        "title": "HTML Forms",
+        "instructions": "📬 Forms let users send data — login boxes, search bars, sign-up pages all use them.\nA <form> wraps your inputs. The <input> tag creates a field the user can type into.\n👉 Your mission: create a <form> that contains at least one <input> inside it.\nTry giving the input a type and placeholder attribute:\n<form>\n  <input type=\"text\" placeholder=\"Your name\">\n</form>",
+        "starterCode": "<!-- Build your form below -->\n",
+        "sampleOutput": "<form>\n  <input type=\"text\" placeholder=\"Your name\">\n</form>",
+        "hint": "Wrap an <input> tag inside <form> and </form>. The input doesn't need a closing tag."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-divs",
+      "label": "Divs",
+      "lesson": {
+        "title": "HTML Divs",
+        "instructions": "📦 The <div> is HTML's most versatile container — a plain box you can style and position however you like.\nDivs have no visual appearance by default; CSS brings them to life.\n👉 Your mission: add a <div> element that wraps some text.\nExample: <div>I am a container!</div>",
+        "starterCode": "<!-- Add a div below -->\n",
+        "sampleOutput": "<div>I am a container!</div>",
+        "hint": "Type <div> then any text then </div>."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-tables",
+      "label": "Tables",
+      "lesson": {
+        "title": "HTML Tables",
+        "instructions": "📊 Tables organise data into rows and columns — perfect for schedules, scores, and comparisons.\nA table needs three tags: <table> wraps everything, <tr> creates a row, <td> creates a cell.\n👉 Your mission: build a table with at least one row and two cells.\nStructure:\n<table>\n  <tr>\n    <td>Name</td>\n    <td>Score</td>\n  </tr>\n</table>",
+        "starterCode": "<!-- Build your table below -->\n",
+        "sampleOutput": "<table>\n  <tr>\n    <td>Name</td>\n    <td>Score</td>\n  </tr>\n</table>",
+        "hint": "Start with <table>, add a <tr> row inside, then put at least two <td> cells inside the row."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-semantic",
+      "label": "Semantic Tags",
+      "lesson": {
+        "title": "Semantic HTML",
+        "instructions": "🧠 Semantic tags tell the browser — and search engines — what a section of content *is*, not just where it sits.\nCommon semantic tags: <header>, <nav>, <main>, <section>, <article>, <footer>.\nThey work exactly like <div> but carry meaning.\n👉 Your mission: use at least one semantic tag to wrap some content.\nExample: <main><p>My main content</p></main>",
+        "starterCode": "<!-- Use a semantic tag below -->\n",
+        "sampleOutput": "<main><p>My main content</p></main>",
+        "hint": "Try <header>, <main>, <footer>, <nav>, <section>, or <article> — wrap any text inside it."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-buttons",
+      "label": "Buttons",
+      "lesson": {
+        "title": "HTML Buttons",
+        "instructions": "🔘 Buttons trigger actions — submitting forms, opening modals, running scripts.\nThe <button> tag creates a clickable button. The text between the tags is the button label.\n👉 Your mission: create a <button> with any label you like.\nExample: <button>Click Me</button>",
+        "starterCode": "<!-- Add a button below -->\n",
+        "sampleOutput": "<button>Click Me</button>",
+        "hint": "Type <button> then your label text then </button>."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-textarea",
+      "label": "Textarea",
+      "lesson": {
+        "title": "HTML Textarea",
+        "instructions": "📝 Unlike <input>, a <textarea> lets users type multiple lines of text — great for comments or messages.\nIt has an opening and closing tag, and you can set placeholder text with the placeholder attribute.\n👉 Your mission: add a <textarea> with a placeholder that says \"Write something here...\".\nExample: <textarea placeholder=\"Write something here...\"></textarea>",
+        "starterCode": "<!-- Add a textarea below -->\n",
+        "sampleOutput": "<textarea placeholder=\"Write something here...\"></textarea>",
+        "hint": "Type <textarea placeholder=\"Write something here...\"></textarea> — it's a paired tag unlike <input>."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-select",
+      "label": "Dropdowns",
+      "lesson": {
+        "title": "HTML Select & Option",
+        "instructions": "🔽 A dropdown menu lets users pick from a list — <select> is the container, <option> is each choice.\n👉 Your mission: create a <select> dropdown with at least two <option> items inside.\nStructure:\n<select>\n  <option>HTML</option>\n  <option>CSS</option>\n</select>",
+        "starterCode": "<!-- Build your dropdown below -->\n",
+        "sampleOutput": "<select>\n  <option>HTML</option>\n  <option>CSS</option>\n</select>",
+        "hint": "Wrap at least two <option> tags inside <select> and </select>."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-comments",
+      "label": "Comments",
+      "lesson": {
+        "title": "HTML Comments",
+        "instructions": "💬 Comments let you leave notes in your code that the browser ignores completely.\nThey're great for explaining what a section does or temporarily disabling code.\nHTML comments start with <!-- and end with -->.\n👉 Your mission: write at least one HTML comment anywhere in the editor.\nExample: <!-- This is a comment -->",
+        "starterCode": "<!-- Write your comment here -->\n<p>This paragraph is visible.</p>\n",
+        "sampleOutput": "<!-- This is my comment -->\n<p>This paragraph is visible.</p>",
+        "hint": "Type <!-- your note here --> anywhere in the code — it won't show in the browser."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-classes",
+      "label": "Classes",
+      "lesson": {
+        "title": "HTML Classes",
+        "instructions": "🏷️ The class attribute labels an element so CSS (and JavaScript) can target it.\nYou can give the same class to multiple elements — they'll all share the same style.\n👉 Your mission: add a class attribute to any HTML element.\nExample: <p class=\"intro\">Hello!</p>",
+        "starterCode": "<!-- Add a class attribute to the paragraph below -->\n<p>I need a class!</p>\n",
+        "sampleOutput": "<p class=\"intro\">I need a class!</p>",
+        "hint": "Add class=\"anything\" inside the opening tag: <p class=\"intro\">I need a class!</p>"
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-anchor-target",
+      "label": "Open in New Tab",
+      "lesson": {
+        "title": "Links: New Tab",
+        "instructions": "🔗 By default a link replaces the current page. Adding target=\"_blank\" opens the link in a new tab.\nThis is handy when linking to external sites — users stay on your page too.\n👉 Your mission: create a link that opens in a new tab.\nExample: <a href=\"https://example.com\" target=\"_blank\">Open</a>",
+        "starterCode": "<!-- Add a link that opens in a new tab -->\n",
+        "sampleOutput": "<a href=\"https://example.com\" target=\"_blank\">Open</a>",
+        "hint": "Add target=\"_blank\" inside the <a> tag alongside the href attribute."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-ordered-list",
+      "label": "Ordered Lists",
+      "lesson": {
+        "title": "Ordered Lists",
+        "instructions": "🔢 An ordered list numbers its items automatically — perfect for steps, rankings, and recipes.\nUse <ol> as the container and <li> for each item, just like unordered lists.\n👉 Your mission: build an <ol> with at least two <li> items.\nStructure:\n<ol>\n  <li>Step one</li>\n  <li>Step two</li>\n</ol>",
+        "starterCode": "<!-- Build your ordered list below -->\n",
+        "sampleOutput": "<ol>\n  <li>Step one</li>\n  <li>Step two</li>\n</ol>",
+        "hint": "Use <ol> instead of <ul> — everything else is the same: each item goes in a <li> tag."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-input-types",
+      "label": "Input Types",
+      "lesson": {
+        "title": "Input Types",
+        "instructions": "🔑 The type attribute on <input> changes its behaviour — number adds a spinner, email validates format, password hides the text.\n👉 Your mission: add an <input> with type set to email, password, or number.\nExample: <input type=\"email\" placeholder=\"your@email.com\">",
+        "starterCode": "<!-- Add a typed input below -->\n",
+        "sampleOutput": "<input type=\"email\" placeholder=\"your@email.com\">",
+        "hint": "Set type=\"email\", type=\"password\", or type=\"number\" on your input tag."
+      },
+      "language": "html"
+    },
+    {
+      "key": "html-meta",
+      "label": "Meta Tags",
+      "lesson": {
+        "title": "HTML Meta Tags",
+        "instructions": "🔍 Meta tags live inside <head> and give browsers and search engines information about the page.\nThe description meta tag provides the blurb you see on Google results.\n👉 Your mission: add a <meta> tag with name=\"description\" and a content attribute.\nExample: <meta name=\"description\" content=\"A coding learning app\">",
+        "starterCode": "<head>\n  <!-- Add your meta tag below -->\n</head>\n",
+        "sampleOutput": "<head>\n  <meta name=\"description\" content=\"A coding learning app\">\n</head>",
+        "hint": "Type <meta name=\"description\" content=\"anything\"> inside the <head> tags."
+      },
+      "language": "html"
+    }
+  ],
+  "css": [
+    {
+      "key": "css-selectors",
+      "label": "Selectors",
+      "lesson": {
+        "title": "CSS Selectors",
+        "instructions": "🎨 CSS is how you style HTML — colours, fonts, layout, all of it.\nA CSS rule targets an element (the selector) and applies properties inside { }.\n👉 Your mission: change the color of h1 text to blue.\nThe h1 selector is already written for you — just add the property inside the curly braces:\n  color: blue;",
+        "starterCode": "h1 {\n  /* Add your color here */\n}",
+        "sampleOutput": "h1 {\n  color: blue;\n}",
+        "hint": "Inside the h1 { } block, type: color: blue;  (don't forget the semicolon)"
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-background",
+      "label": "Background",
+      "lesson": {
+        "title": "CSS Background Color",
+        "instructions": "🌈 Background colors set the mood of a page — and they're one line of CSS.\nThe body selector targets the entire page. background-color sets what's behind everything.\n👉 Your mission: set the page background to lightgray.\nInside the body { } rule, add:\n  background-color: lightgray;",
+        "starterCode": "body {\n  /* Set the background color here */\n}",
+        "sampleOutput": "body {\n  background-color: lightgray;\n}",
+        "hint": "Inside body { }, type: background-color: lightgray;  — it's one word with a hyphen."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-font-size",
+      "label": "Font Size",
+      "lesson": {
+        "title": "CSS Font Size",
+        "instructions": "🔠 Font size controls how big text appears. px means pixels — a precise unit.\nThe p selector targets all paragraph text on the page.\n👉 Your mission: make paragraph text 20 pixels tall.\nInside the p { } rule, add:\n  font-size: 20px;",
+        "starterCode": "p {\n  /* Set the font size here */\n}",
+        "sampleOutput": "p {\n  font-size: 20px;\n}",
+        "hint": "Inside p { }, type: font-size: 20px;  — px is the unit (no space between 20 and px)."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-text-align",
+      "label": "Text Align",
+      "lesson": {
+        "title": "CSS Text Alignment",
+        "instructions": "↔️ Text alignment positions content left, right, or center inside its container.\nCentered headings are a classic web design move.\n👉 Your mission: center-align the h1 heading.\nInside the h1 { } rule, add:\n  text-align: center;",
+        "starterCode": "h1 {\n  /* Center the text here */\n}",
+        "sampleOutput": "h1 {\n  text-align: center;\n}",
+        "hint": "Inside h1 { }, type: text-align: center;  — the value is just the word center."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-padding",
+      "label": "Padding",
+      "lesson": {
+        "title": "CSS Padding",
+        "instructions": "📦 Padding is breathing room — space between an element's content and its border.\nWithout padding, text feels cramped. With it, things look polished.\npadding: 20px; adds 20 pixels of space on all 4 sides at once.\n👉 Your mission: add padding: 20px; inside the div rule.",
+        "starterCode": "div {\n  background: lightblue;\n  /* Add padding here */\n}",
+        "sampleOutput": "div {\n  background: lightblue;\n  padding: 20px;\n}",
+        "hint": "Inside div { }, type: padding: 20px;  — this sets equal padding on all sides."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-flexbox",
+      "label": "Flexbox",
+      "lesson": {
+        "title": "CSS Flexbox",
+        "instructions": "🧩 Flexbox is the most powerful layout tool in CSS — it lines things up effortlessly.\nSetting display: flex on a container makes all its children line up in a row.\nEvery real-world website uses flexbox for navigation bars, cards, and more.\n👉 Your mission: enable flexbox on .container by adding:\n  display: flex;",
+        "starterCode": ".container {\n  /* Enable flexbox here */\n}",
+        "sampleOutput": ".container {\n  display: flex;\n}",
+        "hint": "Inside .container { }, type: display: flex;  — this one line unlocks the flexbox model."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-colors",
+      "label": "Hex Colors",
+      "lesson": {
+        "title": "CSS Hex Colors",
+        "instructions": "🎨 Hex colors give you millions of shades using a # followed by 6 characters (0–9 and A–F).\n#ff0000 is pure red, #0000ff is pure blue, #ffffff is white, #000000 is black.\n👉 Your mission: set the h1 text color using a hex code of your choice.\nExample:\nh1 {\n  color: #e94560;\n}",
+        "starterCode": "h1 {\n  /* Use a hex color here */\n}",
+        "sampleOutput": "h1 {\n  color: #e94560;\n}",
+        "hint": "Inside h1 { }, type: color: # followed by any 6 hex digits, e.g. color: #e94560;"
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-font-weight",
+      "label": "Font Weight",
+      "lesson": {
+        "title": "CSS Font Weight",
+        "instructions": "💪 Font weight controls how bold text appears. You can use keywords like bold or numbers like 700.\n400 = normal, 700 = bold, 900 = extra bold.\n👉 Your mission: make paragraph text bold.\nAdd font-weight: bold; (or font-weight: 700;) inside the p rule.",
+        "starterCode": "p {\n  /* Make the text bold here */\n}",
+        "sampleOutput": "p {\n  font-weight: bold;\n}",
+        "hint": "Inside p { }, type: font-weight: bold;  — or use the number 700 instead of bold."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-border",
+      "label": "Borders",
+      "lesson": {
+        "title": "CSS Borders",
+        "instructions": "🔲 Borders draw a line around an element. The border shorthand takes three values: width, style, color.\nExample: border: 2px solid red;\n  • 2px — how thick\n  • solid — the line style (other options: dashed, dotted)\n  • red — the color\n👉 Your mission: add a border to the div rule.",
+        "starterCode": "div {\n  background: #f0f4ff;\n  /* Add a border here */\n}",
+        "sampleOutput": "div {\n  background: #f0f4ff;\n  border: 2px solid #6366f1;\n}",
+        "hint": "Inside div { }, type: border: 2px solid any-color;  — all three parts are required."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-margin",
+      "label": "Margin",
+      "lesson": {
+        "title": "CSS Margin",
+        "instructions": "↔️ Margin is space *outside* an element — it pushes other elements away.\nIt works just like padding but on the outside of the border.\nmargin: auto on a fixed-width block centres it horizontally.\n👉 Your mission: add margin: 20px; to the div rule.",
+        "starterCode": "div {\n  background: lightblue;\n  width: 200px;\n  /* Add margin here */\n}",
+        "sampleOutput": "div {\n  background: lightblue;\n  width: 200px;\n  margin: 20px;\n}",
+        "hint": "Inside div { }, type: margin: 20px;  — this pushes 20px of space on all sides outside the element."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-width-height",
+      "label": "Width & Height",
+      "lesson": {
+        "title": "CSS Width & Height",
+        "instructions": "📐 Width and height set the size of an element. Values can be pixels (px), percentages (%), or other units.\nA box that's 200px wide and 100px tall is a fixed rectangle.\n👉 Your mission: set the .box rule to be 200px wide and 100px tall.\nAdd width: 200px; and height: 100px;",
+        "starterCode": ".box {\n  background: #818cf8;\n  /* Add width and height here */\n}",
+        "sampleOutput": ".box {\n  background: #818cf8;\n  width: 200px;\n  height: 100px;\n}",
+        "hint": "Add two lines: width: 200px;  and  height: 100px;  inside .box { }"
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-border-radius",
+      "label": "Border Radius",
+      "lesson": {
+        "title": "CSS Border Radius",
+        "instructions": "🔵 border-radius rounds the corners of an element. 50% makes a circle if width = height.\nSmall values like 8px give a modern card look; 50% turns a square into a circle.\n👉 Your mission: add border-radius: 12px; to the .card rule.",
+        "starterCode": ".card {\n  background: #6366f1;\n  width: 150px;\n  height: 80px;\n  /* Round the corners */\n}",
+        "sampleOutput": ".card {\n  background: #6366f1;\n  width: 150px;\n  height: 80px;\n  border-radius: 12px;\n}",
+        "hint": "Inside .card { }, type: border-radius: 12px;  — try 50% to make it a circle!"
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-box-shadow",
+      "label": "Box Shadow",
+      "lesson": {
+        "title": "CSS Box Shadow",
+        "instructions": "🌑 Box shadows add depth and make elements look elevated off the page.\nThe shorthand is: box-shadow: x-offset y-offset blur-radius color;\nExample: box-shadow: 0 4px 12px rgba(0,0,0,0.3);\n👉 Your mission: add a box shadow to the .card rule.",
+        "starterCode": ".card {\n  background: white;\n  padding: 20px;\n  border-radius: 8px;\n  /* Add a shadow here */\n}",
+        "sampleOutput": ".card {\n  background: white;\n  padding: 20px;\n  border-radius: 8px;\n  box-shadow: 0 4px 12px rgba(0,0,0,0.3);\n}",
+        "hint": "Type: box-shadow: 0 4px 12px rgba(0,0,0,0.3);  — the four values are: x y blur color."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-hover",
+      "label": "Hover States",
+      "lesson": {
+        "title": "CSS :hover Pseudo-class",
+        "instructions": "🖱️ The :hover pseudo-class applies styles only when the user's cursor is over the element.\nAdd it directly after a selector with no space: a:hover { } or button:hover { }\n👉 Your mission: write a rule that changes the button background color on hover.\nExample:\nbutton:hover {\n  background: #6366f1;\n}",
+        "starterCode": "button {\n  background: lightgray;\n  padding: 10px 20px;\n}\n/* Add hover style below */\n",
+        "sampleOutput": "button:hover {\n  background: #6366f1;\n}",
+        "hint": "Type button:hover { } and add a background property inside — the colon and :hover go directly after the selector."
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-variables",
+      "label": "CSS Variables",
+      "lesson": {
+        "title": "CSS Custom Properties",
+        "instructions": "🔧 CSS variables (custom properties) let you store a value once and reuse it everywhere.\nDeclare them on :root with --variable-name: value;\nUse them with var(--variable-name).\n👉 Your mission: declare a --main-color variable in :root and use it as the h1 text color.\nExample:\n:root {\n  --main-color: #6366f1;\n}\nh1 {\n  color: var(--main-color);\n}",
+        "starterCode": ":root {\n  /* Declare your variable here */\n}\nh1 {\n  /* Use it here */\n}",
+        "sampleOutput": ":root {\n  --main-color: #6366f1;\n}\nh1 {\n  color: var(--main-color);\n}",
+        "hint": "In :root, type --main-color: #6366f1; — then in h1, type color: var(--main-color);"
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-media-query",
+      "label": "Media Queries",
+      "lesson": {
+        "title": "CSS Media Queries",
+        "instructions": "📱 Media queries let you apply different styles depending on screen size — the foundation of responsive design.\nThe most common pattern: apply styles only when the screen is at least X pixels wide.\nSyntax: @media (min-width: 768px) { /* tablet+ styles */ }\n👉 Your mission: write a media query for min-width: 768px that makes the h1 font size 2rem.",
+        "starterCode": "h1 {\n  font-size: 1rem;\n}\n/* Add your media query below */\n",
+        "sampleOutput": "@media (min-width: 768px) {\n  h1 {\n    font-size: 2rem;\n  }\n}",
+        "hint": "Type: @media (min-width: 768px) { h1 { font-size: 2rem; } }"
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-grid",
+      "label": "CSS Grid",
+      "lesson": {
+        "title": "CSS Grid",
+        "instructions": "🔲 CSS Grid is a two-dimensional layout system — it handles rows AND columns at the same time.\nSet display: grid on a container, then use grid-template-columns to define column sizes.\nrepeat(3, 1fr) creates 3 equal-width columns.\n👉 Your mission: enable grid on .grid and set three equal columns.\n.grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n}",
+        "starterCode": ".grid {\n  /* Enable grid with 3 equal columns here */\n}",
+        "sampleOutput": ".grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n}",
+        "hint": "Add display: grid; then grid-template-columns: repeat(3, 1fr);  inside .grid { }"
+      },
+      "language": "css"
+    },
+    {
+      "key": "css-transition",
+      "label": "Transitions",
+      "lesson": {
+        "title": "CSS Transitions",
+        "instructions": "✨ Transitions animate a property change smoothly instead of snapping instantly.\nThe shorthand is: transition: property duration ease;\nExample: transition: background 0.3s ease;\nThis makes background color changes animate over 0.3 seconds.\n👉 Your mission: add a transition on the button background lasting 0.3s.",
+        "starterCode": "button {\n  background: #6366f1;\n  color: white;\n  padding: 10px 20px;\n  /* Add transition here */\n}\nbutton:hover {\n  background: #4f46e5;\n}",
+        "sampleOutput": "button {\n  background: #6366f1;\n  color: white;\n  padding: 10px 20px;\n  transition: background 0.3s ease;\n}\nbutton:hover {\n  background: #4f46e5;\n}",
+        "hint": "Add transition: background 0.3s ease;  inside the button { } rule — then hover to see it animate."
+      },
+      "language": "css"
+    }
+  ],
+  "javascript": [
+    {
+      "key": "js-variables",
+      "label": "Variables",
+      "lesson": {
+        "title": "JavaScript Variables",
+        "instructions": "📦 Variables store information so you can use it later — they're the building blocks of every program.\nJavaScript has 3 keywords to create variables: let, const, and var.\nlet is the modern choice for values that might change.\n👉 Your mission: create a variable called name and set it to any string.\nExample: let name = 'Alex';",
+        "starterCode": "// Create your variable below\n",
+        "sampleOutput": "let name = 'Alex';",
+        "hint": "Type: let name = 'YourName';  — use quotes around the string value."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-console",
+      "label": "Console Log",
+      "lesson": {
+        "title": "Console Log",
+        "instructions": "🔍 console.log() is your best friend as a developer — it prints values so you can see what's happening.\nEvery developer uses it constantly to debug and test their code.\n👉 Your mission: call console.log() with anything inside the brackets.\nIt can be a string, a number, or a variable — anything!\nExample: console.log('Hello, world!');",
+        "starterCode": "let name = 'Alex';\n// Log something to the console below\n",
+        "sampleOutput": "console.log('Hello, world!');",
+        "hint": "Type: console.log('anything');  — the parentheses and quotes are required."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-functions",
+      "label": "Functions",
+      "lesson": {
+        "title": "JavaScript Functions",
+        "instructions": "⚙️ Functions are reusable blocks of code — write it once, run it whenever you need it.\nYou define a function with the function keyword, give it a name, and put code inside { }.\n👉 Your mission: define a function called greet.\nInside it, use console.log() to print any greeting message.\nStructure:\nfunction greet() {\n  console.log('Hello!');\n}",
+        "starterCode": "// Define your greet function below\n",
+        "sampleOutput": "function greet() {\n  console.log('Hello!');\n}",
+        "hint": "Type: function greet() { } — put a console.log() call inside the curly braces."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-conditionals",
+      "label": "If / Else",
+      "lesson": {
+        "title": "If / Else Statements",
+        "instructions": "🔀 Conditionals let your code make decisions — run this code IF something is true.\nThe if statement checks a condition inside ( ) and runs the block inside { } if it's true.\nnum is already set to 15 for you.\n👉 Your mission: write an if statement that checks if num is greater than 10.\nExample:\nif (num > 10) {\n  console.log('Big number!');\n}",
+        "starterCode": "let num = 15;\n// Write your if statement below\n",
+        "sampleOutput": "if (num > 10) {\n  console.log('Big number!');\n}",
+        "hint": "Type: if (num > 10) { } — put any console.log() inside the braces."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-arrays",
+      "label": "Arrays",
+      "lesson": {
+        "title": "JavaScript Arrays",
+        "instructions": "📚 Arrays store multiple values in one variable — like a list.\nValues go inside square brackets [ ], separated by commas.\nEach item is called an element, and strings need quotes.\n👉 Your mission: create a variable called colors that holds an array with at least 2 color names.\nExample: let colors = ['red', 'blue', 'green'];",
+        "starterCode": "// Create your colors array below\n",
+        "sampleOutput": "let colors = ['red', 'blue', 'green'];",
+        "hint": "Type: let colors = ['color1', 'color2'];  — at least 2 items inside the square brackets."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-loops",
+      "label": "Loops",
+      "lesson": {
+        "title": "JavaScript Loops",
+        "instructions": "🔁 Loops repeat code automatically — instead of writing the same thing 100 times.\nA for loop has 3 parts inside ( ): start · condition · step\n  • let i = 0  → start at 0\n  • i < 3      → keep going while i is less than 3\n  • i++        → add 1 each time\n👉 Your mission: write a for loop that runs exactly 3 times.\nExample:\nfor (let i = 0; i < 3; i++) {\n  console.log(i);\n}",
+        "starterCode": "// Write your for loop below\n",
+        "sampleOutput": "for (let i = 0; i < 3; i++) {\n  console.log(i);\n}",
+        "hint": "Type: for (let i = 0; i < 3; i++) { } — put any code inside the braces."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-strings",
+      "label": "String Methods",
+      "lesson": {
+        "title": "String Methods",
+        "instructions": "🔡 Strings in JavaScript have built-in methods you can call with a dot.\n.toUpperCase() converts to capitals, .toLowerCase() does the opposite.\n👉 Your mission: create a variable holding any string, then call .toUpperCase() or .toLowerCase() on it and log the result.\nExample:\nlet word = 'nexus';\nconsole.log(word.toUpperCase());",
+        "starterCode": "// Create a string and call a method on it\n",
+        "sampleOutput": "let word = 'nexus';\nconsole.log(word.toUpperCase());",
+        "hint": "Declare a variable with any string, then: console.log(yourVar.toUpperCase());"
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-numbers",
+      "label": "Math Object",
+      "lesson": {
+        "title": "JavaScript Math Object",
+        "instructions": "🔢 The built-in Math object provides mathematical constants and functions.\nUseful ones: Math.round(), Math.floor(), Math.ceil(), Math.random(), Math.max(), Math.min().\n👉 Your mission: use any Math method and log the result.\nExample: console.log(Math.round(4.7));",
+        "starterCode": "// Use a Math method below\n",
+        "sampleOutput": "console.log(Math.round(4.7));",
+        "hint": "Type: console.log(Math.round(4.7));  — any Math method call will pass."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-objects",
+      "label": "Objects",
+      "lesson": {
+        "title": "JavaScript Objects",
+        "instructions": "🗂️ Objects store related data as key-value pairs — like a profile card.\nKeys are property names, values can be any type. Curly braces {} define the object.\n👉 Your mission: create an object variable with at least two properties.\nExample:\nlet person = {\n  name: 'Alex',\n  age: 25\n};",
+        "starterCode": "// Create an object below\n",
+        "sampleOutput": "let person = {\n  name: 'Alex',\n  age: 25\n};",
+        "hint": "Type: let person = { name: 'Alex', age: 25 };  — use a colon between key and value, comma between pairs."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-template-literals",
+      "label": "Template Literals",
+      "lesson": {
+        "title": "Template Literals",
+        "instructions": "💬 Template literals use backticks (`) instead of quotes and let you embed expressions with ${ }.\nThis makes string building much cleaner than concatenation with +.\n👉 Your mission: create a variable and log a string that embeds it using ${ }.\nExample:\nlet name = 'Alex';\nconsole.log(`Hello, ${name}!`);",
+        "starterCode": "// Use a template literal below\n",
+        "sampleOutput": "let name = 'Alex';\nconsole.log(`Hello, ${name}!`);",
+        "hint": "Use backtick quotes and put your variable inside ${ } — like: `Hello, ${name}!`"
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-arrow-functions",
+      "label": "Arrow Functions",
+      "lesson": {
+        "title": "Arrow Functions",
+        "instructions": "➡️ Arrow functions are a shorter way to write functions — great for callbacks.\nSyntax: const myFn = (params) => { body };\nFor single-expression functions you can skip the braces and return keyword.\n👉 Your mission: create an arrow function called add that takes two parameters and returns their sum.\nExample:\nconst add = (a, b) => a + b;\nconsole.log(add(2, 3));",
+        "starterCode": "// Write an arrow function below\n",
+        "sampleOutput": "const add = (a, b) => a + b;\nconsole.log(add(2, 3));",
+        "hint": "Type: const add = (a, b) => a + b;  — the => replaces the function keyword."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-array-push",
+      "label": "Array Push",
+      "lesson": {
+        "title": "Array: push()",
+        "instructions": "➕ .push() adds one or more items to the end of an array.\nIt modifies the original array and returns the new length.\n👉 Your mission: create an array, call .push() to add an item, then log the array.\nExample:\nlet nums = [1, 2, 3];\nnums.push(4);\nconsole.log(nums);",
+        "starterCode": "// Create an array and push a value into it\n",
+        "sampleOutput": "let nums = [1, 2, 3];\nnums.push(4);\nconsole.log(nums);",
+        "hint": "Declare an array, then call arrayName.push(anyValue); — then log the array."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-array-map",
+      "label": "Array Map",
+      "lesson": {
+        "title": "Array: map()",
+        "instructions": "🔄 .map() transforms every item in an array and returns a new array.\nYou pass it a function — it gets called once for each item.\n👉 Your mission: use .map() to double every number in an array.\nExample:\nlet nums = [1, 2, 3];\nlet doubled = nums.map(n => n * 2);\nconsole.log(doubled);",
+        "starterCode": "// Use .map() to transform an array\nlet nums = [1, 2, 3];\n",
+        "sampleOutput": "let nums = [1, 2, 3];\nlet doubled = nums.map(n => n * 2);\nconsole.log(doubled);",
+        "hint": "Type: let doubled = nums.map(n => n * 2);  then log doubled."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-array-filter",
+      "label": "Array Filter",
+      "lesson": {
+        "title": "Array: filter()",
+        "instructions": "🔍 .filter() returns a new array containing only the items that pass a test.\nYou pass it a function that returns true to keep an item, false to drop it.\n👉 Your mission: use .filter() to keep only numbers greater than 2.\nExample:\nlet nums = [1, 2, 3, 4, 5];\nlet big = nums.filter(n => n > 2);\nconsole.log(big);",
+        "starterCode": "// Use .filter() on this array\nlet nums = [1, 2, 3, 4, 5];\n",
+        "sampleOutput": "let nums = [1, 2, 3, 4, 5];\nlet big = nums.filter(n => n > 2);\nconsole.log(big);",
+        "hint": "Type: let big = nums.filter(n => n > 2);  then log big."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-dom-select",
+      "label": "DOM Selection",
+      "lesson": {
+        "title": "Selecting DOM Elements",
+        "instructions": "🌐 JavaScript can reach into the HTML page and grab elements using document.querySelector().\nPass it a CSS selector string — just like you write CSS selectors.\nYou can then read or change the element's content and styles.\n👉 Your mission: call document.querySelector() with any valid CSS selector.\nExample: const el = document.querySelector('h1');",
+        "starterCode": "// Select an element from the DOM\n",
+        "sampleOutput": "const el = document.querySelector('h1');",
+        "hint": "Type: const el = document.querySelector('h1');  — pass any CSS selector string."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-events",
+      "label": "Events",
+      "lesson": {
+        "title": "Event Listeners",
+        "instructions": "🖱️ .addEventListener() listens for a user action (like a click) and runs a function when it happens.\nSyntax: element.addEventListener('event', function);\n👉 Your mission: call .addEventListener() on any element — at minimum a click listener.\nExample:\nconst btn = document.querySelector('button');\nbtn.addEventListener('click', () => {\n  console.log('clicked!');\n});",
+        "starterCode": "// Add an event listener below\nconst btn = document.querySelector('button');\n",
+        "sampleOutput": "btn.addEventListener('click', () => {\n  console.log('clicked!');\n});",
+        "hint": "Type: btn.addEventListener('click', () => { console.log('clicked!'); });"
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-ternary",
+      "label": "Ternary Operator",
+      "lesson": {
+        "title": "Ternary Operator",
+        "instructions": "❓ The ternary operator is a compact if/else on one line.\nSyntax: condition ? valueIfTrue : valueIfFalse\n👉 Your mission: use a ternary to assign a value based on a condition, then log it.\nExample:\nlet age = 20;\nlet status = age >= 18 ? 'adult' : 'minor';\nconsole.log(status);",
+        "starterCode": "let age = 20;\n// Use a ternary operator below\n",
+        "sampleOutput": "let status = age >= 18 ? 'adult' : 'minor';\nconsole.log(status);",
+        "hint": "Type: let status = age >= 18 ? 'adult' : 'minor';  — the ? separates condition from values, : separates the two outcomes."
+      },
+      "language": "javascript"
+    },
+    {
+      "key": "js-spread",
+      "label": "Spread Operator",
+      "lesson": {
+        "title": "Spread Operator",
+        "instructions": "✨ The spread operator (...) expands an array or object into individual items.\nIt's great for combining arrays, copying objects, and passing array items as arguments.\n👉 Your mission: use ... to combine two arrays into one, then log it.\nExample:\nlet a = [1, 2];\nlet b = [3, 4];\nlet combined = [...a, ...b];\nconsole.log(combined);",
+        "starterCode": "let a = [1, 2];\nlet b = [3, 4];\n// Combine them with spread below\n",
+        "sampleOutput": "let combined = [...a, ...b];\nconsole.log(combined);",
+        "hint": "Type: let combined = [...a, ...b];  — each ... expands the array in place."
+      },
+      "language": "javascript"
+    }
+  ],
+  "python": [
+    {
+      "key": "py-print",
+      "label": "Print",
+      "lesson": {
+        "title": "Python print()",
+        "instructions": "🐍 Python is one of the most readable languages in the world — let's start simple.\nThe print() function outputs text to the console. Text must be wrapped in quotes.\n👉 Your mission: use print() to output the message: Hello, NexusCode!\nExample: print('Hello, NexusCode!')",
+        "starterCode": "# Write your print statement below\n",
+        "sampleOutput": "print('Hello, NexusCode!')",
+        "hint": "Type: print('Hello, NexusCode!') — the text must match exactly."
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-variables",
+      "label": "Variables",
+      "lesson": {
+        "title": "Python Variables",
+        "instructions": "📦 Variables store data so you can use it later. In Python you just write the name, an = sign, and the value.\nNo need to declare a type — Python figures it out.\n👉 Your mission: create a variable called name and set it to any string value.\nThen print it using print(name).\nExample:\nname = 'Alex'\nprint(name)",
+        "starterCode": "# Create your variable below\n",
+        "sampleOutput": "name = 'Alex'\nprint(name)",
+        "hint": "Type: name = 'yourname' then on the next line: print(name)"
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-conditionals",
+      "label": "If / Else",
+      "lesson": {
+        "title": "Python If / Else",
+        "instructions": "🔀 Conditionals let your code make decisions based on whether something is true or false.\nIn Python, indentation (spaces) defines the code block — no curly braces needed.\nThe variable age is already set to 18.\n👉 Your mission: write an if/else that checks if age is 18 or above.\nExample:\nif age >= 18:\n    print('Adult')\nelse:\n    print('Minor')",
+        "starterCode": "age = 18\n# Write your if/else below\n",
+        "sampleOutput": "if age >= 18:\n    print('Adult')\nelse:\n    print('Minor')",
+        "hint": "Type: if age >= 18: then on the next indented line: print('Adult')"
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-loops",
+      "label": "For Loops",
+      "lesson": {
+        "title": "Python For Loops",
+        "instructions": "🔁 A for loop repeats code for each item in a sequence.\nrange(n) generates numbers from 0 up to (but not including) n.\nThe loop variable (like i) takes each value in turn.\n👉 Your mission: write a for loop using range(3) that prints each number.\nExample:\nfor i in range(3):\n    print(i)",
+        "starterCode": "# Write your for loop below\n",
+        "sampleOutput": "for i in range(3):\n    print(i)",
+        "hint": "Type: for i in range(3): then on the next indented line: print(i)"
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-functions",
+      "label": "Functions",
+      "lesson": {
+        "title": "Python Functions",
+        "instructions": "⚙️ Functions are reusable blocks of code — define once, call whenever you need.\nIn Python, you define a function with the def keyword followed by the function name and ().\nThe body must be indented.\n👉 Your mission: define a function called greet that prints any greeting message.\nExample:\ndef greet():\n    print('Hello!')",
+        "starterCode": "# Define your function below\n",
+        "sampleOutput": "def greet():\n    print('Hello!')",
+        "hint": "Type: def greet(): then on the next indented line: print('Hello!')"
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-lists",
+      "label": "Lists",
+      "lesson": {
+        "title": "Python Lists",
+        "instructions": "📚 A list stores multiple values in one variable — similar to an array in other languages.\nValues go inside square brackets [ ], separated by commas.\n👉 Your mission: create a variable called fruits that holds a list with at least 2 fruit names.\nThen print the list.\nExample:\nfruits = ['apple', 'banana', 'mango']\nprint(fruits)",
+        "starterCode": "# Create your list below\n",
+        "sampleOutput": "fruits = ['apple', 'banana', 'mango']\nprint(fruits)",
+        "hint": "Type: fruits = ['item1', 'item2'] then print(fruits) on the next line."
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-strings",
+      "label": "String Methods",
+      "lesson": {
+        "title": "Python String Methods",
+        "instructions": "🔡 Python strings come with many built-in methods you can call with a dot.\n.upper() converts to uppercase, .lower() converts to lowercase, .strip() removes whitespace.\n👉 Your mission: create a string variable and call .upper() or .lower() on it, then print the result.\nExample:\ngreeting = 'hello nexus'\nprint(greeting.upper())",
+        "starterCode": "# Create a string and call a method on it\n",
+        "sampleOutput": "greeting = 'hello nexus'\nprint(greeting.upper())",
+        "hint": "Type: greeting = 'anything'  then print(greeting.upper())"
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-numbers",
+      "label": "Numbers & Maths",
+      "lesson": {
+        "title": "Python Numbers & Arithmetic",
+        "instructions": "🔢 Python supports all the standard arithmetic operators: + - * / // % **\n  • //  integer division (floor)\n  • %   modulo (remainder)\n  • **  exponent (power)\n👉 Your mission: create a variable called result and set it to any arithmetic expression, then print it.\nExample:\nresult = 10 ** 2\nprint(result)",
+        "starterCode": "# Calculate something and print it\n",
+        "sampleOutput": "result = 10 ** 2\nprint(result)",
+        "hint": "Type: result = any arithmetic expression (e.g. 10 ** 2 or 15 // 4) then print(result)"
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-fstrings",
+      "label": "F-Strings",
+      "lesson": {
+        "title": "Python f-Strings",
+        "instructions": "💬 f-strings are the modern Python way to embed variables inside strings — just prefix the string with f and use { }.\nExample: f'Hello, {name}!'\nThis is cleaner and faster than concatenation with +.\n👉 Your mission: create a variable and print a string that embeds it using an f-string.\nExample:\nname = 'Alex'\nprint(f'Hello, {name}!')",
+        "starterCode": "# Use an f-string below\n",
+        "sampleOutput": "name = 'Alex'\nprint(f'Hello, {name}!')",
+        "hint": "Prefix your string with f and put your variable inside { } — like f'Hello, {name}!'"
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-while",
+      "label": "While Loops",
+      "lesson": {
+        "title": "Python While Loops",
+        "instructions": "🔄 A while loop keeps running as long as a condition is True.\nBe careful to update the condition variable inside the loop — otherwise it runs forever!\n👉 Your mission: write a while loop that counts from 1 to 3 using a counter variable.\nExample:\ncount = 1\nwhile count <= 3:\n    print(count)\n    count += 1",
+        "starterCode": "# Write a while loop below\n",
+        "sampleOutput": "count = 1\nwhile count <= 3:\n    print(count)\n    count += 1",
+        "hint": "Set count = 1, then while count <= 3: print(count) then count += 1 (indented)."
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-dict",
+      "label": "Dictionaries",
+      "lesson": {
+        "title": "Python Dictionaries",
+        "instructions": "📖 A dictionary stores key-value pairs — like a real dictionary where you look up a word (key) to find its meaning (value).\nKeys and values can be any type; keys must be unique.\n👉 Your mission: create a dictionary variable with at least two key-value pairs, then print it.\nExample:\nperson = {'name': 'Alex', 'age': 25}\nprint(person)",
+        "starterCode": "# Create a dictionary below\n",
+        "sampleOutput": "person = {'name': 'Alex', 'age': 25}\nprint(person)",
+        "hint": "Type: person = {'name': 'Alex', 'age': 25}  then print(person)"
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-tuples",
+      "label": "Tuples",
+      "lesson": {
+        "title": "Python Tuples",
+        "instructions": "📦 A tuple is like a list but immutable — once created, items can't be changed.\nTuples use parentheses ( ) instead of square brackets.\nThey're great for fixed collections like coordinates or RGB colours.\n👉 Your mission: create a tuple variable with at least two items, then print it.\nExample:\ncoords = (51.5, -0.12)\nprint(coords)",
+        "starterCode": "# Create a tuple below\n",
+        "sampleOutput": "coords = (51.5, -0.12)\nprint(coords)",
+        "hint": "Type: coords = (value1, value2)  then print(coords) — use parentheses, not square brackets."
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-list-comp",
+      "label": "List Comprehensions",
+      "lesson": {
+        "title": "Python List Comprehensions",
+        "instructions": "⚡ List comprehensions build a new list in a single expressive line — much shorter than a loop.\nSyntax: [expression for item in iterable]\n👉 Your mission: use a list comprehension to create a list of squares (n²) for numbers 1–5, then print it.\nExample:\nsquares = [n ** 2 for n in range(1, 6)]\nprint(squares)",
+        "starterCode": "# Write a list comprehension below\n",
+        "sampleOutput": "squares = [n ** 2 for n in range(1, 6)]\nprint(squares)",
+        "hint": "Type: squares = [n ** 2 for n in range(1, 6)]  then print(squares)"
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-classes",
+      "label": "Classes",
+      "lesson": {
+        "title": "Python Classes",
+        "instructions": "🏛️ Classes are blueprints for creating objects — they bundle data (attributes) and behaviour (methods) together.\nDefine a class with the class keyword. The special __init__ method runs when you create an instance.\n👉 Your mission: define a class called Dog.\nExample:\nclass Dog:\n    def __init__(self, name):\n        self.name = name",
+        "starterCode": "# Define your class below\n",
+        "sampleOutput": "class Dog:\n    def __init__(self, name):\n        self.name = name",
+        "hint": "Type: class Dog: then indent __init__(self, name): inside it."
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-try-except",
+      "label": "Try / Except",
+      "lesson": {
+        "title": "Python Try / Except",
+        "instructions": "🛡️ try/except lets you handle errors gracefully instead of crashing.\nCode inside try runs first; if an exception is raised, code in except runs instead.\n👉 Your mission: write a try/except block that catches an error.\nExample:\ntry:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print('Cannot divide by zero!')",
+        "starterCode": "# Write a try/except block below\n",
+        "sampleOutput": "try:\n    result = 10 / 0\nexcept ZeroDivisionError:\n    print('Cannot divide by zero!')",
+        "hint": "Type try: then your risky code (indented), then except SomeError: then handle it (indented)."
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-import",
+      "label": "Imports",
+      "lesson": {
+        "title": "Python Imports",
+        "instructions": "📦 Python comes with a huge standard library — use import to load any module.\nCommon modules: math, random, datetime, os.\nAfter importing, access functions with module.function().\n👉 Your mission: import any standard library module and call at least one function from it.\nExample:\nimport math\nprint(math.sqrt(16))",
+        "starterCode": "# Import a module and use it below\n",
+        "sampleOutput": "import math\nprint(math.sqrt(16))",
+        "hint": "Type: import math  then print(math.sqrt(16)) — or import random then print(random.randint(1, 10))"
+      },
+      "language": "python"
+    },
+    {
+      "key": "py-range-step",
+      "label": "Range with Step",
+      "lesson": {
+        "title": "range() with a Step",
+        "instructions": "⏩ range() can take a third argument — the step — which controls how much to increment each iteration.\nrange(start, stop, step): e.g. range(0, 10, 2) → 0, 2, 4, 6, 8\nA negative step counts downward.\n👉 Your mission: write a for loop using range() with all three arguments (start, stop, step) and print each value.\nExample:\nfor n in range(0, 10, 2):\n    print(n)",
+        "starterCode": "# Use range() with a step below\n",
+        "sampleOutput": "for n in range(0, 10, 2):\n    print(n)",
+        "hint": "Type: for n in range(0, 10, 2):  then print(n) indented — that's start=0, stop=10, step=2."
+      },
+      "language": "python"
+    }
+  ],
+  "sql": [
+    {
+      "key": "sql-select-all",
+      "label": "SELECT *",
+      "language": "sql",
+      "lesson": {
+        "title": "Your First SELECT",
+        "instructions": "🗄️ SQL is the language of databases — it lets you query, insert, update and delete data stored in tables.\nEvery table has rows (records) and columns (fields). The most basic query fetches everything.\nSELECT * means \"give me all columns\". FROM tells SQL which table to look in.\n👉 Your mission: write a query that selects all rows from the users table.\nStructure: SELECT * FROM users;",
+        "starterCode": "-- Write your query below\n",
+        "sampleOutput": "SELECT * FROM users;",
+        "hint": "Type SELECT * FROM users; — the asterisk means all columns."
+      }
+    },
+    {
+      "key": "sql-select-columns",
+      "label": "Select Columns",
+      "language": "sql",
+      "lesson": {
+        "title": "Selecting Specific Columns",
+        "instructions": "📋 Fetching every column is wasteful when you only need a few. List the columns you want, separated by commas, right after SELECT.\nThis keeps queries fast and results readable.\n👉 Your mission: select only the name and email columns from the users table.\nStructure: SELECT col1, col2 FROM table;",
+        "starterCode": "-- Select only name and email from users\n",
+        "sampleOutput": "SELECT name, email FROM users;",
+        "hint": "SELECT name, email FROM users; — separate column names with a comma."
+      }
+    },
+    {
+      "key": "sql-where",
+      "label": "WHERE Clause",
+      "language": "sql",
+      "lesson": {
+        "title": "Filtering Rows with WHERE",
+        "instructions": "🔍 WHERE filters the rows returned by a query. Only rows where the condition is true come back.\nUse = to check equality. Numbers do not need quotes.\n👉 Your mission: select all columns from users where age equals 25.\nStructure: SELECT * FROM table WHERE column = value;",
+        "starterCode": "-- Filter users where age = 25\n",
+        "sampleOutput": "SELECT * FROM users WHERE age = 25;",
+        "hint": "Add WHERE age = 25 after the table name — no quotes around numbers."
+      }
+    },
+    {
+      "key": "sql-where-string",
+      "label": "WHERE + Strings",
+      "language": "sql",
+      "lesson": {
+        "title": "Filtering by Text",
+        "instructions": "📝 When a condition compares text, the value must be wrapped in single quotes.\nSQL is case-sensitive for data values, so 'Electronics' and 'electronics' are different.\n👉 Your mission: select all from products where the category equals 'Electronics'.\nStructure: SELECT * FROM table WHERE column = 'value';",
+        "starterCode": "-- Select products in the Electronics category\n",
+        "sampleOutput": "SELECT * FROM products WHERE category = 'Electronics';",
+        "hint": "Wrap text in single quotes: WHERE category = 'Electronics'"
+      }
+    },
+    {
+      "key": "sql-order-by",
+      "label": "ORDER BY",
+      "language": "sql",
+      "lesson": {
+        "title": "Sorting Results",
+        "instructions": "📊 Without ORDER BY, rows come back in an unpredictable order. ORDER BY sorts by a column.\n• ASC — ascending (low to high, A to Z) — this is the default\n• DESC — descending (high to low, Z to A)\n👉 Your mission: select all from products and order by price from highest to lowest.\nStructure: SELECT * FROM table ORDER BY column DESC;",
+        "starterCode": "-- Select all products ordered by price descending\n",
+        "sampleOutput": "SELECT * FROM products ORDER BY price DESC;",
+        "hint": "Add ORDER BY price DESC at the end of your query."
+      }
+    },
+    {
+      "key": "sql-limit",
+      "label": "LIMIT",
+      "language": "sql",
+      "lesson": {
+        "title": "Limiting Results",
+        "instructions": "🎯 Large tables can return millions of rows. LIMIT caps how many come back.\nAlways combine LIMIT with ORDER BY so the results are meaningful (e.g. the top 5 by price).\n👉 Your mission: select all from products, order by price descending, and return only the top 5 rows.\nStructure: SELECT * FROM table ORDER BY column DESC LIMIT n;",
+        "starterCode": "-- Get the 5 most expensive products\n",
+        "sampleOutput": "SELECT * FROM products ORDER BY price DESC LIMIT 5;",
+        "hint": "Add LIMIT 5 at the very end of your ORDER BY query."
+      }
+    },
+    {
+      "key": "sql-distinct",
+      "label": "DISTINCT",
+      "language": "sql",
+      "lesson": {
+        "title": "Removing Duplicates",
+        "instructions": "✨ A column can have many repeated values. DISTINCT returns only the unique ones — duplicates are removed.\nPlace DISTINCT immediately after SELECT.\n👉 Your mission: select the distinct category values from the products table.\nStructure: SELECT DISTINCT column FROM table;",
+        "starterCode": "-- List all unique categories\n",
+        "sampleOutput": "SELECT DISTINCT category FROM products;",
+        "hint": "Put DISTINCT between SELECT and the column name."
+      }
+    },
+    {
+      "key": "sql-and-or",
+      "label": "AND / OR",
+      "language": "sql",
+      "lesson": {
+        "title": "Multiple Conditions",
+        "instructions": "🔗 Chain conditions in WHERE using AND or OR.\n• AND — both conditions must be true\n• OR — at least one must be true\n👉 Your mission: select all from products where category = 'Electronics' AND price < 500.\nStructure: SELECT * FROM table WHERE cond1 AND cond2;",
+        "starterCode": "-- Filter by category AND price\n",
+        "sampleOutput": "SELECT * FROM products WHERE category = 'Electronics' AND price < 500;",
+        "hint": "WHERE category = 'Electronics' AND price < 500"
+      }
+    },
+    {
+      "key": "sql-like",
+      "label": "LIKE",
+      "language": "sql",
+      "lesson": {
+        "title": "Pattern Matching with LIKE",
+        "instructions": "🔎 LIKE searches for partial text matches using wildcards.\n• % matches any number of characters (including zero)\n• _ matches exactly one character\n👉 Your mission: select all from users where the email ends with '@gmail.com'.\nStructure: SELECT * FROM table WHERE column LIKE '%pattern';",
+        "starterCode": "-- Find Gmail users\n",
+        "sampleOutput": "SELECT * FROM users WHERE email LIKE '%@gmail.com';",
+        "hint": "LIKE '%@gmail.com' — the % matches anything before the @."
+      }
+    },
+    {
+      "key": "sql-insert",
+      "label": "INSERT INTO",
+      "language": "sql",
+      "lesson": {
+        "title": "Adding Rows",
+        "instructions": "➕ INSERT INTO adds a new row to a table.\nList the column names in parentheses, then supply matching values in VALUES in the same order. The users sheet already contains Alice, so add a new person instead.\n👉 Your mission: insert Dana with the email dana@example.com into the users table.\nStructure: INSERT INTO table (col1, col2) VALUES (val1, val2);",
+        "starterCode": "-- Insert a new user\n",
+        "sampleOutput": "INSERT INTO users (name, email) VALUES ('Dana', 'dana@example.com');",
+        "hint": "INSERT INTO users (name, email) VALUES ('Dana', 'dana@example.com');"
+      }
+    },
+    {
+      "key": "sql-update",
+      "label": "UPDATE",
+      "language": "sql",
+      "lesson": {
+        "title": "Modifying Rows",
+        "instructions": "✏️ UPDATE changes values in existing rows. SET specifies the new value.\n⚠️ Always include WHERE — without it you update every single row in the table!\n👉 Your mission: update users, set email to 'new@example.com' where name = 'Alice'.\nStructure: UPDATE table SET column = value WHERE condition;",
+        "starterCode": "-- Update Alice's email\n",
+        "sampleOutput": "UPDATE users SET email = 'new@example.com' WHERE name = 'Alice';",
+        "hint": "UPDATE users SET email = 'new@example.com' WHERE name = 'Alice';"
+      }
+    },
+    {
+      "key": "sql-delete",
+      "label": "DELETE",
+      "language": "sql",
+      "lesson": {
+        "title": "Deleting Rows",
+        "instructions": "🗑️ DELETE FROM removes rows from a table.\n⚠️ Always use WHERE — without it you wipe every row in the table!\n👉 Your mission: delete from users where name = 'Alice'.\nStructure: DELETE FROM table WHERE condition;",
+        "starterCode": "-- Delete Alice from users\n",
+        "sampleOutput": "DELETE FROM users WHERE name = 'Alice';",
+        "hint": "DELETE FROM users WHERE name = 'Alice'; — never skip the WHERE!"
+      }
+    },
+    {
+      "key": "sql-create-table",
+      "label": "CREATE TABLE",
+      "language": "sql",
+      "lesson": {
+        "title": "Creating a Table",
+        "instructions": "🏗️ CREATE TABLE defines a new table with named columns and data types. The reference sheets are already-existing tables; this task creates a separate one.\nCommon types: INT, VARCHAR(n), DECIMAL(p,s), TEXT, BOOLEAN, DATE.\n👉 Your mission: create a reading_lists table with an id (INT) and title (VARCHAR(100)).\nStructure: CREATE TABLE name (col TYPE, col TYPE);",
+        "starterCode": "-- Create a new reading_lists table\n",
+        "sampleOutput": "CREATE TABLE reading_lists (id INT, title VARCHAR(100));",
+        "hint": "CREATE TABLE reading_lists (id INT, title VARCHAR(100));"
+      }
+    },
+    {
+      "key": "sql-primary-key",
+      "label": "PRIMARY KEY",
+      "language": "sql",
+      "lesson": {
+        "title": "Primary Keys",
+        "instructions": "🔑 A PRIMARY KEY uniquely identifies each row — no two rows can share the same key value, and it can never be NULL.\nAdd PRIMARY KEY right after the column's data type. These reference sheets already have their own ids; create a separate teams table for this task.\n👉 Your mission: create a teams table with id as INT PRIMARY KEY and name as VARCHAR(100).\nStructure: CREATE TABLE name (col TYPE PRIMARY KEY, col TYPE);",
+        "starterCode": "-- Create a teams table with a unique id\n",
+        "sampleOutput": "CREATE TABLE teams (id INT PRIMARY KEY, name VARCHAR(100));",
+        "hint": "Add PRIMARY KEY after INT: CREATE TABLE teams (id INT PRIMARY KEY, name VARCHAR(100));"
+      }
+    },
+    {
+      "key": "sql-count",
+      "label": "COUNT()",
+      "language": "sql",
+      "lesson": {
+        "title": "Counting Rows",
+        "instructions": "🔢 Aggregate functions summarise many rows into a single value.\nCOUNT(*) counts every row in the result, including NULLs.\n👉 Your mission: write a query that counts all rows in the orders table.\nStructure: SELECT COUNT(*) FROM table;",
+        "starterCode": "-- Count all orders\n",
+        "sampleOutput": "SELECT COUNT(*) FROM orders;",
+        "hint": "SELECT COUNT(*) FROM orders; — the * inside COUNT means every row."
+      }
+    },
+    {
+      "key": "sql-group-by",
+      "label": "GROUP BY",
+      "language": "sql",
+      "lesson": {
+        "title": "Grouping Results",
+        "instructions": "📦 GROUP BY collapses rows with the same value in a column into a single summary row.\nAlmost always paired with an aggregate like COUNT, SUM, or AVG. In the orders sheet, user_id links each order to users.id.\n👉 Your mission: count orders per user — select user_id and COUNT(*) from orders, grouped by user_id.\nStructure: SELECT column, COUNT(*) FROM table GROUP BY column;",
+        "starterCode": "-- Count orders per customer\n",
+        "sampleOutput": "SELECT user_id, COUNT(*) FROM orders GROUP BY user_id;",
+        "hint": "SELECT user_id, COUNT(*) FROM orders GROUP BY user_id;"
+      }
+    },
+    {
+      "key": "sql-having",
+      "label": "HAVING",
+      "language": "sql",
+      "lesson": {
+        "title": "Filtering Groups",
+        "instructions": "🧪 WHERE filters rows before grouping. HAVING filters groups after aggregation.\nThink of it as a WHERE clause for aggregate results. The orders sheet has four rows for user_id 1, so that group passes a count greater than 3.\n👉 Your mission: show users who have more than 3 orders.\nStructure: SELECT col, COUNT(*) FROM table GROUP BY col HAVING COUNT(*) > n;",
+        "starterCode": "-- Customers with more than 3 orders\n",
+        "sampleOutput": "SELECT user_id, COUNT(*) FROM orders GROUP BY user_id HAVING COUNT(*) > 3;",
+        "hint": "Add HAVING COUNT(*) > 3 after GROUP BY user_id."
+      }
+    },
+    {
+      "key": "sql-inner-join",
+      "label": "INNER JOIN",
+      "language": "sql",
+      "lesson": {
+        "title": "Joining Tables",
+        "instructions": "🔗 A JOIN combines rows from two tables where a condition matches.\nINNER JOIN returns only rows that have a matching record in both tables.\n👉 Your mission: select orders.id and users.name by joining orders with users on orders.user_id = users.id.\nStructure: SELECT t1.col, t2.col FROM t1 INNER JOIN t2 ON t1.key = t2.key;",
+        "starterCode": "-- Join orders with users\n",
+        "sampleOutput": "SELECT orders.id, users.name FROM orders INNER JOIN users ON orders.user_id = users.id;",
+        "hint": "FROM orders INNER JOIN users ON orders.user_id = users.id"
+      }
+    }
+  ],
+  "typescript": [
+    {
+      "key": "ts-type-annotations",
+      "label": "Type Annotations",
+      "language": "typescript",
+      "lesson": {
+        "title": "Add Type Annotations",
+        "instructions": "TypeScript lets you describe what kind of value a variable should hold. Add a colon and a type after the variable name: string for text, number for numeric values, and boolean for true or false.\nThe annotation helps catch mismatches before the program runs.\n👉 Your mission: annotate memberName as a string and lessonsDone as a number.\nExample: const course: string = \"TypeScript\";",
+        "starterCode": "const memberName = \"Ada\";\nlet lessonsDone = 2;",
+        "sampleOutput": "const memberName: string = \"Ada\";\nlet lessonsDone: number = 2;",
+        "hint": "Put : string before the equals sign for memberName and : number before the equals sign for lessonsDone."
+      }
+    },
+    {
+      "key": "ts-function-types",
+      "label": "Typed Functions",
+      "language": "typescript",
+      "lesson": {
+        "title": "Type Function Inputs and Outputs",
+        "instructions": "Function types make the values a function accepts and returns explicit. Put a type after each parameter name, then add the return type after the closing parenthesis.\n👉 Your mission: give both addScores parameters the number type and declare that the function returns a number.\nExample signature: function add(a: number, b: number): number",
+        "starterCode": "function addScores(first, second) {\n  return first + second;\n}",
+        "sampleOutput": "function addScores(first: number, second: number): number {\n  return first + second;\n}",
+        "hint": "Add : number after first and second, then add : number after the closing parenthesis."
+      }
+    }
+  ]
+}

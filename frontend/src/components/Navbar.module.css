@@ -1,0 +1,475 @@
+/* ── Top header (mobile + desktop) ─────────────────── */
+.topHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1.25rem;
+  height: 52px;
+  background: rgba(8, 13, 23, 0.97);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #0d1424;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 60;
+}
+
+/* ── Header stat pills ── */
+.statPills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.statPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #94a3b8;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid #1e293b;
+  border-radius: 20px;
+  padding: 3px 9px;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.statMax {
+  color: #334155;
+  font-weight: 500;
+}
+
+.headerRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logoutButton {
+  background: transparent;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 5px 9px;
+}
+.logoutButton:hover { border-color: #64748b; color: #e2e8f0; }
+
+/* ── Hamburger toggle — desktop only ────────────────── */
+.toggle {
+  display: none; /* hidden on mobile */
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  padding: 0 6px;
+  background: transparent;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s, background 0.2s;
+}
+.toggle:hover { background: rgba(99,102,241,0.08); border-color: #6366f1; }
+
+.bar {
+  display: block;
+  width: 100%;
+  height: 1.5px;
+  background: #6b7280;
+  border-radius: 2px;
+  transform-origin: center;
+  transition: transform 0.22s ease, opacity 0.22s ease, background 0.2s;
+}
+.toggle:hover .bar { background: #818cf8; }
+
+/* Animate to X when open */
+.barTop  { transform: translateY(6.5px) rotate(45deg); }
+.barMid  { opacity: 0; transform: scaleX(0); }
+.barBot  { transform: translateY(-6.5px) rotate(-45deg); }
+
+@media (min-width: 768px) {
+  .toggle { display: flex; }
+}
+
+/* ─────────────────────────────────────────────────────
+   Mobile Grouped Nav Bar
+   ───────────────────────────────────────────────────── */
+.mobileGroupBar {
+  display: flex;
+  align-items: stretch;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 64px;
+  background: rgba(8, 13, 23, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid #0d1424;
+  z-index: 60;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@media (min-width: 768px) {
+  .mobileGroupBar { display: none; }
+}
+
+.mobileGroupBtn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  color: #334155;
+  cursor: pointer;
+  padding: 0 2px;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobileGroupBtn:hover   { color: #64748b; }
+.mobileGroupBtnActive   { color: #818cf8; }
+.mobileGroupBtnOpen     { color: #818cf8; }
+
+.mobileGroupIcon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.mobileGroupLabel {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  text-transform: lowercase;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.mobileGroupChevron {
+  display: inline-block;
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+  font-size: 0.85rem;
+  line-height: 1;
+  font-family: inherit;
+}
+
+/* Rotates to ∨ when the panel is open */
+.mobileGroupBtnOpen .mobileGroupChevron {
+  transform: rotate(90deg);
+}
+
+/* ─────────────────────────────────────────────────────
+   Mobile Directory Panel (slides up above the bar)
+   ───────────────────────────────────────────────────── */
+
+/* Dark backdrop behind the panel */
+.mobilePanelBackdrop {
+  position: fixed;
+  inset: 0;
+  bottom: 64px;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 57;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .mobilePanelBackdrop { display: none; }
+}
+
+.mobilePanelBackdropVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* The panel itself */
+.mobilePanel {
+  position: fixed;
+  left: 0; right: 0;
+  bottom: 64px;
+  background: rgba(8, 13, 23, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid #1e293b;
+  z-index: 58;
+  padding: 0.55rem 0.85rem 0.45rem;
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (min-width: 768px) {
+  .mobilePanel { display: none; }
+}
+
+.mobilePanelOpen {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ▸ learn/ header row */
+.mobilePanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.1rem 0.25rem 0.45rem;
+  border-bottom: 1px solid #0d1424;
+  margin-bottom: 0.3rem;
+}
+
+.mobilePanelFolder {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #475569;
+  text-transform: lowercase;
+}
+
+/* Make the caret in the panel header match text size and use green */
+.mobilePanelHeader .dirCaret {
+  font-size: 0.7rem;
+  color: #10b981;
+  opacity: 1;
+}
+
+/* Items list — mirrors the desktop sidebar dirItems */
+.mobilePanelItems {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-left: 1rem;
+  border-left: 1px solid #131e30;
+}
+
+/* Touch-friendly override applied on top of .dirItem */
+.mobileDirItem {
+  font-size: 0.9rem;
+  padding: 0.62rem 0.9rem 0.62rem 0.6rem;
+  animation: mobileDirItemIn 0.22s ease both;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+
+@keyframes mobileDirItemIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* ── Backdrop ───────────────────────────────────────── */
+.backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 70;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.backdropVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+@media (min-width: 768px) {
+  .backdrop { display: block; }
+}
+
+/* ── Sidebar ────────────────────────────────────────── */
+.sidebar {
+  display: none;
+  position: fixed;
+  top: 52px; left: 0; bottom: 0;
+  width: 240px;
+  background: #080d17;
+  border-right: 1px solid #0d1424;
+  z-index: 80;
+  flex-direction: column;
+  transform: translateX(-100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.28s ease;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.sidebarOpen {
+  transform: translateX(0);
+  box-shadow: 8px 0 32px rgba(0, 0, 0, 0.6);
+}
+
+@media (min-width: 768px) {
+  .sidebar { display: flex; }
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #0d1424;
+  background: #0a0f1c;
+  flex-shrink: 0;
+}
+
+.sidebarLogo {
+  font-size: 0.95rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #e0e7ff 0%, #818cf8 55%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+
+.sidebarClose {
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  color: #475569;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1;
+}
+.sidebarClose:hover { background: rgba(99,102,241,0.1); color: #e2e8f0; }
+
+.sidebarNav {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0.75rem 0;
+  overflow-y: auto;
+}
+
+/* ── Directory section (folder group) ── */
+.dirSection {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.1rem;
+}
+
+.dirFolder {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.3rem 1rem;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #334155;
+  text-transform: lowercase;
+  user-select: none;
+}
+
+.dirCaret {
+  font-size: 0.58rem;
+  color: #6366f1;
+  opacity: 0.8;
+}
+
+/* ── Tree item group ── */
+.dirItems {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 0;
+  margin-left: 1.5rem;
+  border-left: 1px solid #131e30;
+  margin-bottom: 0.55rem;
+}
+
+/* ── Individual tree item ── */
+.dirItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.75rem 0.45rem 0.6rem;
+  border-radius: 6px;
+  color: #64748b;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  position: relative;
+  transition: background 0.12s, color 0.12s;
+}
+
+.dirItem:hover {
+  background: rgba(99, 102, 241, 0.08);
+  color: #cbd5e1;
+}
+
+.dirItemActive {
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.13);
+  font-weight: 600;
+}
+
+.dirItemActive .dirLine {
+  background: linear-gradient(to bottom, #6366f1, #06b6d4);
+}
+
+/* Horizontal connector ─ */
+.dirLine {
+  position: absolute;
+  left: -0.85rem;
+  top: 50%;
+  width: 0.6rem;
+  height: 1px;
+  background: #131e30;
+  flex-shrink: 0;
+}
+
+.sidebarIcon {
+  font-size: 0.82rem;
+  width: 17px;
+  text-align: center;
+  flex-shrink: 0;
+  opacity: 0.65;
+}
+
+.dirItemActive .sidebarIcon {
+  opacity: 1;
+}
+
+/* ── Upgrade CTA item ── */
+.dirItemUpgrade {
+  color: #818cf8;
+  background: rgba(99, 102, 241, 0.07);
+  border-radius: 6px;
+}
+
+.dirItemUpgrade:hover {
+  background: rgba(99, 102, 241, 0.14);
+  color: #a5b4fc;
+}
+
+.dirItemUpgrade .sidebarIcon {
+  opacity: 1;
+  color: #6366f1;
+}
+
+.sidebarFooter {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid #111827;
+  flex-shrink: 0;
+}

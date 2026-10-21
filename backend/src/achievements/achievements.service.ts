@@ -103,6 +103,11 @@ export class AchievementsService {
         const skinSlug = tierSkinForReward(ach.creditReward);
         const prize = await this.storeService.grantPrizeSkin(userId, skinSlug).catch(() => null);
         if (prize) prizes.push(prize);
+
+        if (ach.name === 'Unstoppable') {
+          const avatarPrize = await this.storeService.grantPrizeSkin(userId, 'avatar-unbroken').catch(() => null);
+          if (avatarPrize) prizes.push(avatarPrize);
+        }
       }
 
       await this.userAchievementRepo.save(ua);

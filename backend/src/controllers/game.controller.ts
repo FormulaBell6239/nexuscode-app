@@ -9,7 +9,10 @@ export class GameController {
 
   @Get()
   getGames(@Query('genre') genre?: string) {
-    if (genre) return this.gameService.findByGenre(genre);
+    const ALLOWED_GENRES = ['quiz', 'debug', 'speed', 'logic', 'build', 'collab'] as const;
+    if (genre && ALLOWED_GENRES.includes(genre as (typeof ALLOWED_GENRES)[number])) {
+      return this.gameService.findByGenre(genre);
+    }
     return this.gameService.findAllGames();
   }
 

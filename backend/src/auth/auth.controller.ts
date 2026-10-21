@@ -1,5 +1,5 @@
 import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
-import { IsEmail, IsString, Length, MinLength } from 'class-validator';
+import { IsEmail, IsString, Length, MinLength, Matches } from 'class-validator';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 
@@ -11,7 +11,10 @@ class RegisterDto {
   @IsEmail()
   email: string;
 
-  @MinLength(8)
+  @MinLength(12)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+[\]{};':",./<>?\\|`~])/, {
+    message: 'Password must contain uppercase, lowercase, a number, and a special character',
+  })
   password: string;
 }
 

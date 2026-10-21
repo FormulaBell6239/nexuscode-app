@@ -1,11 +1,13 @@
 import { Controller, Get, Put, Post, Body, Req, UseGuards } from '@nestjs/common';
-import { IsBoolean, IsInt, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
+import { IsBoolean, IsInt, IsOptional, IsString, Matches, Max, MaxLength, Min } from 'class-validator';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ProfileService } from './profile.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { Request } from 'express';
 
 // ── Validated DTOs (class-validator runs via global ValidationPipe) ─────────
+
+const CALLING_CARD_PATTERN = /^(?:indigo|cyber|ocean|neon|night|jade|rose|volt|chrome|fuchsia|aurora|glacier|crimson|citron|tidal|flare|orchid|arctic|inferno|iris|custom-[0-9a-fA-F]{6}-[0-9a-fA-F]{6})$/;
 
 class UpdateProfileDto {
   @IsOptional() @IsString() @MaxLength(50)
@@ -14,10 +16,10 @@ class UpdateProfileDto {
   @IsOptional() @IsString() @MaxLength(500)
   bio?: string;
 
-  @IsOptional() @IsString() @MaxLength(10)
+  @IsOptional() @IsString() @MaxLength(80)
   avatar?: string;
 
-  @IsOptional() @IsString() @MaxLength(50)
+  @IsOptional() @IsString() @Matches(CALLING_CARD_PATTERN)
   callingCard?: string;
 
   @IsOptional() @IsString() @MaxLength(50)

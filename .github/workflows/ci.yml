@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: nexuscode
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d nexuscode"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: development
+      PORT: 3001
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: nexuscode
+      JWT_SECRET: ci-ci-ci-ci-ci-ci-ci-ci-ci-ci-ci-ci-ci-ci-ci-ci
+      FRONTEND_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            backend/package-lock.json
+
+      - name: Install root dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci --no-audit --no-fund
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm install --no-audit --no-fund
+
+      - name: Start app
+        run: |
+          npm run dev > "$RUNNER_TEMP/nexuscode-dev.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/nexuscode-dev.pid"
+
+      - name: Wait for services
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl -fsS http://localhost:3000 >/dev/null && curl -fsS http://localhost:3001/api/health >/dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+
+          echo 'Timed out waiting for app startup'
+          cat "$RUNNER_TEMP/nexuscode-dev.log"
+          exit 1
+
+      - name: Run smoke check
+        run: npm run smoke
+
+      - name: Show dev log on failure
+        if: failure()
+        run: cat "$RUNNER_TEMP/nexuscode-dev.log"
+
+      - name: Stop app
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/nexuscode-dev.pid" ]; then
+            kill "$(cat "$RUNNER_TEMP/nexuscode-dev.pid")" || true
+          fi

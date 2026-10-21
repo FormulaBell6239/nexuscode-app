@@ -3,7 +3,68 @@ import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
 
+function isPositiveInteger(raw: string | undefined): boolean {
+  if (!raw) return false;
+  const n = Number(raw);
+  return Number.isInteger(n) && n > 0;
+}
+
+function isValidHttpUrl(raw: string | undefined): boolean {
+  if (!raw) return false;
+  try {
+    const url = new URL(raw);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
+function isPlaceholder(raw: string | undefined): boolean {
+  if (!raw) return true;
+  return /(change_me|replace_me|example|your_|placeholder)/i.test(raw);
+}
+
+function validateProductionEnv() {
+  if (process.env.NODE_ENV !== 'production') return;
+
+  const errors: string[] = [];
+  const required = ['DB_HOST', 'DB_PORT', 'DB_USERNAME', 'DB_PASSWORD', 'DB_NAME', 'JWT_SECRET', 'FRONTEND_URL'];
+
+  for (const key of required) {
+    const value = process.env[key];
+    if (!value || !value.trim()) {
+      errors.push(`Missing required env var: ${key}`);
+      continue;
+    }
+    if (isPlaceholder(value)) {
+      errors.push(`Env var ${key} still uses a placeholder value`);
+    }
+  }
+
+  if (!isPositiveInteger(process.env.DB_PORT)) {
+    errors.push('DB_PORT must be a positive integer');
+  }
+
+  if (process.env.PORT && !isPositiveInteger(process.env.PORT)) {
+    errors.push('PORT must be a positive integer when provided');
+  }
+
+  if (!isValidHttpUrl(process.env.FRONTEND_URL)) {
+    errors.push('FRONTEND_URL must be a valid http/https URL');
+  }
+
+  const jwtSecret = process.env.JWT_SECRET ?? '';
+  if (jwtSecret.length < 32) {
+    errors.push('JWT_SECRET must be at least 32 characters in production');
+  }
+
+  if (errors.length > 0) {
+    throw new Error(`FATAL: invalid production environment configuration:\n- ${errors.join('\n- ')}`);
+  }
+}
+
 async function bootstrap() {
+  validateProductionEnv();
   const app = await NestFactory.create(AppModule);
 
   // Security headers
@@ -32,12 +93,10 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const port = parseInt(process.env.PORT ?? '3001', 10);
-  const jwtSecret = process.env.JWT_SECRET;
-  if (process.env.NODE_ENV === 'production' && (!jwtSecret || jwtSecret === 'change_me_in_production')) {
-    throw new Error('FATAL: JWT_SECRET must be set to a strong secret in production. Refusing to start.');
-  }
 
   await app.listen(port);
-  console.log(`NexusCode backend running on http://localhost:${port}`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`NexusCode backend running on http://localhost:${port}`);
+  }
 }
 bootstrap();

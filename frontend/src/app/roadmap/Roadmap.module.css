@@ -1,0 +1,1124 @@
+/* ── Layout ─────────────────────────────────── */
+.main {
+  min-height: 100vh;
+  position: relative;
+  overflow: visible;
+  padding: 0 0 6rem;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 5rem 2rem 2rem;
+  animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ──────────────────────────────────── */
+.header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border: 1px solid rgba(99,102,241,0.35);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #818cf8;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+  background: rgba(99,102,241,0.07);
+}
+
+.title {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 800;
+  margin: 0 0 0.75rem;
+  letter-spacing: -2px;
+}
+
+.titleGradient {
+  background: linear-gradient(135deg, #e0e7ff 0%, #818cf8 45%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+  .trackViewCrumbRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+.subtitle {
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+    gap: 0.6rem;
+    justify-content: center;
+/* ── Track ───────────────────────────────────── */
+.track {
+  margin-bottom: 3.5rem;
+  background: #080d17;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.trackHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #1e293b;
+  background: #0a0f1c;
+}
+
+.trackIcon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+
+.trackInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.trackLabel {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0;
+}
+
+.trackBarWrap {
+  height: 4px;
+  background: #1e293b;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.trackBar {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.8s ease;
+}
+
+.trackPct {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.continueBtn {
+  flex-shrink: 0;
+  padding: 5px 14px;
+  background: rgba(99,102,241,0.1);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 6px;
+  color: #818cf8;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.continueBtn:hover {
+  background: rgba(99,102,241,0.18);
+  border-color: rgba(99,102,241,0.5);
+}
+
+/* ── Section ─────────────────────────────────── */
+.section {
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid #0d1424;
+}
+
+.section:last-child {
+  border-bottom: none;
+}
+
+.sectionLabel {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 4px;
+  border: 1px solid;
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  background: rgba(0,0,0,0.25);
+}
+
+/* ── Path (vertical line + nodes) ───────────── */
+.path {
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.pathLine {
+  position: absolute;
+  left: 7px;
+  top: 12px;
+  bottom: 12px;
+  width: 2px;
+  border-radius: 999px;
+}
+
+/* ── Node ────────────────────────────────────── */
+.node {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.65rem;
+  position: relative;
+}
+
+.nodeDot {
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #0d1424;
+  border: 2px solid #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+  transition: box-shadow 0.2s;
+}
+
+.nodeDone .nodeDot {
+  color: #fff;
+  border-color: transparent;
+}
+
+.nodeCurrent .nodeDot {
+  background: #0a0f1c;
+  color: #e2e8f0;
+  border-width: 2px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.nodeLocked .nodeDot {
+  opacity: 0.4;
+  font-size: 0.6rem;
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99,102,241,0); }
+  50%       { box-shadow: 0 0 0 5px rgba(99,102,241,0.15); }
+}
+
+/* ── Node Content ────────────────────────────── */
+.nodeContent {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.nodeLabel {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.nodeDone .nodeLabel {
+  color: #cbd5e1;
+}
+
+.nodeCurrent .nodeLabel {
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.nodeLocked .nodeLabel {
+  color: #374151;
+}
+
+.nodeTag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.nodeTagDone {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #34d399;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ── Overview: Track Group ───────────────────── */
+.trackGroup {
+  margin-bottom: 2.5rem;
+}
+
+.trackGroupRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.trackGroupIcon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.trackGroupLabel {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.trackGroupBar {
+  flex: 1;
+  height: 3px;
+  background: #1e293b;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.trackGroupFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.8s ease;
+}
+
+.trackGroupPct {
+  font-size: 0.72rem;
+  color: #475569;
+  font-weight: 600;
+  flex-shrink: 0;
+  min-width: 2.5rem;
+  text-align: right;
+}
+
+/* ── Overview: Section Cards — full-width rows ── */
+.sectionsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.sectionCard {
+  background: #080d17;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.25s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+}
+
+.sectionCard:hover {
+  transform: translateY(-2px) translateX(2px);
+  border-color: rgba(99,102,241,0.4);
+  box-shadow: 0 10px 36px rgba(0,0,0,0.4);
+}
+
+.sectionCardHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1.25rem 1.4rem;
+  border-right: 1px solid;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.sectionCardLang {
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 0.2rem;
+}
+
+.sectionCardCount {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.sectionCardBody {
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.6rem;
+  flex: 1;
+}
+
+.sectionCardBarWrap {
+  height: 5px;
+  background: #1e293b;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.sectionCardBarFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.7s ease;
+}
+
+.sectionCardCta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ── Arrow on far right ── */
+.sectionCard::after {
+  content: '→';
+  display: flex;
+  align-items: center;
+  padding: 0 1.1rem;
+  font-size: 1.1rem;
+  color: #1e293b;
+  transition: color 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+.sectionCard:hover::after {
+  color: #818cf8;
+  transform: translateX(3px);
+}
+
+/* ── Detail View ─────────────────────────────── */
+.detailBack {
+  background: none;
+  border: none;
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 2rem;
+  letter-spacing: 0.02em;
+  transition: color 0.18s;
+  display: block;
+}
+
+.detailBack:hover { color: #818cf8; }
+
+.detailHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.detailLangBadge {
+  display: inline-block;
+  padding: 3px 12px;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.detailTitle {
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+  letter-spacing: -1.5px;
+}
+
+.detailMeta {
+  font-size: 0.82rem;
+  color: #475569;
+  margin: 0;
+}
+
+.detailFooter {
+  margin-top: 2.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 600px) {
+  .sectionsGrid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ════════════════════════════════════════════════
+   SCROLLABLE ZIG-ZAG PATH OVERVIEW
+   ════════════════════════════════════════════════ */
+
+.pathPage {
+  padding: 4.5rem 1rem 7rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.pathPageHeader {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+/* ── Track completion strip ─────────────────── */
+.pathProgressStrip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(8,13,23,0.85);
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.75rem;
+  backdrop-filter: blur(8px);
+}
+
+.pathProgressRow {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.72rem;
+}
+
+.pathProgressLabel {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #64748b;
+  min-width: 108px;
+  flex-shrink: 0;
+}
+
+.pathProgressBarWrap {
+  flex: 1;
+  height: 3px;
+  background: #1e293b;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.pathProgressBarFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.8s ease;
+}
+
+.pathProgressPct {
+  font-size: 0.65rem;
+  color: #475569;
+  font-weight: 600;
+  min-width: 2.2rem;
+  text-align: right;
+}
+
+.pathHint {
+  text-align: center;
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 0.58rem;
+  color: #475569;
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  margin: 0 0 0.5rem;
+}
+
+/* ── SVG canvas (absolute-positioned) ──────── */
+.pathCanvas {
+  position: relative;
+  width: 100%;
+}
+
+.pathSvg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+/* ── Path node circles ──────────────────────── */
+.pNode {
+  position: absolute;
+  border-radius: 50%;
+  border: 1.5px solid var(--nc, #334155);
+  background: #080d17;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s ease, box-shadow 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.pNode:not(.pNodeLocked):hover,
+.pNode:not(.pNodeLocked):focus-visible {
+  transform: scale(1.18);
+}
+
+.pNodeChapter {
+  background: rgba(13,21,38,0.95);
+  border-color: var(--nc, #6366f1);
+  border-width: 2px;
+  box-shadow: 0 0 14px color-mix(in srgb, var(--nc) 30%, transparent);
+}
+
+.pNodeSection {
+  border-color: var(--nc, #475569);
+  background: color-mix(in srgb, var(--nc) 8%, #080d17);
+}
+
+.pNodeDone {
+  background: color-mix(in srgb, var(--nc) 14%, #080d17);
+  border-color: var(--nc);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--nc) 35%, transparent);
+}
+
+.pNodeCurrent {
+  border-color: var(--nc);
+  border-width: 2px;
+  animation: pNodePulse 2.2s ease-in-out infinite;
+}
+
+@keyframes pNodePulse {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50%       { box-shadow: 0 0 0 6px color-mix(in srgb, var(--nc) 22%, transparent); }
+}
+
+.pNodeLocked {
+  opacity: 0.28;
+  border-color: #1e293b;
+}
+
+.pNodeInner {
+  font-size: 0.68rem;
+  line-height: 1;
+  color: var(--nc, #475569);
+  pointer-events: none;
+  user-select: none;
+}
+
+.pNodeDone .pNodeInner    { color: var(--nc); }
+.pNodeChapter .pNodeInner { font-size: 1rem; }
+
+/* ── Labels beside / below each node ────────── */
+.pLabel {
+  position: absolute;
+  white-space: nowrap;
+  font-size: 0.67rem;
+  font-weight: 500;
+  color: #475569;
+  pointer-events: none;
+  letter-spacing: 0.01em;
+  max-width: 105px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pNodeDone .pLabel    { color: var(--nc); }
+.pNodeCurrent .pLabel { color: #e2e8f0; font-weight: 700; }
+.pNodeChapter .pLabel,
+.pNodeSection .pLabel { font-weight: 700; font-size: 0.7rem; color: var(--nc); }
+
+/* Left-side node → label appears to the right */
+.pLabelRight {
+  left: calc(100% + 9px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Right-side node → label appears to the left */
+.pLabelLeft {
+  right: calc(100% + 9px);
+  top: 50%;
+  transform: translateY(-50%);
+  text-align: right;
+}
+
+/* Chapter / section node → label appears below */
+.pLabelBelow {
+  top: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  white-space: normal;
+  max-width: 88px;
+}
+
+@media (max-width: 480px) {
+  .pathPage { padding: 4.5rem 0.5rem 7rem; }
+  .pLabel   { font-size: 0.6rem; max-width: 88px; }
+}
+
+/* ════════════════════════════════════════════════
+   TRACK SELECTION CARDS  (default / landing view)
+   ════════════════════════════════════════════════ */
+
+.trackSelectPage {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 5rem 1.25rem 7rem;
+  animation: fadeUp 0.4s ease both;
+}
+
+.trackSelectHeader {
+  text-align: center;
+  margin-bottom: 2.25rem;
+}
+
+.trackSelectList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 2.5rem;
+}
+
+/* Main track card (button) */
+.trackSelectCard {
+  position: relative;
+  width: 100%;
+  background: #080d17;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  transition: border-color 0.2s, transform 0.18s, box-shadow 0.2s;
+  animation: fadeUp 0.45s ease both;
+}
+
+.trackSelectCard:hover {
+  border-color: color-mix(in srgb, var(--tc) 55%, transparent);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.45),
+              0 0 0 1px color-mix(in srgb, var(--tc) 20%, transparent);
+}
+
+/* Vertical colored accent bar on the left */
+.trackSelectCardAccent {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+  z-index: 2;
+}
+
+.trackSelectCardMark {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  right: 5.25rem;
+  max-width: 62%;
+  transform: translateY(-55%);
+  overflow: hidden;
+  color: transparent;
+  background: linear-gradient(115deg, color-mix(in srgb, var(--tc) 25%, transparent), color-mix(in srgb, var(--tc) 8%, transparent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--tc) 18%, transparent);
+  opacity: 0.8;
+  font-size: clamp(1.4rem, 5vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+
+.trackSelectCardBody {
+  position: relative;
+  z-index: 1;
+  padding: 1.1rem 1.25rem 1rem 1.25rem;
+  margin-left: 4px;          /* offset for the accent bar */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.trackSelectCardTop {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.trackSelectCardInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.trackSelectCardLabel {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  line-height: 1.2;
+}
+
+.trackSelectCardMeta {
+  font-size: 0.68rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.trackSelectCardCta {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--tc) 80%, #94a3b8);
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.trackSelectCard:hover .trackSelectCardCta {
+  color: var(--tc, #818cf8);
+}
+
+/* Progress bar inside the card */
+.trackSelectCardBarWrap {
+  height: 3px;
+  background: #1e293b;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.trackSelectCardBarFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.85s ease;
+}
+
+/* ── "Coming soon" section ───────────────────── */
+.trackSelectSoonLabel {
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #334155;
+  text-align: center;
+  margin-bottom: 0.85rem;
+}
+
+.trackSelectSoonGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+}
+
+.trackSelectSoonCard {
+  background: #080d17;
+  border: 1px solid #1a2233;
+  border-radius: 12px;
+  padding: 0.85rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  position: relative;
+  opacity: 0.5;
+}
+
+.trackSelectSoonIcon  { font-size: 1.1rem; }
+.trackSelectSoonName  { font-size: 0.75rem; font-weight: 700; color: #475569; }
+.trackSelectSoonDesc  { font-size: 0.65rem; color: #2d3748; line-height: 1.4; margin: 0; }
+
+.trackSelectSoonBadge {
+  position: absolute;
+  top: 0.5rem; right: 0.6rem;
+  font-size: 0.5rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1e293b;
+  border: 1px solid #1e293b;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* ════════════════════════════════════════════════
+   PER-TRACK ZIG-ZAG HEADER
+   ════════════════════════════════════════════════ */
+
+.trackViewHeader {
+  position: sticky;
+  top: 56px;
+  z-index: 30;
+  background: transparent;
+  backdrop-filter: blur(8px) saturate(140%);
+  -webkit-backdrop-filter: blur(8px) saturate(140%);
+  padding: 0.25rem 0 0.4rem;
+  margin-bottom: 0.95rem;
+  animation: fadeUp 0.35s ease both;
+}
+
+.trackViewCrumbRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.trackBackBtn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  overflow: hidden;
+  min-height: 44px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  border-radius: 999px;
+  cursor: pointer;
+
+  background: rgba(15,23,42,0.38);
+  backdrop-filter: blur(16px) saturate(155%);
+  -webkit-backdrop-filter: blur(16px) saturate(155%);
+  border: 1px solid rgba(99,102,241,0.12);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.12);
+
+  color: #e2e8f0;
+  transition: background 0.18s ease, box-shadow 0.18s ease,
+              border-color 0.18s ease, transform 0.15s ease, color 0.15s;
+}
+
+.trackBackBtn::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), transparent 62%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.trackBackBtn svg {
+  position: relative;
+  z-index: 1;
+  transform: translateX(-0.5px);
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.25));
+}
+
+.trackBackBtn span {
+  position: relative;
+  z-index: 1;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.trackBackBtn:hover {
+  color: #f8fafc;
+  background: rgba(15,23,42,0.52);
+  border-color: rgba(99,102,241,0.18);
+  box-shadow: 0 10px 22px rgba(2,6,23,0.16);
+  transform: translateY(-1px);
+}
+
+.trackBackBtn:active {
+  transform: scale(0.94);
+  box-shadow: 0 4px 10px rgba(2,6,23,0.12);
+}
+
+.trackHeroHeader {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  padding: 0.8rem 0 0.45rem;
+  margin-bottom: 0.65rem;
+}
+
+.trackHeroHeader::before {
+  content: '';
+  position: absolute;
+  inset: -0.3rem auto auto 50%;
+  width: min(520px, 92vw);
+  height: 170px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--tc) 16%, transparent) 0%, transparent 72%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.trackHeroHeader::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tc) 38%, transparent), transparent);
+  opacity: 0.55;
+}
+
+.trackHeroCopy {
+  position: relative;
+  z-index: 1;
+}
+
+.trackHeroEyebrow {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 4px 12px;
+  border: 1px solid rgba(99,102,241,0.12);
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #9ca7ff;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: rgba(99,102,241,0.04);
+  margin-bottom: 0.7rem;
+}
+
+.trackHeroIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  margin-right: 0.55rem;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--tc) 28%, rgba(255,255,255,0.10));
+  background: rgba(255,255,255,0.03);
+  font-size: 0.95rem;
+  line-height: 1;
+  vertical-align: middle;
+  color: color-mix(in srgb, var(--tc) 72%, #e2e8f0);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.02), 0 0 18px color-mix(in srgb, var(--tc) 18%, transparent);
+}
+
+.trackHeroTitle {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(1.7rem, 4.3vw, 2.5rem);
+  font-weight: 800;
+  margin: 0 0 0.45rem;
+  letter-spacing: -1.55px;
+  color: #f1f5f9;
+  text-shadow: 0 0 18px color-mix(in srgb, var(--tc) 15%, transparent);
+}
+
+.trackHeroBlurb {
+  position: relative;
+  z-index: 1;
+  margin: 0 0 0.8rem;
+  max-width: 34rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #a8b3c7;
+}
+
+.trackHeroLangs {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.trackHeroLangPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.34rem 0.7rem;
+  border: 1px solid;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.trackHeroProgressRow {
+  display: flex;
+  position: relative;
+  z-index: 1;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding-top: 0.2rem;
+}
+
+.trackHeroRail {
+  display: none;
+}
+
+.trackHeroProgressRow .trackHeroBarWrap {
+  flex: 1;
+  height: 4px;
+  background: rgba(148,163,184,0.08);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.trackHeroProgressRow .trackHeroBarFill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.9s ease;
+  box-shadow: 0 0 18px color-mix(in srgb, var(--tc) 26%, transparent);
+}
+
+.trackHeroStats {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.trackHeroStatDone {
+  color: #f8fafc;
+}
+
+.trackHeroStatLeft {
+  color: #7c8aa1;
+}
+
+.trackHeroStatPct {
+  margin-left: 0.12rem;
+  color: color-mix(in srgb, var(--tc, #818cf8) 88%, white);
+  font-size: 0.95rem;
+}
+
+
+/* ── Responsive tweaks ───────────────────────── */
+@media (max-width: 480px) {
+  .trackSelectPage      { padding: 4.5rem 0.85rem 7rem; }
+  .trackSelectSoonGrid  { grid-template-columns: 1fr 1fr; }
+  .trackSelectSoonCard:last-child { display: none; } /* hide 3rd if odd on 2-col */
+}
+

@@ -4,16 +4,16 @@ import { GameController } from '../controllers/game.controller';
 import { GameService } from '../services/game.service';
 import { Game } from '../entities/Game';
 import { UserProgress } from '../entities/UserProgress';
-import { UserAchievement } from '../entities/UserAchievement';
-import { Achievement } from '../entities/Achievement';
 import { UserPurchase } from '../entities/UserPurchase';
 import { StoreItem } from '../entities/StoreItem';
 import { AuthModule } from '../auth/auth.module';
+import { AchievementsModule } from '../achievements/achievements.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Game, UserProgress, UserAchievement, Achievement, UserPurchase, StoreItem]),
+    TypeOrmModule.forFeature([Game, UserProgress, UserPurchase, StoreItem]),
     AuthModule,
+    AchievementsModule,
   ],
   controllers: [GameController],
   providers: [GameService],

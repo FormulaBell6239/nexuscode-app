@@ -1,0 +1,215 @@
+/* ── Layout ────────────────────────────────────────────────────── */
+.main { min-height: 100vh; position: relative; overflow: hidden; padding: 0 0 6rem; }
+
+.container {
+  position: relative; z-index: 1;
+  max-width: 1000px; margin: 0 auto; padding: 5rem 1.5rem 2rem;
+  animation: fadeUp 0.55s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+.header { text-align: center; margin-bottom: 2.5rem; }
+.badge {
+  display: inline-block; padding: 4px 14px;
+  border: 1px solid rgba(99,102,241,0.35); border-radius: 999px;
+  font-size: 0.68rem; font-weight: 700; color: #818cf8;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  margin-bottom: 1.25rem; background: rgba(99,102,241,0.07);
+}
+.title { font-size: clamp(1.9rem,5vw,3rem); font-weight: 800; margin: 0 0 0.6rem; letter-spacing: -1.5px; }
+.titleGradient {
+  background: linear-gradient(135deg, #e0e7ff 0%, #818cf8 45%, #06b6d4 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.subtitle { color: #475569; font-size: 0.88rem; line-height: 1.7; margin-bottom: 1.5rem; }
+
+/* ── Stats bar ──────────────────────────────────────────────────── */
+.statsBar {
+  display: inline-flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  background: rgba(99,102,241,0.05); border: 1px solid rgba(99,102,241,0.15);
+  border-radius: 12px; padding: 0.65rem 1.25rem;
+  justify-content: center; margin-bottom: 1rem;
+}
+.stat { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; }
+.statVal { font-size: 1rem; font-weight: 800; color: #e2e8f0; }
+.statLbl { font-size: 0.6rem; font-weight: 600; color: #374151; text-transform: uppercase; letter-spacing: 0.07em; }
+.statDivider { width: 1px; height: 1.8rem; background: #1e293b; }
+.storeLink {
+  font-size: 0.75rem; font-weight: 600; color: #6366f1; text-decoration: none;
+  padding: 5px 12px; border: 1px solid rgba(99,102,241,0.3); border-radius: 7px;
+  transition: background 0.2s, color 0.2s;
+}
+.storeLink:hover { background: rgba(99,102,241,0.12); color: #818cf8; }
+
+/* ── Overall progress bar ───────────────────────────────────────── */
+.overallBar {
+  height: 5px; background: #1e293b; border-radius: 999px;
+  overflow: hidden; margin: 0 auto; max-width: 320px;
+}
+.overallFill {
+  height: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, #6366f1, #818cf8, #06b6d4);
+  transition: width 1.2s ease;
+  box-shadow: 0 0 10px rgba(99,102,241,0.5);
+}
+
+/* ── Tier legend ─────────────────────────────────────────────────── */
+.tierLegend {
+  display: flex; gap: 1.25rem; justify-content: center;
+  margin-bottom: 2.5rem; flex-wrap: wrap;
+}
+.tierLegendItem { display: flex; align-items: center; gap: 0.45rem; }
+.tierDot {
+  width: 14px; height: 14px;
+  clip-path: polygon(50% 0%, 97% 25%, 97% 75%, 50% 100%, 3% 75%, 3% 25%);
+  flex-shrink: 0;
+}
+.tierLegendLabel { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; }
+
+/* ── Group section ───────────────────────────────────────────────── */
+.group { margin-bottom: 3rem; }
+.groupHeader {
+  display: flex; align-items: center; gap: 0.6rem;
+  margin-bottom: 1.25rem; padding-bottom: 0.65rem;
+  border-bottom: 1px solid #1e293b;
+}
+.groupIcon { font-size: 1rem; }
+.groupLabel { font-size: 0.82rem; font-weight: 700; color: #e2e8f0; letter-spacing: 0.03em; }
+.groupCount { font-size: 0.72rem; color: #374151; margin-left: auto; }
+
+/* ── Achievement list — single-column rows ───────────────────────── */
+.badgeGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* ── Skeleton ───────────────────────────────────────────────────── */
+.skeleton {
+  height: 72px; background: #0d1424; border: 1px solid #1e293b;
+  border-radius: 14px;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 0.9; }
+}
+
+/* ── Achievement card — horizontal row ──────────────────────────── */
+.achCard {
+  background: #080d17;
+  border: 1px solid #1e293b;
+  border-radius: 14px;
+  padding: 0.9rem 1.1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+  position: relative;
+}
+.achCardEarned {
+  border-color: rgba(99,102,241,0.22);
+}
+.achCardEarned:hover {
+  border-color: rgba(99,102,241,0.5);
+  background: #0d1424;
+  box-shadow: 0 6px 22px rgba(0,0,0,0.3);
+}
+.achCardLocked { opacity: 0.48; }
+.achCardLocked:hover { opacity: 0.68; background: #0a0f1c; }
+
+/* ── Icon badge (left column) ───────────────────────────────────── */
+.achBadge {
+  flex-shrink: 0;
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.55rem; line-height: 1;
+  position: relative;
+  overflow: hidden;
+}
+/* Shimmer for earned */
+.achBadge::after {
+  content: '';
+  position: absolute; top: -100%; left: -40%;
+  width: 35%; height: 300%;
+  background: linear-gradient(transparent, rgba(255,255,255,0.15), transparent);
+  transform: rotate(20deg);
+  animation: shimmer 5s ease-in-out infinite;
+}
+@keyframes shimmer {
+  0%, 60%, 100% { left: -40%; opacity: 0; }
+  20%            { left: 160%; opacity: 1; }
+  40%            { left: 160%; opacity: 0; }
+}
+.badge_bronze   { background: linear-gradient(135deg, #1c0e00, #78350f); border: 1px solid #d97706; box-shadow: 0 0 10px rgba(217,119,6,0.3); }
+.badge_silver   { background: linear-gradient(135deg, #0d1117, #1e293b); border: 1px solid #64748b; box-shadow: 0 0 10px rgba(100,116,139,0.2); }
+.badge_gold     { background: linear-gradient(135deg, #1a0800, #78350f); border: 1px solid #f59e0b; box-shadow: 0 0 14px rgba(245,158,11,0.35); }
+.badge_platinum { background: linear-gradient(135deg, #0d0c2e, #1e1b4b); border: 1px solid #818cf8; box-shadow: 0 0 16px rgba(129,140,248,0.4); }
+
+.achBadgeIcon { position: relative; z-index: 1; }
+
+/* ── Center body ─────────────────────────────────────────────────── */
+.achBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.achMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ── Tier text colors ─────────────────────────────────────────────── */
+.tier_bronze   { color: #d97706; }
+.tier_silver   { color: #94a3b8; }
+.tier_gold     { color: #f59e0b; }
+.tier_platinum { color: #818cf8; }
+
+/* ── Card text ───────────────────────────────────────────────────── */
+.tierLabel   { font-size: 0.58rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+.achName     { font-size: 0.875rem; font-weight: 700; color: #e2e8f0; line-height: 1.25; }
+.achDesc     { font-size: 0.72rem; color: #374151; line-height: 1.5; }
+.earnedDate  { font-size: 0.58rem; color: #374151; margin-left: auto; flex-shrink: 0; }
+
+/* ── Progress bar ───────────────────────────────────────────────── */
+.achProgress {
+  display: flex; align-items: center; gap: 0.45rem;
+}
+.progressTrack {
+  flex: 1; height: 4px; background: #1e293b; border-radius: 999px; overflow: hidden;
+}
+.progressFill { height: 100%; border-radius: 999px; transition: width 1s ease; }
+.fill_bronze   { background: linear-gradient(90deg, #78350f, #d97706); }
+.fill_silver   { background: linear-gradient(90deg, #334155, #94a3b8); }
+.fill_gold     { background: linear-gradient(90deg, #78350f, #f59e0b); }
+.fill_platinum { background: linear-gradient(90deg, #3730a3, #818cf8); }
+.progressCount { font-size: 0.6rem; color: #374151; flex-shrink: 0; white-space: nowrap; }
+
+/* ── Credit pill (right side) ───────────────────────────────────── */
+.creditPill {
+  flex-shrink: 0;
+  font-size: 0.65rem; font-weight: 700; color: #6366f1;
+  background: rgba(99,102,241,0.1); border: 1px solid rgba(99,102,241,0.22);
+  border-radius: 999px; padding: 3px 10px; letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.creditPillEarned {
+  color: #34d399; background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.28);
+}
+
+/* ── Error ───────────────────────────────────────────────────────── */
+.errorMsg { text-align: center; color: #f87171; }
+
+
+

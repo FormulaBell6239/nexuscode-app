@@ -36,10 +36,10 @@ export class UserProgress {
   lastActiveDate: Date | null;
 
   // Energy system
-  @Column({ default: 5 })
+  @Column({ default: 10 })
   energy: number;
 
-  @Column({ default: 5 })
+  @Column({ default: 10 })
   maxEnergy: number;
 
   @Column({ type: 'timestamp', nullable: true })
@@ -52,8 +52,8 @@ export class UserProgress {
   @Column({ default: 0 })
   credits: number;
 
-  // Hearts (free users: 5/day, refill at midnight UTC)
-  @Column({ default: 5 })
+  // Hearts (free users: 10/day, refill at midnight UTC)
+  @Column({ default: 10 })
   hearts: number;
 
   @Column({ type: 'varchar', nullable: true, default: null })

@@ -1,0 +1,965 @@
+/* ── Layout ─────────────────────────────────── */
+.main {
+  min-height: 100vh;
+  padding: 0 0 6rem;
+}
+
+.container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 5rem 1.25rem 2rem;
+  animation: fadeUp 0.45s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Header ──────────────────────────────────── */
+.header {
+  text-align: left;
+  margin-bottom: 1.75rem;
+}
+
+.eyebrow {
+  display: inline-block;
+  padding: 4px 14px;
+  border: 1px solid rgba(99,102,241,0.35);
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #818cf8;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  background: rgba(99,102,241,0.07);
+}
+
+.title {
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 800;
+  margin: 0 0 0.65rem;
+  letter-spacing: -2px;
+}
+
+.titleGradient {
+  background: linear-gradient(135deg, #e0e7ff 0%, #818cf8 45%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  color: #475569;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+/* ── Tier bar ────────────────────────────────── */
+.tierBar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 5px 16px;
+  background: #0a0f1c;
+  border: 1px solid #1e293b;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.tierCurrent {
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.tierDivider {
+  color: #334155;
+}
+
+.tierSlots {
+  color: #818cf8;
+  font-weight: 600;
+}
+
+.tierUpgrade {
+  color: #06b6d4;
+  font-weight: 700;
+  text-decoration: none;
+  margin-left: 0.25rem;
+  transition: color 0.15s;
+}
+.tierUpgrade:hover { color: #67e8f9; }
+
+/* ── Assignment filters ───────────────────────── */
+.assignmentControls {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.4rem 0 2rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid rgba(148,163,184,0.10);
+  border-bottom: 1px solid rgba(148,163,184,0.10);
+}
+.categorySelectLabel { display: flex; flex-direction: column; gap: 0.35rem; color: #53697d; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+.categorySelect {
+  min-width: 170px;
+  padding: 0.55rem 2rem 0.55rem 0.7rem;
+  border: 1px solid #25364a;
+  border-radius: 6px;
+  color: #d7e3ed;
+  background: #0a1421;
+  font: 600 0.78rem inherit;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.statusTabs { display: flex; align-items: center; gap: 0.25rem; padding: 0.22rem; border: 1px solid #1b2a3b; border-radius: 7px; background: #080f19; }
+.statusTab { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.45rem 0.65rem; border: 1px solid transparent; border-radius: 5px; color: #66798a; background: transparent; font: 600 0.7rem inherit; cursor: pointer; }
+.statusTab span { color: #42576a; font: 700 0.6rem 'SF Mono', Menlo, monospace; }
+.statusTab:hover { color: #cfdae4; }
+.statusTabActive { color: #d8e8f2; border-color: rgba(103,232,249,0.18); background: rgba(34,211,238,0.08); }
+.statusTabActive span { color: #7dd3fc; }
+
+/* ── Tier section ────────────────────────────── */
+.tierSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.tierSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.tierMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.tierEyebrow {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 3px 12px;
+  border-radius: 999px;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+.tierTitle {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  margin: 0;
+  letter-spacing: -0.3px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tierDot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.tierAssignmentCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  border: 1px solid;
+  border-radius: 999px;
+  padding: 0 7px;
+  letter-spacing: 0.02em;
+}
+
+.tierLockBanner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 1rem;
+  background: #07111f;
+  border: 1px solid;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  color: #475569;
+  align-self: flex-start;
+}
+
+.tierLockLink {
+  color: #6366f1;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.tierLockLink:hover { color: #818cf8; }
+
+.featuredLabel { color: #76d3e5; font: 800 0.58rem 'SF Mono', Menlo, monospace; letter-spacing: 0.13em; }
+
+/* ── Carousel ────────────────────────────────── */
+.carousel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  position: relative;
+}
+
+.carouselTrack {
+  flex: 1;
+  position: relative;
+  height: 540px;
+  overflow: visible;
+}
+
+.carouselArrow {
+  flex-shrink: 0;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 50%;
+  border: 1px solid #1e293b;
+  background: #080d17;
+  color: #94a3b8;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, color 0.2s;
+  z-index: 10;
+}
+
+.carouselArrow:hover:not(:disabled) {
+  border-color: #6366f1;
+  color: #e0e7ff;
+}
+
+.carouselArrow:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+/* ── Dot indicators ───────────────────────────── */
+.carouselDots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: -0.5rem;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: none;
+  background: #1e293b;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dotActive {
+  transform: scale(1.3);
+}
+
+/* ── Carousel slide wrapper ───────────────────── */
+.slide {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(520px, 64vw);
+  height: 100%;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.45s ease,
+              filter 0.45s ease;
+  will-change: transform, opacity;
+}
+
+.slideActive {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+  z-index: 3;
+  pointer-events: all;
+}
+
+.slideLeft {
+  transform: translateX(calc(-50% - 330px)) scale(0.76);
+  opacity: 0.35;
+  z-index: 2;
+  filter: blur(1px);
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.slideRight {
+  transform: translateX(calc(-50% + 330px)) scale(0.76);
+  opacity: 0.35;
+  z-index: 2;
+  filter: blur(1px);
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.slideHidden {
+  transform: translateX(-50%) scale(0.7);
+  opacity: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.slideLeft:hover,
+.slideRight:hover {
+  opacity: 0.55;
+  filter: blur(0px);
+}
+
+/* ── Assignment card ─────────────────────────── */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    #07111f 0%,
+    color-mix(in srgb, var(--rarity, #818cf8) 12%, #07111f) 100%
+  );
+  border: 1px solid #1a2744;
+  border-top: 2px solid var(--rarity, #818cf8);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  animation: cardIn 0.35s ease both;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: linear-gradient(
+    150deg,
+    color-mix(in srgb, var(--rarity, #818cf8) 10%, transparent) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Decorative reward icon watermark */
+.cardAccentIcon {
+  position: absolute;
+  top: 0.8rem;
+  right: 1rem;
+  font-size: 2rem;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(0.5px);
+  transform: rotate(10deg);
+  transition: transform 0.4s ease, opacity 0.4s ease, filter 0.4s ease;
+}
+
+.card:hover .cardAccentIcon {
+  transform: rotate(35deg) scale(1.1);
+  opacity: 0.35;
+  filter: blur(0px) drop-shadow(0 0 12px color-mix(in srgb, var(--rarity, #818cf8) 50%, transparent));
+}
+
+@keyframes accentIconFloat {
+  0%, 100% { transform: rotate(10deg) translateY(0); }
+  50% { transform: rotate(10deg) translateY(-3px); }
+}
+
+.cardAccentIcon {
+  animation: accentIconFloat 4s ease-in-out infinite;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes accentIconFloat {
+  0%, 100% { transform: rotate(10deg) translateY(0); }
+  50% { transform: rotate(10deg) translateY(-3px); }
+}
+
+.card:hover {
+  border-color: color-mix(in srgb, var(--rarity, #818cf8) 50%, transparent);
+  border-top-color: var(--rarity, #818cf8);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--rarity, #818cf8) 18%, transparent),
+              0 12px 32px color-mix(in srgb, var(--rarity, #818cf8) 12%, rgba(0,0,0,0.5));
+  transform: translateY(-2px);
+}
+
+.cardInner {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: 1.05rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.cardFeatured .cardInner {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) minmax(230px,0.9fr);
+  align-content: start;
+  column-gap: 1.1rem;
+}
+.cardFeatured .cardTop,
+.cardFeatured .featuredLabel,
+.cardFeatured .cardTitle,
+.cardFeatured .cardDesc,
+.cardFeatured .taskBox,
+.cardFeatured .requirementProgress,
+.cardFeatured .claimNote,
+.cardFeatured .assignmentActions { grid-column: 1; }
+.cardFeatured .rewardShowcase { grid-column: 2; grid-row: 2 / span 5; align-self: center; }
+
+/* ── Card top row ────────────────────────────── */
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.rarityBadge {
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid;
+}
+
+.categoryPill {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #475569;
+  background: #0d1525;
+  border: 1px solid #1e293b;
+  border-radius: 999px;
+  padding: 2px 9px;
+  letter-spacing: 0.06em;
+}
+
+.expiry {
+  margin-left: auto;
+  font-size: 0.62rem;
+  color: #475569;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ── Card body ───────────────────────────────── */
+.cardTitle {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  margin: 0;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+}
+
+.cardDesc {
+  font-size: 0.83rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ── Requirements progress ────────────────────── */
+.requirementProgress { display: flex; flex-direction: column; gap: 0.38rem; }
+.requirementProgressTop { display: flex; justify-content: space-between; color: #71879a; font-size: 0.67rem; }
+.requirementProgressTop b { color: #b8cfdd; font: 700 0.67rem 'SF Mono', Menlo, monospace; }
+.requirementTrack { height: 5px; overflow: hidden; border-radius: 999px; background: #162333; }
+.requirementFill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #0e7490, #22d3ee); box-shadow: 0 0 12px rgba(34,211,238,0.35); transition: width 0.45s ease; }
+
+/* ── Task box ────────────────────────────────── */
+.taskBox {
+  background: #030c18;
+  border: 1px solid #1a2744;
+  border-left: 3px solid var(--rarity, #818cf8);
+  border-radius: 6px;
+  padding: 0.65rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.taskLabel {
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--rarity, #818cf8);
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+}
+
+.taskText {
+  font-size: 0.76rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.6;
+  font-family: 'Courier New', monospace;
+}
+
+/* ── Reward drop showcase ─────────────────────── */
+.rewardShowcase {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-height: 118px;
+  padding: 0.85rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--rarity) 38%, transparent);
+  border-radius: 8px;
+  background:
+    radial-gradient(ellipse at 18% 50%, color-mix(in srgb, var(--rarity) 18%, transparent), transparent 64%),
+    linear-gradient(125deg, #091421, #0a101b 72%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 8px 22px color-mix(in srgb, var(--rarity) 10%, transparent);
+}
+.rewardShowcase::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,0.045) 50%, transparent 65%); transform: translateX(-120%); transition: transform 0.65s ease; }
+.card:hover .rewardShowcase::after { transform: translateX(120%); }
+.rewardArtifact {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  flex: 0 0 76px;
+  border: 1px solid color-mix(in srgb, var(--reward) 45%, transparent);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 36%, color-mix(in srgb, var(--reward) 25%, #101827), #080e18 72%);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--reward) 22%, transparent), inset 0 0 18px rgba(255,255,255,0.04);
+}
+.rewardArtifact::before,
+.rewardArtifact::after { content: ''; position: absolute; inset: -5px; border: 1px solid color-mix(in srgb, var(--rarity) 35%, transparent); border-radius: 50%; transform: rotate(-28deg) scaleY(0.42); }
+.rewardArtifact::after { transform: rotate(28deg) scaleY(0.42); }
+.rewardArtifactIcon { position: relative; z-index: 1; color: var(--reward); font-size: 2rem; line-height: 1; filter: drop-shadow(0 0 12px color-mix(in srgb, var(--reward) 62%, transparent)); animation: rewardFloat 3.4s ease-in-out infinite; }
+@keyframes rewardFloat { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-3px) scale(1.05); } }
+.rewardArtifactTier { position: absolute; z-index: 2; bottom: -0.38rem; padding: 0.15rem 0.35rem; border: 1px solid color-mix(in srgb, var(--rarity) 38%, transparent); border-radius: 3px; color: color-mix(in srgb, var(--rarity) 82%, white); background: #080f19; font: 800 0.48rem 'SF Mono', Menlo, monospace; letter-spacing: 0.08em; text-transform: uppercase; }
+.rewardShowcaseContent { position: relative; z-index: 1; display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 0.3rem; }
+.rewardShowcaseEyebrow { color: color-mix(in srgb, var(--rarity) 80%, #dbeafe); font: 800 0.52rem 'SF Mono', Menlo, monospace; letter-spacing: 0.12em; text-transform: uppercase; }
+.rewardShowcaseName { color: #edf7fc; font-size: 0.86rem; font-weight: 800; line-height: 1.3; }
+.rewardPayout { display: flex; flex-wrap: wrap; gap: 0.85rem; margin-top: 0.32rem; }
+.rewardPayout > span { display: flex; align-items: flex-end; gap: 0.3rem; }
+.rewardPayout b { color: #f8d978; font: 800 1rem 'SF Mono', Menlo, monospace; text-shadow: 0 0 16px rgba(245,158,11,0.28); }
+.rewardPayout small { color: #627889; font: 700 0.49rem 'SF Mono', Menlo, monospace; letter-spacing: 0.08em; }
+.rewardShowcaseCompact { min-height: 84px; margin-top: 0.35rem; padding: 0.55rem; }
+.rewardShowcaseCompact .rewardArtifact { width: 52px; height: 52px; flex-basis: 52px; }
+.rewardShowcaseCompact .rewardArtifactIcon { font-size: 1.4rem; }
+.rewardShowcaseCompact .rewardShowcaseName { font-size: 0.74rem; }
+.rewardShowcaseCompact .rewardPayout b { font-size: 0.78rem; }
+
+/* ── Reward row ──────────────────────────────── */
+.rewardRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.38rem;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid #1a2744;
+  border-radius: 8px;
+  padding: 0.55rem 0.9rem;
+}
+
+.rewardRowLabel {
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #334155;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+}
+
+.rewardChips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.rewardChipXp {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(245,158,11,0.35);
+  background: rgba(245,158,11,0.1);
+  color: #f59e0b;
+  white-space: nowrap;
+}
+
+.rewardChipCredits {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(6,182,212,0.35);
+  background: rgba(6,182,212,0.1);
+  color: #06b6d4;
+  white-space: nowrap;
+}
+
+.rewardChipSpecial {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+/* ── CTA button ──────────────────────────────── */
+.startBtn {
+  align-self: flex-end;
+  margin-top: auto;
+  padding: 0.65rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--rarity, #818cf8) 80%, #000) 0%,
+    color-mix(in srgb, var(--rarity, #818cf8) 55%, #000) 100%
+  );
+  box-shadow: 0 4px 18px color-mix(in srgb, var(--rarity, #818cf8) 30%, transparent);
+  transition: opacity 0.18s, transform 0.18s, box-shadow 0.18s;
+}
+
+.startBtn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px color-mix(in srgb, var(--rarity, #818cf8) 42%, transparent);
+}
+
+.startBtn:active {
+  transform: translateY(0);
+  opacity: 1;
+}
+.startBtn:disabled { opacity: 0.42; cursor: not-allowed; transform: none; box-shadow: none; }
+.assignmentActions { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; margin-top: 0.1rem; }
+.curriculumLink { color: #7ba3b8; font-size: 0.68rem; font-weight: 700; text-decoration: none; }
+.curriculumLink:hover { color: #b9e6f3; }
+.claimNote { margin: 0; color: #526779; font-size: 0.62rem; line-height: 1.4; }
+
+/* ── Locked card ─────────────────────────────── */
+.cardLocked {
+  opacity: 0.76;
+  filter: saturate(0.35);
+}
+
+.lockedBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-start;
+  margin-top: auto;
+}
+
+.lockIcon {
+  font-size: 1.1rem;
+}
+
+.lockReason {
+  font-size: 0.78rem;
+  color: #475569;
+  margin: 0;
+}
+
+.lockBtn {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 0.45rem 1rem;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+  display: inline-block;
+  margin-top: 0.2rem;
+}
+.lockBtn:hover {
+  background: #283548;
+  border-color: #475569;
+}
+
+/* ── Completed card ──────────────────────────── */
+.cardCompleted {
+  border-color: rgba(52,211,153,0.24);
+  border-top-color: #34d399;
+  background: linear-gradient(135deg, #071a1b, #07111f 76%);
+}
+.cardCompleted .rewardArtifact { border-color: rgba(52,211,153,0.4); }
+.cardCompleted .rewardArtifactIcon { color: #6ee7b7; }
+.cardCompleted .cardInner { gap: 0.58rem; }
+.completedBrief { border-left-color: #34d399; }
+.collectedStatus { display: flex; align-items: center; gap: 0.45rem; color: #6ee7b7; font-size: 0.65rem; font-weight: 700; }
+.collectedStatusMark { width: 16px; height: 16px; display: grid; place-items: center; border: 1px solid rgba(52,211,153,0.4); border-radius: 50%; background: rgba(52,211,153,0.1); font-size: 0.58rem; }
+.collectedStatusLine { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(52,211,153,0.32), transparent); }
+.cardCompleted .curriculumLink { align-self: flex-start; }
+
+.completedMark {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #34d399;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+}
+
+/* ── Skeleton loader ─────────────────────────── */
+.skeleton {
+  height: 160px;
+  background: linear-gradient(
+    90deg,
+    #0a0f1c 0%,
+    #111827 50%,
+    #0a0f1c 100%
+  );
+  background-size: 200% 100%;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  animation: shimmer 1.6s ease infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* ── Empty state ─────────────────────────────── */
+.emptyState {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  background: #07111f;
+  border: 1px dashed #1e293b;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.emptyIcon { font-size: 2rem; }
+
+.emptyState p {
+  color: #475569;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* ── Section divider ─────────────────────────── */
+.sectionDivider {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.25rem 0 1rem;
+  position: relative;
+}
+
+/* The tube itself — thin glowing capsule */
+.sectionDividerLine {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+  /* dim base fill so the tube looks lit from within */
+  background: color-mix(in srgb, var(--divider-accent) 10%, #07111f);
+  /* outer glow halos */
+  box-shadow:
+    0 0 8px  color-mix(in srgb, var(--divider-accent) 30%, transparent),
+    0 0 18px color-mix(in srgb, var(--divider-accent) 14%, transparent),
+    0 0 32px color-mix(in srgb, var(--divider-accent)  7%, transparent);
+}
+
+/* Primary blob — drifts left → right → left (slow, organic) */
+.sectionDividerLine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* gradient is wider than the tube so only a bright pocket is visible at once */
+  background: radial-gradient(
+    ellipse 28% 300% at 50% 50%,
+    color-mix(in srgb, var(--divider-accent) 100%, #fff) 0%,
+    color-mix(in srgb, var(--divider-accent)  70%, transparent) 55%,
+    transparent 100%
+  );
+  background-size: 340% 100%;
+  background-repeat: no-repeat;
+  filter: blur(1.5px);
+  animation: lavaBlob 7.5s ease-in-out infinite alternate;
+}
+
+/* Secondary blob — counter-drifts, slightly different hue */
+.sectionDividerLine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 22% 300% at 50% 50%,
+    color-mix(in srgb, var(--divider-accent) 75%, #06b6d4) 0%,
+    color-mix(in srgb, var(--divider-accent) 45%, #06b6d4) 50%,
+    transparent 100%
+  );
+  background-size: 260% 100%;
+  background-repeat: no-repeat;
+  filter: blur(0.8px);
+  animation: lavaBlob 10.5s ease-in-out infinite alternate-reverse;
+}
+
+/* Single keyframe — background-position pans the radial blob across the tube */
+@keyframes lavaBlob {
+  0%   { background-position:   0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Pill badge in the centre */
+.sectionDividerPill {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 6px 18px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--divider-accent) 40%, transparent);
+  background: color-mix(in srgb, var(--divider-accent) 8%, #060e1a);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--divider-accent);
+  white-space: nowrap;
+  animation: pillGlow 4s ease-in-out infinite;
+}
+
+@keyframes pillGlow {
+  0%, 100% {
+    box-shadow:
+      0 0 10px color-mix(in srgb, var(--divider-accent) 18%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--divider-accent) 18%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 24px color-mix(in srgb, var(--divider-accent) 40%, transparent),
+      0 0 40px color-mix(in srgb, var(--divider-accent) 15%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--divider-accent) 28%, transparent);
+  }
+}
+
+.sectionDividerArrow {
+  font-size: 0.5rem;
+  display: inline-block;
+  opacity: 0.7;
+  animation: arrowFloat 2.4s ease-in-out infinite;
+}
+
+@keyframes arrowFloat {
+  0%, 100% { transform: translateY(0);    opacity: 0.7; }
+  50%       { transform: translateY(2px); opacity: 1;   }
+}
+
+
+/* ── Reward toast ────────────────────────────── */
+.rewardToast {
+  position: fixed;
+  bottom: 2.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 1.5rem;
+  background: #070f1f;
+  border: 1px solid color-mix(in srgb, var(--toast-rarity, #6366f1) 45%, transparent);
+  border-radius: 14px;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.55),
+    0 0 28px color-mix(in srgb, var(--toast-rarity, #6366f1) 18%, transparent);
+  z-index: 9999;
+  animation: toastIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  pointer-events: none;
+}
+
+.toastIcon { font-size: 1.4rem; line-height: 1; }
+
+.toastBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.toastTitle {
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #64748b;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.toastDrop { color: #d8e8ef; font-size: 0.75rem; font-weight: 700; }
+
+.toastRewards {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.toastXp      { color: #f59e0b; }
+.toastDot     { color: #334155; }
+.toastCredits { color: #06b6d4; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(14px) scale(0.95); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0)     scale(1); }
+}
+
+/* ── Mobile ──────────────────────────────────── */
+@media (max-width: 640px) {
+  .container        { padding: 4.5rem 0.85rem 2rem; }
+  .expiry           { display: none; }
+  .header { margin-bottom: 1.25rem; }
+  .assignmentControls { align-items: stretch; flex-direction: column; gap: 0.7rem; }
+  .categorySelect { width: 100%; }
+  .statusTabs { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .statusTab { justify-content: center; padding-inline: 0.35rem; }
+  .carouselTrack { height: 620px; }
+  .slide { width: min(310px, 64vw); }
+  .slideLeft { transform: translateX(calc(-50% - 165px)) scale(0.78); }
+  .slideRight { transform: translateX(calc(-50% + 165px)) scale(0.78); }
+  .cardFeatured .cardInner { display: flex; }
+  .cardFeatured .rewardShowcase { align-self: auto; }
+  .rewardShowcase { min-height: 102px; }
+  .rewardArtifact { width: 64px; height: 64px; flex-basis: 64px; }
+  .rewardPayout { gap: 0.55rem; }
+  .rewardPayout > span { align-items: flex-start; flex-direction: column; gap: 0.1rem; }
+  .assignmentActions { align-items: stretch; }
+  .startBtn { flex: 0 0 auto; }
+  .tierSection { gap: 0.8rem; margin-bottom: 1.35rem; }
+}

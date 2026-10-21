@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { UserProgress } from '../entities/UserProgress';
+import { UserPurchase } from '../entities/UserPurchase';
 import { AchievementsService } from '../achievements/achievements.service';
 
 /** Safe JSON.parse — returns fallback if the string is null/corrupted */
@@ -13,6 +14,7 @@ function safeParseJSON<T>(value: string | null | undefined, fallback: T): T {
 
 const XP_PER_LEVEL = 300;
 const ENERGY_REGEN_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
+const STARTER_AVATARS = ['👾', '🤖', '🦾', '💀', '⚡', '🔮', '🪐', '🎮', '👽', '👻', '🦊', '🐙', '🦈', '🦉', '🐉', '🐺', '🐱', '🐸', '🦄', '🐼', '🐧', '🦋', '🦖', '🥷', '🧑‍🚀', '🧙', '🦇', '🦂', '🌙', '💎'];
 
 // ── Credit economy ─────────────────────────────────────────────────────────
 // New lesson completed          → +6
@@ -53,6 +55,8 @@ export class ProfileService {
     private readonly userRepo: Repository<User>,
     @InjectRepository(UserProgress)
     private readonly progressRepo: Repository<UserProgress>,
+    @InjectRepository(UserPurchase)
+    private readonly purchaseRepo: Repository<UserPurchase>,
     private readonly achievementsService: AchievementsService,
   ) {}
 
@@ -77,8 +81,8 @@ export class ProfileService {
       level: progress?.level ?? 1,
       streak: progress?.streak ?? 0,
       longestStreak: progress?.longestStreak ?? 0,
-      energy: progress?.energy ?? 5,
-      maxEnergy: progress?.maxEnergy ?? 5,
+      energy: progress?.energy ?? 10,
+      maxEnergy: progress?.maxEnergy ?? 10,
       credits: progress?.credits ?? 0,
       completedLessons,
       isGracePeriod: completedLessons.length < 5,
@@ -91,7 +95,7 @@ export class ProfileService {
 
     let progress = await this.progressRepo.findOne({ where: { userId } });
     if (!progress) {
-      progress = this.progressRepo.create({ userId, energy: 5, maxEnergy: 5, energyLastRegen: new Date() });
+      progress = this.progressRepo.create({ userId, energy: 10, maxEnergy: 10, energyLastRegen: new Date() });
     }
 
     const prevLevel = progress.level;
@@ -181,6 +185,16 @@ export class ProfileService {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
+    if (dto.avatar !== undefined && !STARTER_AVATARS.includes(dto.avatar)) {
+      const ownedAvatar = await this.purchaseRepo.findOne({
+        where: {
+          userId,
+          item: { category: 'cosmetic', cosmeticType: 'avatar', applyValue: dto.avatar },
+        },
+      });
+      if (!ownedAvatar) throw new ForbiddenException('You do not own this avatar');
+    }
+
     if (dto.displayName !== undefined) user.displayName = dto.displayName;
     if (dto.bio !== undefined) user.bio = dto.bio;
     if (dto.avatar !== undefined) user.avatar = dto.avatar;
@@ -205,13 +219,13 @@ export class ProfileService {
 
     let progress = await this.progressRepo.findOne({ where: { userId } });
     if (!progress) {
-      progress = this.progressRepo.create({ userId, energy: 5, maxEnergy: 5, energyLastRegen: new Date(), hearts: 5 });
+      progress = this.progressRepo.create({ userId, energy: 10, maxEnergy: 10, energyLastRegen: new Date(), hearts: 10 });
       await this.progressRepo.save(progress);
     }
 
     const today = new Date().toISOString().slice(0, 10);
     if (!progress.heartsLastRefilled || progress.heartsLastRefilled < today) {
-      progress.hearts = 5;
+      progress.hearts = 10;
       progress.heartsLastRefilled = today;
       await this.progressRepo.save(progress);
     }
@@ -229,12 +243,12 @@ export class ProfileService {
 
     let progress = await this.progressRepo.findOne({ where: { userId } });
     if (!progress) {
-      progress = this.progressRepo.create({ userId, energy: 5, maxEnergy: 5, energyLastRegen: new Date(), hearts: 5 });
+      progress = this.progressRepo.create({ userId, energy: 10, maxEnergy: 10, energyLastRegen: new Date(), hearts: 10 });
     }
 
     const today = new Date().toISOString().slice(0, 10);
     if (!progress.heartsLastRefilled || progress.heartsLastRefilled < today) {
-      progress.hearts = 5;
+      progress.hearts = 10;
       progress.heartsLastRefilled = today;
     }
 

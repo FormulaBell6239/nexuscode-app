@@ -8,6 +8,8 @@ import { ProfileModule } from './profile/profile.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { AchievementsModule } from './achievements/achievements.module';
 import { StoreModule } from './store/store.module';
+import { ContactModule } from './contact/contact.module';
+import { HealthModule } from './health/health.module';
 import { User } from './entities/user.entity';
 import { Game } from './entities/Game';
 import { Achievement } from './entities/Achievement';
@@ -41,6 +43,8 @@ import { UserPurchase } from './entities/UserPurchase';
     LeaderboardModule,
     AchievementsModule,
     StoreModule,
+    ContactModule,
+    HealthModule,
   ],
 })
 export class AppModule {}

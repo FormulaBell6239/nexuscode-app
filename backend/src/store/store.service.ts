@@ -83,6 +83,7 @@ export class StoreService {
       if (user) {
         if (item.cosmeticType === 'theme') user.theme = item.applyValue;
         if (item.cosmeticType === 'callingCard') user.callingCard = item.applyValue;
+        if (item.cosmeticType === 'avatar') user.avatar = item.applyValue;
         await this.userRepo.save(user);
       }
     }
@@ -107,6 +108,7 @@ export class StoreService {
       itemId: p.itemId,
       name: p.item.name,
       category: p.item.category,
+      cosmeticType: p.item.cosmeticType,
       applyValue: p.item.applyValue,
       gameSlug: p.item.gameSlug,
       isPrize: p.isPrize,
@@ -142,6 +144,7 @@ export class StoreService {
       if (user) {
         if (item.cosmeticType === 'theme') user.theme = item.applyValue;
         if (item.cosmeticType === 'callingCard') user.callingCard = item.applyValue;
+        if (item.cosmeticType === 'avatar') user.avatar = item.applyValue;
         await this.userRepo.save(user);
       }
     }

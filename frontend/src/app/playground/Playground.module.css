@@ -1,0 +1,972 @@
+/* ── Layout ─────────────────────────────────── */
+.main {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 56px);
+  background: transparent;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* ── Picker ──────────────────────────────────── */
+.pickerMain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 56px);
+  background: transparent;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.pickerContainer {
+  max-width: 860px;
+  width: 100%;
+  animation: fadeUp 0.45s ease both;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Background orbs (picker only) ──────────── */
+.dotGrid {
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.orb1 {
+  position: fixed;
+  top: -180px;
+  left: -120px;
+  width: 600px;
+  height: 600px;
+  max-width: 100vw;
+  background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 68%);
+  pointer-events: none;
+  z-index: 0;
+  animation: orbFloat 9s ease-in-out infinite;
+}
+
+.orb2 {
+  position: fixed;
+  bottom: -200px;
+  right: 0;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(6,182,212,0.14) 0%, transparent 68%);
+  pointer-events: none;
+  z-index: 0;
+  animation: orbFloat 12s ease-in-out infinite reverse;
+}
+
+@keyframes orbFloat {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50%       { transform: translateY(28px) scale(1.03); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pickerHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.pickerBadge {
+  display: inline-block;
+  padding: 3px 12px;
+  border: 1px solid rgba(99,102,241,0.35);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #818cf8;
+  letter-spacing: 0.12em;
+  background: rgba(99,102,241,0.07);
+  margin-bottom: 1rem;
+}
+
+.pickerTitle {
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-weight: 800;
+  margin: 0 0 0.5rem;
+  letter-spacing: -1.5px;
+  background: linear-gradient(135deg, #e0e7ff 0%, #818cf8 50%, #06b6d4 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.pickerSubtitle {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.pickerGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .pickerGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pickerCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  padding: 2rem;
+  background: #080d17;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  min-height: 220px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Web and Python cards share a layered type treatment, with track-specific color. */
+.pickerCardWeb {
+  border: none;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(249,115,22,0.12) 0%, transparent 27%),
+    radial-gradient(circle at 88% 18%, rgba(245,158,11,0.08) 0%, transparent 24%),
+    transparent;
+  box-shadow: none;
+  padding-top: 0.5rem;
+}
+.pickerCardWeb:hover {
+  transform: translateY(-4px);
+  border-color: transparent;
+  box-shadow: none;
+}
+.pickerCardWeb::before {
+  content: 'HTML';
+  position: absolute;
+  left: 0.95rem;
+  top: 0.55rem;
+  right: 0.95rem;
+  font-size: clamp(3.6rem, 9vw, 6rem);
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(251,146,60,0.17);
+  background: linear-gradient(135deg, rgba(251,146,60,0.18), rgba(250,204,21,0.10) 55%, rgba(255,255,255,0.02));
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0.88;
+  pointer-events: none;
+  user-select: none;
+}
+.pickerCardWeb::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 48%;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(3, 9, 15, 0.10) 64%, rgba(3, 9, 15, 0.22) 100%),
+    repeating-linear-gradient(90deg, transparent 0 18px, rgba(255,255,255,0.025) 18px 19px),
+    repeating-linear-gradient(180deg, transparent 0 18px, rgba(255,255,255,0.025) 18px 19px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.pickerCardWeb:hover {
+  border-color: transparent;
+}
+.pickerCardWeb:hover .pickerArrow {
+  color: #fb923c;
+  transform: translateX(4px);
+}
+
+.pickerCardPython {
+  border: none;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(16,185,129,0.10) 0%, transparent 26%),
+    radial-gradient(circle at 88% 18%, rgba(34,211,238,0.08) 0%, transparent 24%),
+    transparent;
+  box-shadow: none;
+  padding-top: 0.5rem;
+}
+.pickerCardPython:hover {
+  transform: translateY(-4px);
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.pickerCardPython::before {
+  content: 'PYTHON';
+  position: absolute;
+  left: 0.95rem;
+  top: 0.55rem;
+  right: 0.95rem;
+  font-size: clamp(2.9rem, 8vw, 5.4rem);
+  font-weight: 900;
+  letter-spacing: 0.24em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(110,231,183,0.14);
+  background: linear-gradient(135deg, rgba(110,231,183,0.18), rgba(34,211,238,0.12) 55%, rgba(255,255,255,0.02));
+  -webkit-background-clip: text;
+  background-clip: text;
+  opacity: 0.88;
+  pointer-events: none;
+  user-select: none;
+  transform: translateY(-2px);
+}
+
+.pickerCardPython::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 48%;
+  background:
+    linear-gradient(180deg, transparent 0%, rgba(3, 9, 15, 0.10) 64%, rgba(3, 9, 15, 0.22) 100%),
+    repeating-linear-gradient(90deg, transparent 0 18px, rgba(255,255,255,0.025) 18px 19px),
+    repeating-linear-gradient(180deg, transparent 0 18px, rgba(255,255,255,0.025) 18px 19px);
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.pickerCardBody {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  padding-top: 3.8rem;
+  max-width: 18rem;
+}
+
+.pickerMicroLabel {
+  display: inline-flex;
+  margin-bottom: 3.2rem;
+  padding: 0.28rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(16,185,129,0.22);
+  color: #7dd3fc;
+  background: rgba(8,18,24,0.32);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.pickerMicroLabelWeb {
+  border-color: rgba(249,115,22,0.25);
+  color: #fdba74;
+}
+
+.pickerCardTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  margin: 0 0 0.25rem;
+}
+.pickerCardSubtitle {
+  margin: -0.16rem 0 0.4rem;
+  color: #fdba74;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pickerCardDesc {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+  max-width: 16rem;
+}
+
+.pickerArrow {
+  font-size: 1.1rem;
+  color: #7dd3fc;
+  transition: color 0.2s, transform 0.2s;
+  margin-top: 1rem;
+  align-self: flex-end;
+  position: relative;
+  z-index: 1;
+}
+
+.pickerCardPython:hover .pickerArrow {
+  color: #a7f3d0;
+  transform: translateX(4px);
+}
+
+/* ── Python layout ───────────────────────────── */
+.pyLayout {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.pyEditorPane {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.pyOutputPane {
+  flex: 0 0 200px;
+  background: #020408;
+  border-top: 1px solid #1e293b;
+  display: flex;
+  flex-direction: column;
+}
+
+.pyOutputHeader {
+  padding: 0.3rem 1rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #34d399;
+  border-bottom: 1px solid #0d1424;
+  background: #040a10;
+  flex-shrink: 0;
+}
+
+.pyOutputBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem 1rem;
+  margin: 0;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Courier New', monospace;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: #a3e635;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Run button ──────────────────────────────── */
+.runBtn {
+  background: linear-gradient(135deg, #059669, #34d399);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.runBtn:hover:not(:disabled) {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.runBtn:disabled {
+  background: #1e293b;
+  color: #475569;
+  cursor: not-allowed;
+}
+
+/* ── Top bar ─────────────────────────────────── */
+.topBar {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  background: #080d17;
+  border-bottom: 1px solid #111827;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  height: 46px;
+  overflow: hidden;
+}
+
+/* ── Back button ── */
+.backBtn {
+  background: none;
+  border: none;
+  color: #475569;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+.backBtn:hover { color: #94a3b8; background: #111827; }
+
+/* ── Filename area ── */
+.fileArea {
+  display: flex;
+  align-items: center;
+  background: #0a0f1c;
+  border: 1px solid #1e293b;
+  border-radius: 7px;
+  padding: 0 6px 0 8px;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  transition: border-color 0.15s;
+}
+.fileArea:focus-within { border-color: rgba(99,102,241,0.5); }
+
+.fileTypeTag {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.fileNameInput {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #e2e8f0;
+  font-size: 0.82rem;
+  font-family: 'Fira Code', monospace;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  min-width: 0;
+  padding: 0;
+}
+.fileNameInput::placeholder { color: #334155; }
+
+.saveIconBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #475569;
+  padding: 2px 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: color 0.15s, background 0.15s;
+  line-height: 1;
+}
+.saveIconBtn:hover { color: #818cf8; background: rgba(99,102,241,0.1); }
+
+/* ── File name pill (shown when file exists) ── */
+.fileNamePill {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+/* ── Language extension badge ── */
+.extBadge {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border: 1px solid;
+  border-radius: 4px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* ── New File button (shown when no file for this tab) ── */
+.newFileBtn {
+  flex: 1;
+  background: none;
+  border: 1px dashed #1e293b;
+  border-radius: 7px;
+  color: #334155;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 4px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  letter-spacing: 0.02em;
+  height: 32px;
+}
+.newFileBtn:hover {
+  border-color: rgba(99,102,241,0.4);
+  color: #6366f1;
+}
+
+/* ── Create button (in naming form) ── */
+.createBtn {
+  background: rgba(99,102,241,0.15);
+  border: 1px solid rgba(99,102,241,0.35);
+  color: #818cf8;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.createBtn:hover {
+  background: rgba(99,102,241,0.25);
+  border-color: rgba(99,102,241,0.55);
+}
+
+/* ── Cancel naming button ── */
+.cancelNaming {
+  background: none;
+  border: none;
+  color: #475569;
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 2px 5px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+.cancelNaming:hover { color: #94a3b8; }
+
+/* ── Right action group ── */
+.topBarActions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+
+
+/* ── Toggle buttons ──────────────────────────── */
+.toggleButton {
+  background: transparent;
+  color: #4b5563;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 5px 14px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s;
+  outline: none;
+  letter-spacing: 0.03em;
+}
+
+.toggleButton:hover,
+.toggleButton:focus {
+  background: rgba(99, 102, 241, 0.08);
+  border-color: #6366f1;
+  color: #a5b4fc;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── Project input ───────────────────────────── */
+.projectInput {
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid #1e293b;
+  font-size: 0.78rem;
+  background: #0d1424;
+  color: #e2e8f0;
+  outline: none;
+  transition: border-color 0.2s;
+  min-width: 160px;
+}
+
+.projectInput:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.15);
+}
+
+/* ── Editor Tabs ─────────────────────────────── */
+.editorTabs {
+  display: flex;
+  gap: 0;
+  background: #080d17;
+  border-bottom: 1px solid #111827;
+  padding: 0 0.75rem;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.tab {
+  background: transparent;
+  color: #374151;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  transition: color 0.18s, border-color 0.18s;
+  border-radius: 0;
+  margin-bottom: -1px;
+}
+
+.tab:hover {
+  color: #6366f1;
+}
+
+.activeTab {
+  background: transparent;
+  color: #818cf8;
+  border: none;
+  border-bottom: 2px solid #6366f1;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  margin-bottom: -1px;
+  border-radius: 0;
+}
+
+/* ── Editor Container ────────────────────────── */
+.editorContainer {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #080d17;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+.codeEditor {
+  flex: 1 1 0;
+  height: 100%;
+  min-height: 0;
+  font-size: 0.875rem;
+  background: #080d17;
+  color: #e2e8f0;
+  resize: none;
+}
+
+/* Force CM wrapper to fill height */
+.codeEditor .cm-editor {
+  height: 100%;
+  background: #080d17;
+}
+
+.codeEditor .cm-scroller {
+  font-family: 'Fira Code', 'Fira Mono', 'Menlo', monospace;
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+/* ── Browser frame ───────────────────────────── */
+.browserFrame {
+  width: 100%;
+  flex: 1 1 0;
+  min-height: 0;
+  border: none;
+  background: #fff;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  display: block;
+}
+
+/* ── Card wrapper (projects panel) ──────────── */
+/* ── Projects drawer overlay ─────────────────── */
+.drawerOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 100;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  animation: fadeOverlay 0.18s ease both;
+}
+
+@keyframes fadeOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.drawer {
+  width: min(340px, 90vw);
+  background: #07080f;
+  border-left: 1px solid rgba(99, 102, 241, 0.2);
+  display: flex;
+  flex-direction: column;
+  animation: slideInDrawer 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+  overflow: hidden;
+}
+
+@keyframes slideInDrawer {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #111827;
+  flex-shrink: 0;
+}
+
+.drawerTitle {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  letter-spacing: 0.02em;
+}
+
+.drawerClose {
+  background: none;
+  border: none;
+  color: #475569;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 5px;
+  transition: color 0.15s, background 0.15s;
+}
+.drawerClose:hover {
+  color: #94a3b8;
+  background: #111827;
+}
+
+.drawerNew {
+  margin: 12px 14px 0;
+  padding: 9px 12px;
+  background: rgba(99, 102, 241, 0.16);
+  border: 1px solid rgba(99, 102, 241, 0.45);
+  border-radius: 8px;
+  color: #c7d2fe;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.drawerNew:hover { background: rgba(99, 102, 241, 0.3); }
+
+.drawerSearch {
+  margin: 12px 14px 8px;
+  background: #0a0f1c;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+  flex-shrink: 0;
+}
+.drawerSearch:focus {
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.drawerList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #1e293b transparent;
+}
+
+.drawerEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 40px 20px;
+  color: #334155;
+  font-size: 0.82rem;
+  text-align: center;
+}
+.drawerEmptyIcon { font-size: 2rem; }
+.drawerEmptyHint { font-size: 0.72rem; color: #1e293b; }
+
+.drawerFile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #0a0f1c;
+  transition: background 0.15s;
+  cursor: default;
+}
+.drawerFile:hover {
+  background: rgba(99, 102, 241, 0.05);
+}
+
+.drawerFileIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.drawerFileInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.drawerFileName {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #a5b4fc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawerFilePreview {
+  font-size: 0.68rem;
+  color: #334155;
+  font-family: 'Fira Code', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.drawerFileBtns {
+  display: flex;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.drawerLoad {
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #818cf8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.drawerLoad:hover {
+  background: rgba(99, 102, 241, 0.22);
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.drawerDelete {
+  background: none;
+  border: 1px solid #1e293b;
+  color: #475569;
+  font-size: 0.72rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.drawerDelete:hover {
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.06);
+}
+
+
+
+/* ── Tips bubble ─────────────────────────────── */
+.tipsBox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0.65rem 0.85rem 0;
+  padding: 0.6rem 0.9rem;
+  background: rgba(99, 102, 241, 0.06);
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  border-left: 3px solid #6366f1;
+  border-radius: 8px;
+  font-size: 0.74rem;
+  color: #64748b;
+  line-height: 1.55;
+  flex-shrink: 0;
+  transition: opacity 0.7s;
+}
+
+.tipsBox strong {
+  display: inline-block;
+  color: #818cf8;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-right: 0.45rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+  line-height: 1.6;
+}
+
+.fadeIn  { opacity: 1; }
+.fadeOut { opacity: 0; }
+
+/* ── Feedback textarea ───────────────────────── */
+.feedbackBox {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  min-height: 52px;
+  border-radius: 6px;
+  border: 1px solid #1e293b;
+  padding: 0.5rem 0.875rem;
+  background: #0d1424;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  resize: vertical;
+  margin: 0.75rem auto 0;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.feedbackBox:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.12);
+}
+
+.sendFeedbackButton {
+  display: block;
+  margin: 0.5rem auto 0;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 700px) {
+  .topBar {
+    padding: 0.5rem 0.75rem;
+    height: auto;
+    overflow: visible;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    row-gap: 0.4rem;
+  }
+  .fileArea {
+    order: 3;
+    flex: 1 1 100%;
+  }
+  .topBarActions {
+    margin-left: auto;
+  }
+  .tipsBox {
+    margin: 0.5rem 0.6rem 0;
+    font-size: 0.72rem;
+  }
+  .cardWrapper { padding: 0.75rem; }
+}
+
+
+
+.autoSaved { font-size: 0.68rem; color: #34d399; opacity: 0.75; white-space: nowrap; }

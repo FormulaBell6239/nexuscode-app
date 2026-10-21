@@ -3,10 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Game } from '../entities/Game';
 import { UserProgress } from '../entities/UserProgress';
-import { UserAchievement } from '../entities/UserAchievement';
-import { Achievement } from '../entities/Achievement';
 import { UserPurchase } from '../entities/UserPurchase';
 import { StoreItem } from '../entities/StoreItem';
+import { AchievementsService } from '../achievements/achievements.service';
 
 const XP_PER_GAME = 100;
 
@@ -17,14 +16,11 @@ export class GameService {
     private readonly gameRepo: Repository<Game>,
     @InjectRepository(UserProgress)
     private readonly progressRepo: Repository<UserProgress>,
-    @InjectRepository(UserAchievement)
-    private readonly userAchievementRepo: Repository<UserAchievement>,
-    @InjectRepository(Achievement)
-    private readonly achievementRepo: Repository<Achievement>,
     @InjectRepository(UserPurchase)
     private readonly purchaseRepo: Repository<UserPurchase>,
     @InjectRepository(StoreItem)
     private readonly storeItemRepo: Repository<StoreItem>,
+    private readonly achievementsService: AchievementsService,
   ) {}
 
   findAllGames() {
@@ -62,38 +58,15 @@ export class GameService {
     progress.lastActiveDate = new Date();
     await this.progressRepo.save(progress);
 
-    const unlocked = await this.checkAchievements(userId, progress);
-    return { xp: progress.xp, level: progress.level, unlockedAchievements: unlocked };
-  }
-
-  private async checkAchievements(userId: number, progress: UserProgress) {
-    const allAchievements = await this.achievementRepo.find();
-    const unlocked: Achievement[] = [];
-    const gamesCompleted = Math.floor(progress.xp / XP_PER_GAME);
-
-    for (const achievement of allAchievements) {
-      let progressCount = 0;
-      if (achievement.type === 'challenges_completed') progressCount = gamesCompleted;
-      if (achievement.type === 'targets_hit') progressCount = gamesCompleted;
-      if (achievement.type === 'overall_performance') progressCount = progress.level >= 5 ? 1 : 0;
-
-      let ua = await this.userAchievementRepo.findOne({
-        where: { userId, achievementId: achievement.id },
-      });
-      if (!ua) {
-        ua = this.userAchievementRepo.create({ userId, achievementId: achievement.id });
-      }
-
-      const wasEarned = ua.earned;
-      ua.progress = Math.min(progressCount, achievement.requiredCount);
-      if (!wasEarned && progressCount >= achievement.requiredCount) {
-        ua.earned = true;
-        ua.earnedAt = new Date();
-        unlocked.push(achievement);
-      }
-      await this.userAchievementRepo.save(ua);
+    const r1 = await this.achievementsService.incrementProgress(userId, 'challenges_completed', 1);
+    const r2 = await this.achievementsService.incrementProgress(userId, 'targets_hit', 1);
+    let creditsAwarded = r1.creditsAwarded + r2.creditsAwarded;
+    const prizes = [...r1.prizes, ...r2.prizes];
+    if (progress.level >= 5) {
+      const r3 = await this.achievementsService.incrementProgress(userId, 'overall_performance', 1);
+      creditsAwarded += r3.creditsAwarded;
+      prizes.push(...r3.prizes);
     }
-
-    return unlocked;
+    return { xp: progress.xp, level: progress.level, creditsAwarded, prizes };
   }
 }

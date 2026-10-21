@@ -2,6 +2,12 @@ import 'reflect-metadata';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+// ── Production guard ────────────────────────────────────────────────────────
+if (process.env.NODE_ENV === 'production') {
+  console.error('FATAL: seed.ts must never run in production. Aborting.');
+  process.exit(1);
+}
+
 import { DataSource } from 'typeorm';
 import { User } from './entities/user.entity';
 import { Game } from './entities/Game';
@@ -18,7 +24,7 @@ const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD ?? 'postgres',
   database: process.env.DB_NAME ?? 'nexuscode',
   entities: [User, Game, Achievement, UserProgress, UserAchievement, StoreItem],
-  synchronize: true,
+  synchronize: process.env.NODE_ENV !== 'production',
 });
 
 const GAMES = [
@@ -95,6 +101,8 @@ const STORE_ITEMS = [
   { name: 'Midnight Theme',   description: 'Unlock the Midnight UI theme',                      icon: '🌑',  category: 'cosmetic', creditCost: 60,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'minimal-dark',              oneTimePurchase: true, milestoneOnly: false },
   { name: '⚡ Elite Card',     description: 'Exclusive calling card for dedicated coders',       icon: '🏦',  category: 'cosmetic', creditCost: 75,  gameSlug: null,               cosmeticType: 'callingCard', applyValue: 'elite',                     oneTimePurchase: true, milestoneOnly: false },
   { name: '🔥 Inferno Card',  description: 'Calling card for players on a 30-day streak',      icon: '🏦',  category: 'cosmetic', creditCost: 100, gameSlug: null,               cosmeticType: 'callingCard', applyValue: 'inferno',                   oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Cipher Sigil',     description: 'A precision-cut emblem for your profile',           icon: '⌘',   category: 'cosmetic', creditCost: 120, gameSlug: null,               cosmeticType: 'avatar',      applyValue: 'avatar-cipher',             oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Unbroken Sigil',   description: 'Earned by maintaining a 30-day learning streak',   icon: '◈',   category: 'cosmetic', creditCost: 0,   gameSlug: null,               cosmeticType: 'avatar',      applyValue: 'avatar-unbroken',           oneTimePurchase: true, milestoneOnly: true },
   // ── Tier-exclusive milestone skins (earn-only, milestoneOnly: true) ────────
   { name: 'Ember Skin',       description: 'Warm orange-red fire palette earned by reaching Bronze tier',        icon: '🔥',  category: 'cosmetic', creditCost: 0, gameSlug: null, cosmeticType: 'theme', applyValue: 'ember',        oneTimePurchase: true, milestoneOnly: true },
   { name: 'Matrix Skin',      description: 'Terminal green hacker aesthetic earned by reaching Silver tier',     icon: '⌨️',  category: 'cosmetic', creditCost: 0, gameSlug: null, cosmeticType: 'theme', applyValue: 'matrix-green', oneTimePurchase: true, milestoneOnly: true },

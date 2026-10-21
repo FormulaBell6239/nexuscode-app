@@ -1,75 +1,114 @@
-nexus# NexusCode Gamified Coding Learning App
+# Nex98usCode
 
-Welcome to the NexusCode project! This repository contains both the frontend and backend components of the NexusCode gamified coding learning application.
+A gamified coding learning platform built to make learning to code engaging, progressive, and rewarding.
+
+## Features
+
+- **Curriculum** — Structured coding lessons with an interactive code editor (Monaco + CodeMirror)
+- **Nexus Path** — Visual learning roadmap tracking your progression
+- **Games** — Coding challenges and mini-games to reinforce concepts
+- **Playground** — Free-form code sandbox for experimentation
+- **Leaderboard** — Compete with other learners
+- **Achievements** — Unlock badges and rewards as you progress
+- **Store** — Spend earned points on cosmetics and profile items
+- **Profile & Calling Cards** — Customisable profile with emblem/calling card system
+- **Energy System** — Hearts-based energy mechanic tied to lesson attempts
+- **Onboarding** — Guided setup flow for new users
+- **Free Tier with Ads** — The free tier is ad-supported to keep NexusCode free for everyone. Upgrading to Pro removes ads entirely.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 14 (App Router), React, TypeScript, CSS Modules |
+| Backend | NestJS, TypeScript |
+| Database | PostgreSQL via TypeORM |
+| Auth | JWT (access tokens, bcrypt password hashing) |
+| Security | Helmet, global rate limiting (Throttler), input validation (class-validator) |
+| DevOps | Docker Compose |
 
 ## Project Structure
 
-The project is divided into two main parts:
-
-1. **Frontend**: Located in the `frontend` directory, this part is built with Next.js and React. It handles the user interface and user experience of the application.
-   - **Pages**: The main entry point is located in `src/pages/index.tsx`.
-   - **Components**: Reusable components can be found in `src/components`.
-   - **Styles**: Global styles are defined in `src/styles/globals.css`.
-   - **Public Assets**: Static assets are stored in the `public` directory.
-
-2. **Backend**: Located in the `backend` directory, this part is built with Nest.js. It manages the server-side logic and database interactions.
-   - **Controllers**: HTTP request handling is done in `src/controllers`.
-   - **Services**: Business logic is implemented in `src/services`.
-   - **Entities**: Database entities are defined in `src/entities`.
+```
+nexuscode-app/
+├── frontend/   # Next.js App Router frontend
+├── backend/    # NestJS REST API
+└── docker-compose.yml
+```
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (version 14 or higher)
-- npm (version 6 or higher)
+- Node.js v18 or higher
+- npm v9 or higher
+- PostgreSQL (or use Docker Compose)
+
+### Environment Variables
+
+Copy the example env files and fill in your own values. **Never commit `.env` files.**
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env.local
+```
+
+Required backend variables: `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_NAME`, `JWT_SECRET`, `NODE_ENV`.
 
 ### Installation
 
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd nexuscode-app
-   ```
+```bash
+# Install root helper scripts (dev/build/seed)
+npm install
 
-2. Install dependencies for the frontend:
-   ```
-   cd frontend
-   npm install
-   ```
+# Install frontend dependencies
+cd frontend && npm install
 
-3. Install dependencies for the backend:
-   ```
-   cd ../backend
-   npm install
-   ```
+# Install backend dependencies
+cd ../backend && npm install
+```
 
-### Running the Application
+### Running with Docker (recommended)
 
-To run the frontend and backend applications, follow these steps:
+```bash
+docker compose up
+```
 
-1. Start the backend server:
-   ```
-   cd backend
-   npm run start
-   ```
+### Running locally
 
-2. In a new terminal, start the frontend application:
-   ```
-   cd frontend
-   npm run dev
-   ```
+```bash
+# From project root (recommended)
+npm run dev
 
-The frontend will be available at `http://localhost:3000` and the backend API will be running on `http://localhost:3001` (or the port specified in your configuration).
+# Or run each service manually
+# Terminal 1 — backend
+cd backend && npm run dev
+
+# Terminal 2 — frontend
+cd frontend && npm run dev
+```
+
+`npm run dev` automatically runs a preflight that clears stale listeners on ports `3000` and `3001` before starting both services.
+
+## Security
+
+- Passwords are hashed with bcrypt before storage — plaintext passwords are never persisted
+- All API routes are rate-limited globally; authentication endpoints have a stricter limit
+- HTTP security headers are set via Helmet
+- Database credentials and secrets are loaded exclusively from environment variables
+- `synchronize: true` (auto-migration) is disabled in production
+- Backend startup performs fail-fast production env validation (`DB_*`, `JWT_SECRET`, `FRONTEND_URL`) and refuses to boot on invalid/missing values
+
+## Health Check
+
+- Backend liveness/readiness endpoint: `GET /api/health`
+- Example local URL: `http://localhost:3001/api/health`
+- Returns `200` with `{ status: "ok", database: "up", ... }` when API + DB are healthy
 
 ## Contributing
 
-We welcome contributions to the NexusCode project! Please feel free to submit issues or pull requests.
+Pull requests are welcome. Please open an issue first to discuss significant changes.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for more details.
-
-## Acknowledgments
-
-Thank you for checking out the NexusCode project! We hope you enjoy building and learning with us.
+MIT — see [LICENSE](LICENSE) for details.
