@@ -32,6 +32,7 @@ import { UserPurchase } from './entities/UserPurchase';
         username: config.get<string>('DB_USERNAME', 'postgres'),
         password: config.get<string>('DB_PASSWORD') || undefined,
         database: config.get<string>('DB_NAME', 'nexuscode'),
+        ssl: config.get<string>('DB_SSL') === 'true' ? { rejectUnauthorized: true } : false,
         entities: [User, Game, Achievement, UserProgress, UserAchievement, StoreItem, UserPurchase],
         synchronize: config.get<string>('NODE_ENV') !== 'production',
         logging: config.get<string>('NODE_ENV') === 'development',

@@ -58,6 +58,17 @@ function validateProductionEnv() {
     errors.push('JWT_SECRET must be at least 32 characters in production');
   }
 
+  const dbPassword = process.env.DB_PASSWORD ?? '';
+  if (dbPassword.length < 16 || ['postgres', 'password', 'admin', 'root'].includes(dbPassword.toLowerCase())) {
+    errors.push('DB_PASSWORD must be a strong secret (at least 16 characters, not a default)');
+  }
+  if ((process.env.DB_USERNAME ?? '').toLowerCase() === 'postgres') {
+    errors.push('DB_USERNAME should be a dedicated least-privilege role, not the postgres superuser');
+  }
+  if (!['localhost', '127.0.0.1'].includes(process.env.DB_HOST ?? '') && process.env.DB_SSL !== 'true') {
+    errors.push('DB_SSL=true is required when the database is on a remote host');
+  }
+
   if (errors.length > 0) {
     throw new Error(`FATAL: invalid production environment configuration:\n- ${errors.join('\n- ')}`);
   }

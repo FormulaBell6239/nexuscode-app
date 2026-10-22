@@ -1,0 +1,57 @@
+# Production topology
+#
+#   internet -> backend (ports) -- db_net (internal) --> postgres
+#
+# - `db_net` is internal: containers on it have no route to or from the outside world.
+#   Only services that need the database (the backend) join it.
+# - `edge` is a normal network: the backend joins it so it can publish its port and reach
+#   outside services. Postgres is NOT on it, so it has no published port and no external path.
+# Secrets are required from the environment / a secrets manager. Run with:
+#   docker compose -f docker-compose.prod.yml up -d
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USERNAME:?set DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set a strong DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME:?set DB_NAME}
+    networks:
+      - db_net
+    volumes:
+      - nexuscode-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME:?set DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD:?set a strong DB_PASSWORD}
+      DB_NAME: ${DB_NAME:?set DB_NAME}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL:?set FRONTEND_URL}
+    ports:
+      - "3001:3001"
+    networks:
+      - edge
+      - db_net
+
+networks:
+  edge: {}
+  db_net:
+    internal: true
+
+volumes:
+  nexuscode-pgdata:

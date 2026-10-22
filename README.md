@@ -97,7 +97,8 @@ cd frontend && npm run dev
 - HTTP security headers are set via Helmet
 - Database credentials and secrets are loaded exclusively from environment variables
 - `synchronize: true` (auto-migration) is disabled in production
-- Backend startup performs fail-fast production env validation (`DB_*`, `JWT_SECRET`, `FRONTEND_URL`) and refuses to boot on invalid/missing values
+- Backend startup performs fail-fast production env validation (`DB_*`, `JWT_SECRET`, `FRONTEND_URL`) and refuses to boot on invalid/missing values, weak or default DB passwords, the `postgres` superuser, and a remote DB without `DB_SSL=true`
+- Dev Postgres is bound to `127.0.0.1` only; production uses `docker-compose.prod.yml`, which publishes no database port and requires all secrets from the environment
 
 ## Health Check
 

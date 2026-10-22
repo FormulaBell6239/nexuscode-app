@@ -1,14 +1,16 @@
+# Local development database. Bound to loopback only so it is never reachable from the network.
+# Credentials come from the environment (root .env or shell); the defaults are for local dev only.
 services:
   postgres:
     image: postgres:16-alpine
     container_name: nexuscode-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: nexuscode
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_DB: ${DB_NAME:-nexuscode}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - nexuscode-pgdata:/var/lib/postgresql/data
 
