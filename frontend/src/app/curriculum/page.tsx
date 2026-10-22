@@ -8,13 +8,14 @@ import { python } from "@codemirror/lang-python";
 import { sql as sqlLang } from "@codemirror/lang-sql";
 import { EditorView } from "@codemirror/view";
 import { nexusTheme } from "../../lib/nexusTheme";
+import { useRouter } from "next/navigation";
 import styles from "./Curriculum.module.css";
 import RewardPopup from "../../components/RewardPopup";
 import MobileLessonView from "../../components/MobileLessonView";
 
 // Module-level guard: prevents Pyodide from being loaded twice in StrictMode
 let _pyodideInjected = false;
-import { submitXp, getHearts, deductHeart, getProfile, addLocalCredits, addLocalCompletedLesson, LOCAL_CREDIT_RATES } from "../../lib/api";
+import { submitXp, getHearts, deductHeart, getProfile, addLocalCredits, addLocalCompletedLesson, LOCAL_CREDIT_RATES, lessonCredits } from "../../lib/api";
 
 // ---------------------------------------------
 // Learning Track Definitions
@@ -355,15 +356,18 @@ export default function CurriculumPage() {
       return raw ? new Set(JSON.parse(raw)) : new Set();
     } catch { return new Set(); }
   });
+  const router = useRouter();
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
   const [pyOutput, setPyOutput] = useState('');
   const [pyRunning, setPyRunning] = useState(false);
   const [pyodideReady, setPyodideReady] = useState(false);
   const [xpEarned, setXpEarned] = useState(50);
+  const [creditsEarned, setCreditsEarned] = useState(0);
   const hasAttemptedRef = useRef<boolean>(false);
 
   // Hearts system
   const [hearts, setHearts] = useState<number>(10);
+  const [nextEnergyIn, setNextEnergyIn] = useState<number | null>(null);
   const [isPro, setIsPro] = useState(false);
   const [showPaywall, setShowPaywall] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -382,8 +386,7 @@ export default function CurriculumPage() {
   }, []);
 
   // Level list collapse toggle
-  const [levelListCollapsed, setLevelListCollapsed] = useState(false);
-  const [isSpinning, setIsSpinning] = useState(false);
+  const [levelListCollapsed, setLevelListCollapsed] = useState(true);
 
   // Tracks whether the user has clicked Submit for the current lesson
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -401,7 +404,6 @@ export default function CurriculumPage() {
   const resizeStartWidthRef = useRef(DEFAULT_LEFT_PANE_WIDTH);
   const pyodideRef = useRef<any>(null);
   const levelListRef = useRef<HTMLDivElement>(null);
-  const introAnimRef = useRef(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -450,74 +452,16 @@ export default function CurriculumPage() {
     setLeftPaneWidth(clampLeftPaneWidth(targetWidth));
   };
 
-  // Scroll quest list to active item (only after intro animation has run)
+  // Keep the active lesson in view, and re-collapse to it when the lesson or section changes
+  useEffect(() => { setLevelListCollapsed(true); }, [category, sectionIndex]);
   useEffect(() => {
-    if (!levelListRef.current || !introAnimRef.current) return;
-    const active = levelListRef.current.querySelector('[data-active="true"]') as HTMLElement | null;
-    if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  }, [sectionIndex]);
-
-  // Lottery-machine intro animation: spins through quests and lands on the active one
-  useEffect(() => {
-    if (!curriculum) return;
-    if (isMobile) return; // no lottery wheel on mobile
-    let cancelled = false;
-    let rafId: number | null = null;
-
-    const timerId = setTimeout(() => {
-      if (cancelled) return;
-      const list = levelListRef.current as HTMLDivElement;
-      if (!list) return;
-      const activeBtn = list.querySelector('[data-active="true"]') as HTMLElement | null;
-      if (!activeBtn) return;
-
-      const itemH = activeBtn.offsetHeight || 44;
-      const listH = list.clientHeight;
-      const target = Math.max(0, activeBtn.offsetTop - listH / 2 + itemH / 2);
-      const maxScroll = list.scrollHeight - listH;
-      const overshoot = Math.min(maxScroll, target + itemH * 5);
-
-      list.scrollTop = 0;
-      setLevelListCollapsed(false);
-      introAnimRef.current = false;
-      setIsSpinning(true);
-
-      const spinMs = 1400;
-      const settleMs = 550;
-      let t0: number | null = null;
-
-      const easeInOut = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-      const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
-
-      function frame(now: number) {
-        if (cancelled) return;
-        if (!t0) t0 = now;
-        const elapsed = now - t0;
-
-        if (elapsed < spinMs) {
-          list.scrollTop = easeInOut(Math.min(elapsed / spinMs, 1)) * overshoot;
-          rafId = requestAnimationFrame(frame);
-        } else if (elapsed < spinMs + settleMs) {
-          const p = easeOutCubic((elapsed - spinMs) / settleMs);
-          list.scrollTop = overshoot + (target - overshoot) * p;
-          rafId = requestAnimationFrame(frame);
-        } else {
-          list.scrollTop = target;
-          setIsSpinning(false);
-          introAnimRef.current = true;
-          setTimeout(() => { if (!cancelled) setLevelListCollapsed(true); }, 700);
-        }
-      }
-      rafId = requestAnimationFrame(frame);
-    }, 350);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timerId);
-      if (rafId !== null) cancelAnimationFrame(rafId);
-      setIsSpinning(false);
-    };
-  }, [curriculum, category, isMobile]);
+    const list = levelListRef.current;
+    if (!list) return;
+    const active = list.querySelector('[data-active="true"]') as HTMLElement | null;
+    if (!active) return;
+    const top = levelListCollapsed ? active.offsetTop : Math.max(0, active.offsetTop - 130 + 22);
+    list.scrollTo({ top, behavior: levelListCollapsed ? 'auto' : 'smooth' });
+  }, [levelListCollapsed, category, sectionIndex, curriculum]);
 
   // ---------------------------------------------
   // Persist completed lessons to localStorage
@@ -538,6 +482,7 @@ export default function CurriculumPage() {
     getHearts()
       .then(data => {
         setHearts(data.hearts);
+        setNextEnergyIn(data.nextInSeconds);
         setIsPro(data.plan === 'pro');
       })
       .catch(() => {});
@@ -546,20 +491,45 @@ export default function CurriculumPage() {
       .catch(() => {});
   }, []);
 
+  // Count down to the next free energy, then re-sync with the server
+  useEffect(() => {
+    if (nextEnergyIn === null || isPro) return;
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    const t = setTimeout(() => {
+      if (nextEnergyIn <= 1) {
+        getHearts()
+          .then(d => {
+            setHearts(d.hearts);
+            setNextEnergyIn(d.nextInSeconds);
+            if (d.hearts > 0) setShowPaywall(false);
+          })
+          .catch(() => {});
+      } else {
+        setNextEnergyIn(nextEnergyIn - 1);
+      }
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [nextEnergyIn, isPro]);
+
   // ---------------------------------------------
   // Fetch Curriculum Data
   // ---------------------------------------------
+  const pendingLessonRef = useRef<string | null | undefined>(undefined);
   useEffect(() => {
     fetch("/curriculum.json")
       .then(res => res.json())
       .then(data => {
-        setCurriculum(data);
         // If the user navigated here from Nexus Path, jump straight to the lesson
+        let pendingHandled = false;
         try {
-          const raw = localStorage.getItem('pending_lesson');
+          if (pendingLessonRef.current === undefined) {
+            pendingLessonRef.current = localStorage.getItem('pending_lesson');
+            localStorage.removeItem('pending_lesson');
+          }
+          const raw = pendingLessonRef.current;
           if (raw) {
             const { trackId, lessonKey } = JSON.parse(raw) as { trackId: string; lessonKey: string };
-            localStorage.removeItem('pending_lesson');
             // Derive category from lesson key prefix
             const cat = lessonKey.startsWith('html-') ? 'html'
               : lessonKey.startsWith('css-')  ? 'css'
@@ -573,11 +543,14 @@ export default function CurriculumPage() {
               setSelectedTrack(trackId);
               setCategory(cat);
               setSectionIndex(idx >= 0 ? idx : 0);
+              pendingHandled = true;
             }
           }
         } catch {}
+        if (!pendingHandled) { router.replace('/roadmap'); return; }
+        setCurriculum(data);
       });
-  }, []);
+  }, [router]);
 
   // ---------------------------------------------
   // Reset Lesson State on Change
@@ -664,6 +637,7 @@ export default function CurriculumPage() {
     } catch (e: any) {
       setPyOutput(e.message ?? String(e));
       setFeedback('wrong');
+      handleMobileFail();
     } finally {
       setPyRunning(false);
     }
@@ -714,6 +688,7 @@ export default function CurriculumPage() {
           .then(data => {
             if (data.hearts !== null) {
               setHearts(data.hearts);
+              setNextEnergyIn(data.nextInSeconds ?? null);
               if (data.hearts === 0) setShowPaywall(true);
             }
           })
@@ -746,6 +721,7 @@ export default function CurriculumPage() {
         .then(data => {
           if (data.hearts !== null) {
             setHearts(data.hearts);
+            setNextEnergyIn(data.nextInSeconds ?? null);
             if (data.hearts === 0) setShowPaywall(true);
           }
         })
@@ -759,23 +735,34 @@ export default function CurriculumPage() {
     }
   }, [isPro]);
 
+  const completeLesson = useCallback((lessonKey: string, index: number, total: number, firstTry: boolean) => {
+    const earned = 50;
+    setXpEarned(earned);
+    const localCredits = lessonCredits(index, total) + (firstTry ? LOCAL_CREDIT_RATES.firstTryBonus : 0);
+    setCreditsEarned(localCredits);
+    setShowReward(true);
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    if (token) {
+      submitXp(earned, lessonKey, firstTry, undefined, index, total)
+        .then(res => {
+          const gained = res?.creditsEarned;
+          if (typeof gained === 'number') setCreditsEarned(gained);
+        })
+        .catch(() => {});
+    } else {
+      const isNew = addLocalCompletedLesson(lessonKey);
+      if (isNew) addLocalCredits(localCredits); else setCreditsEarned(0);
+    }
+  }, []);
+
   const handleMobileSubmit = useCallback(() => {
     if (hasSubmitted) return;
     const lesson = curriculum?.[category]?.[sectionIndex];
     if (!lesson) return;
     setHasSubmitted(true);
     const firstTry = !hasAttemptedRef.current;
-    const earned = 50;
-    setXpEarned(earned);
-    setShowReward(true);
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    if (token) {
-      submitXp(earned, lesson.key, firstTry).catch(() => {});
-    } else {
-      const isNew = addLocalCompletedLesson(lesson.key);
-      if (isNew) addLocalCredits(LOCAL_CREDIT_RATES.newLesson + (firstTry ? LOCAL_CREDIT_RATES.firstTryBonus : 0));
-    }
-  }, [hasSubmitted, curriculum, category, sectionIndex]);
+    completeLesson(lesson.key, sectionIndex, curriculum?.[category]?.length ?? 1, firstTry);
+  }, [hasSubmitted, curriculum, category, sectionIndex, completeLesson]);
 
   // ---------------------------------------------
   // Live Auto-Check (debounced 600ms) — must be before early return
@@ -921,8 +908,9 @@ export default function CurriculumPage() {
             <div className={styles.paywallIcon}>�</div>
             <h2 className={styles.paywallTitle}>Out of energy!</h2>
             <p className={styles.paywallBody}>
-              You&apos;ve used all 10 energy for today. It recharges at midnight — or upgrade to Pro for unlimited practice.
+              Get energy back three ways: wait {nextEnergyIn !== null ? `(next ⚡ in ${Math.floor(nextEnergyIn / 60)}:${String(nextEnergyIn % 60).padStart(2, '0')})` : ''} — you earn 1 every 30 minutes, buy a refill in the Store with credits, or upgrade to Pro for unlimited practice.
             </p>
+            <a href="/store" className={styles.upgradeBtn} style={{ textDecoration: 'none', textAlign: 'center' }}>Buy a refill with credits ⬡</a>
             <button
               type="button"
               className={styles.upgradeBtn}
@@ -955,6 +943,7 @@ export default function CurriculumPage() {
         eyebrow={hasAttemptedRef.current ? 'Progress made' : 'First try'}
         title="Lesson complete"
         reward={`+${xpEarned} XP`}
+        credits={creditsEarned}
         tone={category === 'typescript' ? 'typescript' : category === 'python' ? 'python' : category === 'sql' ? 'sql' : 'web'}
         description={sectionIndex + 1 < lessons.length ? 'You just strengthened your coding skills. Ready for the next lesson?' : 'You finished this section. Take a moment to enjoy how far you have come.'}
         icon={category === 'typescript' ? '✦' : '⭐'}
@@ -1018,9 +1007,9 @@ export default function CurriculumPage() {
           <div className={styles.topNavCard}>
             <button
               className={styles.backButton}
-              onClick={() => setSelectedTrack(null)}
+              onClick={() => router.push('/roadmap')}
             >
-              ← Paths
+              ← Nexus Path
             </button>
             <nav className={styles.sectionToggleCard}>
               {tracks.find(t => t.id === selectedTrack)!.langs.map((cat) => (
@@ -1092,7 +1081,7 @@ export default function CurriculumPage() {
                         <div key={n} className={`${styles.energyCell} ${n <= hearts ? styles.energyCellFull : styles.energyCellEmpty}`} />
                       ))}
                     </div>
-                    <span className={styles.energyCount}>{hearts}/10</span>
+                    <span className={styles.energyCount}>{hearts}/10{hearts < 10 && nextEnergyIn !== null ? ` · +1 in ${Math.floor(nextEnergyIn / 60)}:${String(nextEnergyIn % 60).padStart(2, '0')}` : ''}</span>
                   </div>
                 )}
                 <div className={styles.heartsActions}>
@@ -1108,16 +1097,7 @@ export default function CurriculumPage() {
                       onClick={async () => {
                         setHasSubmitted(true);
                         const firstTry = !hasAttemptedRef.current;
-                        const earned = 50;
-                        setXpEarned(earned);
-                        setShowReward(true);
-                        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-                        if (token) {
-                          submitXp(earned, currentLesson.key, firstTry).catch(() => {});
-                        } else {
-                          const isNew = addLocalCompletedLesson(currentLesson.key);
-                          if (isNew) addLocalCredits(LOCAL_CREDIT_RATES.newLesson + (firstTry ? LOCAL_CREDIT_RATES.firstTryBonus : 0));
-                        }
+                        completeLesson(currentLesson.key, sectionIndex, lessons.length, firstTry);
                       }}
                     >
                       Submit ✓
@@ -1141,7 +1121,7 @@ export default function CurriculumPage() {
           </div>
 
           {/* Level Navigation */}
-          <div className={`${styles.levelListWrapper} ${isSpinning ? styles.levelListSpinning : ''} ${isMobile ? styles.mobileHidden : ''}`}>
+          <div className={`${styles.levelListWrapper} ${isMobile ? styles.mobileHidden : ''}`}>
             <button
               className={styles.levelScrollBtn}
               onClick={() => setLevelListCollapsed(v => !v)}
@@ -1156,6 +1136,7 @@ export default function CurriculumPage() {
                   <button
                     key={s.key}
                     data-active={isActive ? 'true' : undefined}
+                    data-index={i}
                     onClick={() => !isLocked && setSectionIndex(i)}
                     className={`${styles.levelItem} ${isActive ? styles.levelItemActive : ""} ${isCompleted ? styles.levelItemCompleted : ""} ${isLocked ? styles.levelItemLocked : ""}`}
                   >
@@ -1249,16 +1230,7 @@ export default function CurriculumPage() {
                   onClick={async () => {
                     setHasSubmitted(true);
                     const firstTry = !hasAttemptedRef.current;
-                    const earned = 50;
-                    setXpEarned(earned);
-                    setShowReward(true);
-                    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-                    if (token) {
-                      submitXp(earned, currentLesson.key, firstTry).catch(() => {});
-                    } else {
-                      const isNew = addLocalCompletedLesson(currentLesson.key);
-                      if (isNew) addLocalCredits(LOCAL_CREDIT_RATES.newLesson + (firstTry ? LOCAL_CREDIT_RATES.firstTryBonus : 0));
-                    }
+                    completeLesson(currentLesson.key, sectionIndex, lessons.length, firstTry);
                   }}
                   className={styles.submitButton}
                 >

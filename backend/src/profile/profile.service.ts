@@ -1,9 +1,11 @@
+import { applyEnergyRegen, secondsUntilNextEnergy } from '../energy';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 import { UserProgress } from '../entities/UserProgress';
 import { UserPurchase } from '../entities/UserPurchase';
+import { LESSON_CATALOG } from '../lesson-catalog';
 import { AchievementsService } from '../achievements/achievements.service';
 
 /** Safe JSON.parse — returns fallback if the string is null/corrupted */
@@ -13,25 +15,32 @@ function safeParseJSON<T>(value: string | null | undefined, fallback: T): T {
 }
 
 const XP_PER_LEVEL = 300;
-const ENERGY_REGEN_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
 const STARTER_AVATARS = ['👾', '🤖', '🦾', '💀', '⚡', '🔮', '🪐', '🎮', '👽', '👻', '🦊', '🐙', '🦈', '🦉', '🐉', '🐺', '🐱', '🐸', '🦄', '🐼', '🐧', '🦋', '🦖', '🥷', '🧑‍🚀', '🧙', '🦇', '🦂', '🌙', '💎'];
 
 // ── Credit economy ─────────────────────────────────────────────────────────
-// New lesson completed          → +6
-// First-try perfect on lesson   → +3 bonus (total +9)
+// New lesson completed          → +3 (first third) / +4 (middle) / +5 (last third)
+// Last lesson of a section      → +10 section-clear bonus
+// First-try perfect on lesson   → +2 bonus
 // Daily first-activity bonus    → +2
 // Level up                      → +10
 // 7-day streak milestone        → +15
 // 30-day streak milestone       → +35
 // Game round played (own route) → +3
 const CREDITS = {
-  newLesson:     6,
-  firstTryBonus: 3,
+  firstTryBonus: 2,
+  sectionClear:  10,
   dailyBonus:    2,
   levelUp:       10,
   streak7:       15,
   streak30:      35,
 } as const;
+
+export function lessonCredits(index?: number, total?: number): number {
+  const t = Math.max(1, Math.min(total ?? 1, 200));
+  const i = Math.max(0, Math.min(index ?? 0, t - 1));
+  const base = i < t / 3 ? 3 : i < (2 * t) / 3 ? 4 : 5;
+  return base + (total && i === t - 1 ? CREDITS.sectionClear : 0);
+}
 
 interface UpdateProfileDto {
   displayName?: string;
@@ -45,6 +54,8 @@ interface SubmitXpDto {
   amount: number;
   lessonKey?: string;
   firstTry?: boolean;
+  lessonIndex?: number;
+  lessonTotal?: number;
   gameRound?: boolean; // true when called after a game round
 }
 
@@ -65,6 +76,7 @@ export class ProfileService {
     if (!user) throw new NotFoundException('User not found');
 
     const progress = await this.progressRepo.findOne({ where: { userId } });
+    if (progress && applyEnergyRegen(progress)) await this.progressRepo.save(progress);
     const completedLessons = progress ? safeParseJSON<string[]>(progress.completedLessons, []) : [];
 
     return {
@@ -135,12 +147,14 @@ export class ProfileService {
     }
 
     // Mark lesson complete + award lesson credits
-    if (dto.lessonKey) {
+    // Only real lessons count; position and section length come from the server catalog
+    const lessonInfo = dto.lessonKey && Object.prototype.hasOwnProperty.call(LESSON_CATALOG, dto.lessonKey) ? LESSON_CATALOG[dto.lessonKey] : undefined;
+    if (dto.lessonKey && lessonInfo) {
       const completed = safeParseJSON<string[]>(progress.completedLessons, []);
       if (!completed.includes(dto.lessonKey)) {
         completed.push(dto.lessonKey);
         progress.completedLessons = JSON.stringify(completed);
-        creditsEarned += CREDITS.newLesson;
+        creditsEarned += lessonCredits(lessonInfo[0], lessonInfo[1]);
         if (dto.firstTry) creditsEarned += CREDITS.firstTryBonus;
       }
     }
@@ -157,10 +171,7 @@ export class ProfileService {
 
     progress.credits = (progress.credits ?? 0) + creditsEarned;
 
-    // Energy Sync: +1 for daily activity
-    if (lastActive !== today && progress.energy < progress.maxEnergy) {
-      progress.energy = Math.min(progress.energy + 1, progress.maxEnergy);
-    }
+    applyEnergyRegen(progress);
 
     await this.progressRepo.save(progress);
 
@@ -213,48 +224,43 @@ export class ProfileService {
     };
   }
 
-  async getHearts(userId: number) {
+  private async loadEnergy(userId: number) {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
     let progress = await this.progressRepo.findOne({ where: { userId } });
     if (!progress) {
-      progress = this.progressRepo.create({ userId, energy: 10, maxEnergy: 10, energyLastRegen: new Date(), hearts: 10 });
-      await this.progressRepo.save(progress);
+      progress = this.progressRepo.create({ userId, energy: 10, maxEnergy: 10, energyLastRegen: new Date() });
     }
+    applyEnergyRegen(progress);
+    return { user, progress };
+  }
 
-    const today = new Date().toISOString().slice(0, 10);
-    if (!progress.heartsLastRefilled || progress.heartsLastRefilled < today) {
-      progress.hearts = 10;
-      progress.heartsLastRefilled = today;
-      await this.progressRepo.save(progress);
-    }
-
-    return { hearts: progress.hearts, plan: user.plan };
+  async getHearts(userId: number) {
+    const { user, progress } = await this.loadEnergy(userId);
+    await this.progressRepo.save(progress);
+    return {
+      hearts: progress.energy,
+      maxHearts: progress.maxEnergy,
+      nextInSeconds: secondsUntilNextEnergy(progress),
+      plan: user.plan,
+    };
   }
 
   async deductHeart(userId: number) {
-    const user = await this.userRepo.findOne({ where: { id: userId } });
-    if (!user) throw new NotFoundException('User not found');
-
+    const { user, progress } = await this.loadEnergy(userId);
     if (user.plan === 'pro') {
       return { hearts: null, pro: true };
     }
 
-    let progress = await this.progressRepo.findOne({ where: { userId } });
-    if (!progress) {
-      progress = this.progressRepo.create({ userId, energy: 10, maxEnergy: 10, energyLastRegen: new Date(), hearts: 10 });
-    }
-
-    const today = new Date().toISOString().slice(0, 10);
-    if (!progress.heartsLastRefilled || progress.heartsLastRefilled < today) {
-      progress.hearts = 10;
-      progress.heartsLastRefilled = today;
-    }
-
-    progress.hearts = Math.max(0, progress.hearts - 1);
+    if (progress.energy >= progress.maxEnergy) progress.energyLastRegen = new Date();
+    progress.energy = Math.max(0, progress.energy - 1);
     await this.progressRepo.save(progress);
 
-    return { hearts: progress.hearts };
+    return {
+      hearts: progress.energy,
+      maxHearts: progress.maxEnergy,
+      nextInSeconds: secondsUntilNextEnergy(progress),
+    };
   }
 }

@@ -593,39 +593,6 @@
   position: relative;
 }
 
-/* Slot-machine overlay: gradient mask + centre highlight while spinning */
-.levelListSpinning::before {
-  content: '';
-  position: absolute;
-  left: 0; right: 0;
-  top: 27px;
-  bottom: 27px;
-  pointer-events: none;
-  z-index: 4;
-  background: linear-gradient(
-    to bottom,
-    rgba(4, 7, 16, 0.96) 0%,
-    transparent 28%,
-    transparent 72%,
-    rgba(4, 7, 16, 0.96) 100%
-  );
-}
-
-.levelListSpinning::after {
-  content: '';
-  position: absolute;
-  left: 0; right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 45px;
-  pointer-events: none;
-  z-index: 3;
-  background: rgba(99, 102, 241, 0.08);
-  border-top: 1px solid rgba(99, 102, 241, 0.35);
-  border-bottom: 1px solid rgba(99, 102, 241, 0.35);
-  box-shadow: 0 0 18px rgba(99, 102, 241, 0.18);
-}
-
 .levelScrollBtn {
   width: 100%;
   background: rgba(99, 102, 241, 0.06);
@@ -645,18 +612,10 @@
   color: #a5b4fc;
 }
 
-/* Collapsed: hide all level items except the active one */
+/* Collapsed: shrink to a single row (animated) instead of hiding items */
 .levelListCollapsed {
+  max-height: 44px;
   overflow: hidden;
-  max-height: none;
-}
-
-.levelListCollapsed .levelItem {
-  display: none;
-}
-
-.levelListCollapsed .levelItemActive {
-  display: flex;
 }
 
 /* ── Level List ──────────────────────────────── */
@@ -665,6 +624,7 @@
   flex-direction: column;
   overflow-y: scroll;
   max-height: 260px;
+  transition: max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1);
   scrollbar-width: thin;
   scrollbar-color: #1e293b transparent;
   flex-shrink: 0;
@@ -689,6 +649,9 @@
 }
 
 .levelItem {
+  box-sizing: border-box;
+  height: 44px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -1818,4 +1781,20 @@
 
 .paywallDismiss:hover {
   color: #94a3b8;
+}
+
+/* Collapsed list: only the current lesson, fading in */
+.levelList.levelListCollapsed {
+  max-height: 44px;
+  overflow: hidden;
+}
+.levelList.levelListCollapsed .levelItem:not(.levelItemActive) {
+  display: none;
+}
+.levelList.levelListCollapsed .levelItemActive {
+  animation: lessonFadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes lessonFadeIn {
+  from { opacity: 0; transform: translateY(8px); filter: blur(4px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
 }

@@ -1,3 +1,4 @@
+import { applyEnergyRegen } from '../energy';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -64,6 +65,14 @@ export class StoreService {
       if (existing) throw new BadRequestException('Already owned');
     }
 
+    const isEnergyRefill = item.category === 'powerup' && item.applyValue === 'energy_refill';
+    if (isEnergyRefill) {
+      applyEnergyRegen(progress);
+      if (progress.energy >= progress.maxEnergy) {
+        throw new BadRequestException('Energy is already full');
+      }
+    }
+
     // Check credits
     if ((progress.credits ?? 0) < item.creditCost) {
       throw new BadRequestException('Not enough credits');
@@ -71,6 +80,10 @@ export class StoreService {
 
     // Deduct credits
     progress.credits = (progress.credits ?? 0) - item.creditCost;
+    if (isEnergyRefill) {
+      progress.energy = progress.maxEnergy;
+      progress.energyLastRegen = new Date();
+    }
     await this.progressRepo.save(progress);
 
     // Record purchase
@@ -91,6 +104,7 @@ export class StoreService {
     return {
       success: true,
       credits: progress.credits,
+      energy: progress.energy,
       item: {
         id: item.id,
         name: item.name,

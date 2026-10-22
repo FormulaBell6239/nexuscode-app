@@ -5,7 +5,7 @@ import styles from "./StructureGuide.module.css";
 interface Template { name: string; note: string; code: string; }
 
 type Guide = { id: string; label: string; templates: Template[] }[];
-export type GuideLanguage = "html" | "css" | "js";
+export type GuideLanguage = "html" | "css" | "js" | "py";
 
 const HTML_TABS: Guide = [
   {
@@ -517,8 +517,131 @@ save(todos);` },
   },
 ];
 
-const GUIDES: Record<GuideLanguage, Guide> = { html: HTML_TABS, css: CSS_TABS, js: JS_TABS };
-const TITLES: Record<GuideLanguage, string> = { html: "HTML Structures", css: "CSS Properties", js: "JS Patterns" };
+const PY_TABS: Guide = [
+  {
+    id: "beginner",
+    label: "Beginner",
+    templates: [
+      { name: "Variables & print", note: "Store values and show them.",
+        code: `name = "Sam"
+age = 20
+print(f"{name} is {age} years old")` },
+      { name: "User input", note: "Ask the user for a value.",
+        code: `name = input("What's your name? ")
+print("Hello,", name)` },
+      { name: "If / elif / else", note: "Choose between paths.",
+        code: `score = 82
+
+if score >= 90:
+    print("A")
+elif score >= 80:
+    print("B")
+else:
+    print("Keep going")` },
+      { name: "For loop", note: "Repeat for each item or a range.",
+        code: `for i in range(1, 6):
+    print(i)
+
+for fruit in ["apple", "pear"]:
+    print(fruit)` },
+      { name: "While loop", note: "Repeat while a condition is true.",
+        code: `count = 3
+while count > 0:
+    print(count)
+    count -= 1
+print("Liftoff!")` },
+    ],
+  },
+  {
+    id: "intermediate",
+    label: "Intermediate",
+    templates: [
+      { name: "Functions", note: "Reusable blocks with parameters and return values.",
+        code: `def greet(name, punctuation="!"):
+    return f"Hello, {name}{punctuation}"
+
+print(greet("Sam"))` },
+      { name: "Lists", note: "Ordered, changeable collections.",
+        code: `nums = [3, 1, 2]
+nums.append(4)
+nums.sort()
+print(nums, len(nums), nums[0])` },
+      { name: "Dictionaries", note: "Key/value pairs.",
+        code: `user = {"name": "Alex", "age": 20}
+user["level"] = 3
+
+for key, value in user.items():
+    print(key, "->", value)` },
+      { name: "Comprehensions", note: "Build lists in one line.",
+        code: `squares = [x * x for x in range(10)]
+evens = [x for x in squares if x % 2 == 0]
+print(squares, evens)` },
+      { name: "Try / except", note: "Handle errors without crashing.",
+        code: `try:
+    n = int(input("Number: "))
+    print(10 / n)
+except ZeroDivisionError:
+    print("Can't divide by zero")
+except ValueError:
+    print("That's not a number")` },
+    ],
+  },
+  {
+    id: "advanced",
+    label: "Advanced",
+    templates: [
+      { name: "Class", note: "Bundle data and behaviour together.",
+        code: `class Player:
+    def __init__(self, name):
+        self.name = name
+        self.points = 0
+
+    def add(self, n):
+        self.points += n
+        return self
+
+p = Player("Sam")
+p.add(10).add(5)
+print(p.name, p.points)` },
+      { name: "Inheritance", note: "Extend an existing class.",
+        code: `class Animal:
+    def speak(self):
+        return "..."
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof"
+
+print(Dog().speak())` },
+      { name: "Generator", note: "Produce values lazily with yield.",
+        code: `def countdown(n):
+    while n > 0:
+        yield n
+        n -= 1
+
+print(list(countdown(5)))` },
+      { name: "Decorator", note: "Wrap a function with extra behaviour.",
+        code: `def shout(fn):
+    def wrapper(*args, **kwargs):
+        return fn(*args, **kwargs).upper()
+    return wrapper
+
+@shout
+def hello(name):
+    return f"hello {name}"
+
+print(hello("sam"))` },
+      { name: "Lambda, map & sorted", note: "Functional helpers.",
+        code: `people = [("Sam", 30), ("Ana", 25)]
+by_age = sorted(people, key=lambda p: p[1])
+names = list(map(lambda p: p[0], by_age))
+print(by_age, names)` },
+    ],
+  },
+];
+
+const GUIDES: Record<GuideLanguage, Guide> = { html: HTML_TABS, css: CSS_TABS, js: JS_TABS, py: PY_TABS };
+const TITLES: Record<GuideLanguage, string> = { html: "HTML Structures", css: "CSS Properties", js: "JS Patterns", py: "Python Patterns" };
 
 interface Props {
   onClose: () => void;

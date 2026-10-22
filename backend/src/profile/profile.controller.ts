@@ -37,6 +37,12 @@ class SubmitXpDto {
   @IsOptional() @IsBoolean()
   firstTry?: boolean;
 
+  @IsOptional() @IsInt() @Min(0) @Max(200)
+  lessonIndex?: number;
+
+  @IsOptional() @IsInt() @Min(1) @Max(200)
+  lessonTotal?: number;
+
   @IsOptional() @IsBoolean()
   gameRound?: boolean;
 }

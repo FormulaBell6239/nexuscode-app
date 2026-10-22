@@ -9,11 +9,12 @@ interface RewardPopupProps {
   icon?: React.ReactNode;
   eyebrow?: string;
   reward?: string;
+  credits?: number;
   tone?: 'web' | 'python' | 'sql' | 'typescript';
   closeBtnLabel?: string;
 }
 
-const RewardPopup: React.FC<RewardPopupProps> = ({ open, onClose, title, description, icon, eyebrow, reward, tone = 'web', closeBtnLabel = "Next Level →" }) => {
+const RewardPopup: React.FC<RewardPopupProps> = ({ open, onClose, title, description, icon, eyebrow, reward, credits, tone = 'web', closeBtnLabel = "Next Level →" }) => {
   if (!open) return null;
   return (
     <div className={styles.overlay}>
@@ -22,6 +23,12 @@ const RewardPopup: React.FC<RewardPopupProps> = ({ open, onClose, title, descrip
         <div className={styles.icon}>{icon}</div>
         <h2 id="reward-title" className={styles.title}>{title}</h2>
         {reward && <div className={styles.reward}>{reward}</div>}
+        {typeof credits === 'number' && credits > 0 && (
+          <div className={styles.credits}>
+            <span className={styles.creditsIcon}>⬡</span>
+            <span>+{credits} credits</span>
+          </div>
+        )}
         <p className={styles.description}>{description}</p>
         <button className={styles.closeBtn} onClick={onClose}>{closeBtnLabel}</button>
       </div>

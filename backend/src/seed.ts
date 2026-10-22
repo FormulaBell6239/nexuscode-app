@@ -73,7 +73,13 @@ const ACHIEVEMENTS = [
   { name: 'First Spark',    description: 'Earn your first 100 XP',                             icon: '⚡', type: 'xp_earned',              requiredCount: 100,  creditReward: 10  },
   { name: 'XP Climber',     description: 'Accumulate 500 XP',                                  icon: '📈', type: 'xp_earned',              requiredCount: 500,  creditReward: 25  },
   { name: 'XP Champion',    description: 'Accumulate 2,000 XP',                                icon: '🏆', type: 'xp_earned',              requiredCount: 2000, creditReward: 60  },
-  { name: 'XP Legend',      description: 'Accumulate 10,000 XP — true mastery',                icon: '👑', type: 'xp_earned',              requiredCount: 10000,creditReward: 150 },];
+  { name: 'XP Legend',      description: 'Accumulate 10,000 XP — true mastery',                icon: '👑', type: 'xp_earned',              requiredCount: 10000,creditReward: 150 },
+  { name: 'Recursion Rookie', description: 'Complete 25 lessons',             icon: '🌀', type: 'lessons_completed', requiredCount: 25, creditReward: 25 },
+  { name: 'Self-Similar',     description: 'Complete 5 lessons on the first try', icon: '🍃', type: 'first_try_lessons', requiredCount: 5,  creditReward: 20 },
+  { name: 'Branching Out',    description: 'Play 20 game rounds',              icon: '🌿', type: 'game_rounds_played', requiredCount: 20, creditReward: 30 },
+  { name: 'Infinite Loop',    description: 'Maintain a 14-day learning streak', icon: '♾️', type: 'streak',            requiredCount: 14, creditReward: 50 },
+  { name: 'Fractal Master',   description: 'Reach Level 20',                   icon: '❖',  type: 'level',             requiredCount: 20, creditReward: 100 },
+];
 
 const STORE_ITEMS = [
   // ── Games ────────────────────────────────────────────────────────────
@@ -108,6 +114,49 @@ const STORE_ITEMS = [
   { name: 'Matrix Skin',      description: 'Terminal green hacker aesthetic earned by reaching Silver tier',     icon: '⌨️',  category: 'cosmetic', creditCost: 0, gameSlug: null, cosmeticType: 'theme', applyValue: 'matrix-green', oneTimePurchase: true, milestoneOnly: true },
   { name: 'Solara Skin',      description: 'Gold-amber cosmic spacey palette earned by reaching Gold tier',     icon: '☀️',  category: 'cosmetic', creditCost: 0, gameSlug: null, cosmeticType: 'theme', applyValue: 'solar',        oneTimePurchase: true, milestoneOnly: true },
 ];
+
+// ── Emblem categories (mirrors frontend/src/lib/emblems.ts) ───────────────
+const GLITCHED_EMBLEMS = [
+  { name: 'Glitched: Static',       mark: '░', cost: 60,  id: 'emblem-glitched-static' },
+  { name: 'Glitched: Scanline',     mark: '▤', cost: 90,  id: 'emblem-glitched-scanline' },
+  { name: 'Glitched: Corrupt',      mark: '⌧', cost: 130, id: 'emblem-glitched-corrupt' },
+  { name: 'Glitched: Datamosh',     mark: '◩', cost: 180, id: 'emblem-glitched-datamosh' },
+  { name: 'Glitched: Null Pointer', mark: '∅', cost: 260, id: 'emblem-glitched-null' },
+].map(e => ({
+  name: e.name, description: 'Glitched emblem for your profile', icon: e.mark, category: 'cosmetic',
+  creditCost: e.cost, gameSlug: null, cosmeticType: 'avatar', applyValue: e.id, oneTimePurchase: true, milestoneOnly: false,
+}));
+const MORE_EMBLEMS = [
+  { name: 'Singularity: Pinpoint', mark: '·', cost: 60, id: 'emblem-singularity-pinpoint', cat: 'Singularity' },
+  { name: 'Singularity: Accretion', mark: '◍', cost: 90, id: 'emblem-singularity-accretion', cat: 'Singularity' },
+  { name: 'Singularity: Gravity Well', mark: '◉', cost: 130, id: 'emblem-singularity-gravitywell', cat: 'Singularity' },
+  { name: 'Singularity: Event Horizon', mark: '⊚', cost: 180, id: 'emblem-singularity-eventhorizon', cat: 'Singularity' },
+  { name: 'Singularity: Singularity Core', mark: '✺', cost: 260, id: 'emblem-singularity-singularitycore', cat: 'Singularity' },
+  { name: 'Cybernetics: Servo', mark: '⚙', cost: 60, id: 'emblem-cybernetics-servo', cat: 'Cybernetics' },
+  { name: 'Cybernetics: Circuit', mark: '⌬', cost: 90, id: 'emblem-cybernetics-circuit', cat: 'Cybernetics' },
+  { name: 'Cybernetics: Neural Link', mark: '⎔', cost: 130, id: 'emblem-cybernetics-neurallink', cat: 'Cybernetics' },
+  { name: 'Cybernetics: Chrome Core', mark: '⏣', cost: 180, id: 'emblem-cybernetics-chromecore', cat: 'Cybernetics' },
+  { name: 'Cybernetics: Overclock', mark: '⌖', cost: 260, id: 'emblem-cybernetics-overclock', cat: 'Cybernetics' },
+  { name: 'Voided Skulls: Hollow', mark: '☠', cost: 60, id: 'emblem-voided-skulls-hollow', cat: 'Voided Skulls' },
+  { name: 'Voided Skulls: Plague', mark: '☣', cost: 90, id: 'emblem-voided-skulls-plague', cat: 'Voided Skulls' },
+  { name: 'Voided Skulls: Bonewalker', mark: '☬', cost: 130, id: 'emblem-voided-skulls-bonewalker', cat: 'Voided Skulls' },
+  { name: 'Voided Skulls: Void Grin', mark: '☥', cost: 180, id: 'emblem-voided-skulls-voidgrin', cat: 'Voided Skulls' },
+  { name: 'Voided Skulls: Lich King', mark: '♆', cost: 260, id: 'emblem-voided-skulls-lichking', cat: 'Voided Skulls' },
+  { name: 'Abstract Sigils: Ember Rune', mark: 'ᛟ', cost: 60, id: 'emblem-abstract-sigils-emberrune', cat: 'Abstract Sigils' },
+  { name: 'Abstract Sigils: Tide Rune', mark: 'ᛞ', cost: 90, id: 'emblem-abstract-sigils-tiderune', cat: 'Abstract Sigils' },
+  { name: 'Abstract Sigils: Thorn Rune', mark: 'ᚠ', cost: 130, id: 'emblem-abstract-sigils-thornrune', cat: 'Abstract Sigils' },
+  { name: 'Abstract Sigils: Warden Rune', mark: 'ᛉ', cost: 180, id: 'emblem-abstract-sigils-wardenrune', cat: 'Abstract Sigils' },
+  { name: 'Abstract Sigils: Eclipse Rune', mark: 'ᛜ', cost: 260, id: 'emblem-abstract-sigils-eclipserune', cat: 'Abstract Sigils' },
+  { name: 'Fractals: Mandel', mark: '❋', cost: 60, id: 'emblem-fractals-mandel', cat: 'Fractals' },
+  { name: 'Fractals: Fern', mark: '✿', cost: 90, id: 'emblem-fractals-fern', cat: 'Fractals' },
+  { name: 'Fractals: Koch', mark: '❃', cost: 130, id: 'emblem-fractals-koch', cat: 'Fractals' },
+  { name: 'Fractals: Julia', mark: '✣', cost: 180, id: 'emblem-fractals-julia', cat: 'Fractals' },
+  { name: 'Fractals: Infinite Bloom', mark: '❖', cost: 260, id: 'emblem-fractals-infinitebloom', cat: 'Fractals' },
+].map(e => ({
+  name: e.name, description: `${e.cat} emblem for your profile`, icon: e.mark, category: 'cosmetic',
+  creditCost: e.cost, gameSlug: null, cosmeticType: 'avatar', applyValue: e.id, oneTimePurchase: true, milestoneOnly: false,
+}));
+STORE_ITEMS.push(...(GLITCHED_EMBLEMS as any[]), ...(MORE_EMBLEMS as any[]));
 
 async function seed() {
   await AppDataSource.initialize();

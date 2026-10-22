@@ -38,7 +38,7 @@ export class AuthService {
     const progress = this.progressRepo.create({
       userId: saved.id,
       energy: 5,
-      maxEnergy: 5,
+      maxEnergy: 10,
       energyLastRegen: new Date(),
     });
     await this.progressRepo.save(progress);

@@ -4,20 +4,16 @@ import Link from 'next/link';
 import PageShell from '@/components/PageShell';
 import styles from './Profile.module.css';
 import { api, getOwnedItems, getLocalCredits } from '@/lib/api';
+import { EMBLEMS, EMBLEM_CATEGORIES } from '@/lib/emblems';
 
 const AVATARS = ["👾", "🤖", "🦾", "💀", "⚡", "🔮", "🪐", "🎮", "👽", "👻", "🦊", "🐙", "🦈", "🦉", "🐉", "🐺", "🐱", "🐸", "🦄", "🐼", "🐧", "🦋", "🦖", "🥷", "🧑‍🚀", "🧙", "🦇", "🦂", "🌙", "💎"];
-const AVATAR_EMBLEMS: Record<string, { name: string; mark: string; rarity: string; background: string; color: string; border: string }> = {
-  'avatar-cipher': { name: 'Cipher Sigil', mark: '⌘', rarity: 'Rare', background: 'linear-gradient(145deg,#102c3b,#07131e)', color: '#67e8f9', border: '#0891b2' },
-  'avatar-unbroken': { name: 'Unbroken Sigil', mark: '◈', rarity: 'Legendary', background: 'linear-gradient(145deg,#38240a,#12100b)', color: '#fcd34d', border: '#f59e0b' },
-};
-
 function AvatarVisual({ value }: { value: string }) {
-  const emblem = AVATAR_EMBLEMS[value];
+  const emblem = EMBLEMS[value];
   if (!emblem) return <>{value}</>;
   return (
     <span
       className={styles.avatarArt}
-      style={{ background: emblem.background, color: emblem.color, borderColor: emblem.border }}
+      style={{ background: emblem.background, color: emblem.color, borderColor: emblem.border, textShadow: emblem.textShadow }}
       title={`${emblem.name} · ${emblem.rarity}`}
       aria-label={`${emblem.rarity} ${emblem.name}`}
     >
@@ -164,6 +160,26 @@ const APPEARANCE_SKINS: SkinDef[] = [
     bg: '#0d0a03',
     desc: 'Gold-amber cosmic spacey palette',
   },
+  {
+    slug: 'minimal-dark',
+    name: 'Midnight',
+    label: 'Store',
+    icon: '🌑',
+    accent: '#94a3b8',
+    accent2: '#e2e8f0',
+    bg: '#0a0a0a',
+    desc: 'Minimal near-black with slate accents',
+  },
+  {
+    slug: 'cyber-neon',
+    name: 'Cyber Neon',
+    label: 'Store',
+    icon: '🔮',
+    accent: '#10b981',
+    accent2: '#00ff88',
+    bg: '#000a08',
+    desc: 'Neon green on deep black',
+  },
 ];
 
 interface ProfileData {
@@ -206,6 +222,7 @@ export default function ProfilePage() {
   const [textureStrength, setTextureStrength] = useState(100);
   const [customColors, setCustomColors] = useState(['#14b8a6', '#a3e635']);
   const [localCard, setLocalCard] = useState('night');
+  const [avatarGroup, setAvatarGroup] = useState<string>('classic');
   const [ringColor, setRingColor] = useState('#10b981');
   const [bannerPack, setBannerPack] = useState(0);
   const [activeMatrixNodeId, setActiveMatrixNodeId] = useState('core');
@@ -243,7 +260,15 @@ export default function ProfilePage() {
           avatar: data.avatar ?? AVATARS[0],
         });
       })
-      .catch(() => setLoadError('Could not load profile — is the backend running?'));
+      .catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : '';
+        if (!token || /token|unauthori[sz]ed|expired|invalid|API error 40[13]/i.test(msg)) {
+          if (token) localStorage.removeItem('token');
+          setLoadError('Your session expired or you are signed out. Please log in again.');
+        } else {
+          setLoadError('Could not load profile — is the backend running?');
+        }
+      });
 
     if (token) {
       getOwnedItems()
@@ -253,7 +278,7 @@ export default function ProfilePage() {
           );
           setOwnedSkinSlugs(slugs);
           setOwnedAvatars(owned
-            .filter(o => o.category === 'cosmetic' && o.cosmeticType === 'avatar' && o.applyValue && AVATAR_EMBLEMS[o.applyValue])
+            .filter(o => o.category === 'cosmetic' && o.cosmeticType === 'avatar' && o.applyValue && EMBLEMS[o.applyValue])
             .map(o => o.applyValue as string));
         })
         .catch(() => {});
@@ -339,8 +364,7 @@ export default function ProfilePage() {
   }
 
   const displayAvatar = isEditing ? editFields.avatar : (profile?.avatar ?? AVATARS[0]);
-  const availableEmblems = [...new Set([...ownedAvatars, profile?.avatar ?? ''])]
-    .filter(value => !!AVATAR_EMBLEMS[value]);
+  const ownedEmblems = new Set([...ownedAvatars, profile?.avatar ?? '']);
   const displayName   = isEditing
     ? editFields.displayName || profile?.username || ''
     : profile?.displayName ?? profile?.username ?? '';
@@ -398,7 +422,11 @@ export default function ProfilePage() {
       <Link href="/settings" className={styles.settingsGear} aria-label="Settings">⚙</Link>
 
       <div className={styles.container}>
-        {loadError && <div className={styles.errorMsg}>{loadError}</div>}
+        {loadError && (
+          <div className={styles.errorMsg}>
+            {loadError} {loadError.includes('log in') && <a href="/auth" style={{ color: 'inherit', textDecoration: 'underline' }}>Log in</a>}
+          </div>
+        )}
 
         {/* ── Hero section ── */}
         <div className={styles.hero}>
@@ -411,15 +439,17 @@ export default function ProfilePage() {
                 style={{ backgroundImage: activeTex.backgroundImage, opacity: textureStrength / 100, ...(activeTex.backgroundSize ? { backgroundSize: activeTex.backgroundSize } : {}) }}
               />
             )}
-            <div className={styles.bannerActions}>
-              {!isEditing && (
+            {!isEditing && (
+              <div className={styles.bannerEdit}>
                 <button className={styles.editBtn} onClick={handleEdit}>
                   <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
                     <path d="M7.5 1.5L9.5 3.5L3.5 9.5L1 10L1.5 7.5L7.5 1.5Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                   Edit
                 </button>
-              )}
+              </div>
+            )}
+            <div className={styles.bannerActions}>
               <button
                 className={`${styles.editBtn} ${showBannerPicker ? styles.editBtnActive : ''}`}
                 onClick={() => { setShowBannerPicker(p => !p); setShowTexturePicker(false); }}
@@ -475,10 +505,6 @@ export default function ProfilePage() {
                     <input type="color" value={customColors[1]} onChange={e => handleCustomColor(1, e.target.value)} aria-label="Second custom banner color" />
                     <span>Color 2</span>
                   </label>
-                  <label className={styles.customColorLabel}>
-                    <input type="color" value={ringColor} onChange={e => handleRingColor(e.target.value)} aria-label="Avatar ring color" />
-                    <span>Ring</span>
-                  </label>
                 </div>
               </div>
             )}
@@ -530,20 +556,65 @@ export default function ProfilePage() {
                     </div>
                     <div className={styles.field}>
                       <label className={styles.lbl}>Avatar</label>
-                        <div className={styles.avatarPicker} role="group" aria-label="Choose avatar">
-                          {[...AVATARS, ...availableEmblems].map(a => (
+                        <div className={styles.emblemTabs} role="tablist" aria-label="Emblem categories">
+                          {[{ id: 'classic', name: 'Classic' }, ...EMBLEM_CATEGORIES].map(c => (
                             <button
-                              key={a}
+                              key={c.id}
                               type="button"
-                              className={`${styles.avatarOption} ${editFields.avatar === a ? styles.avatarOptionActive : ''}`}
-                              onClick={() => setEditFields({ ...editFields, avatar: a })}
-                              aria-label={`Use ${a} avatar`}
-                              aria-pressed={editFields.avatar === a}
+                              role="tab"
+                              aria-selected={avatarGroup === c.id}
+                              className={`${styles.emblemTab} ${avatarGroup === c.id ? styles.emblemTabActive : ''}`}
+                              onClick={() => setAvatarGroup(c.id)}
                             >
-                              <AvatarVisual value={a} />
+                              {c.name}
                             </button>
                           ))}
                         </div>
+                        {avatarGroup === 'classic' ? (
+                          <div className={styles.avatarPicker} role="group" aria-label="Choose avatar">
+                            {AVATARS.map(a => (
+                              <button
+                                key={a}
+                                type="button"
+                                className={`${styles.avatarOption} ${editFields.avatar === a ? styles.avatarOptionActive : ''}`}
+                                onClick={() => setEditFields({ ...editFields, avatar: a })}
+                                aria-label={`Use ${a} avatar`}
+                                aria-pressed={editFields.avatar === a}
+                              >
+                                <AvatarVisual value={a} />
+                              </button>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className={styles.emblemGrid} role="group" aria-label="Choose emblem">
+                            {EMBLEM_CATEGORIES.find(c => c.id === avatarGroup)?.emblems.map(e => {
+                              const owned = ownedEmblems.has(e.id);
+                              return owned ? (
+                                <button
+                                  key={e.id}
+                                  type="button"
+                                  className={`${styles.emblemCard} ${editFields.avatar === e.id ? styles.emblemCardActive : ''}`}
+                                  onClick={() => setEditFields({ ...editFields, avatar: e.id })}
+                                  aria-pressed={editFields.avatar === e.id}
+                                >
+                                  <span className={styles.emblemArt}><AvatarVisual value={e.id} /></span>
+                                  <span className={styles.emblemName}>{e.name}</span>
+                                  <span className={styles.emblemRarity}>{e.rarity}</span>
+                                </button>
+                              ) : (
+                                <div key={e.id} aria-disabled="true" className={`${styles.emblemCard} ${styles.emblemLocked}`} title={e.unlockedBy ? `Earn the “${e.unlockedBy}” achievement, or buy it in the Store for ${e.cost} credits` : `Buy in the Store for ${e.cost} credits`}>
+                                  <span className={styles.emblemArt}><AvatarVisual value={e.id} /></span>
+                                  <span className={styles.emblemName}>{e.name}</span>
+                                  <span className={styles.emblemRarity}>🔒 {e.unlockedBy ?? `${e.cost} ⬡`}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                        <label className={styles.customColorLabel} style={{ marginTop: '0.6rem', color: 'inherit' }}>
+                          <input type="color" value={ringColor} onChange={e => handleRingColor(e.target.value)} aria-label="Avatar ring color" />
+                          <span>Avatar ring color</span>
+                        </label>
                     </div>
                   </div>
                   <div className={styles.field} style={{ marginTop: '0.75rem' }}>
@@ -559,10 +630,10 @@ export default function ProfilePage() {
                     <span className={styles.characterCount}>{editFields.bio.length}/500</span>
                   </div>
                   <div className={styles.actionRow}>
-                    <button className={styles.btnPrimary} onClick={handleSave} disabled={saving}>
+                    <button className={styles.saveBtn} style={{ background: activeCard.gradient }} onClick={handleSave} disabled={saving}>
                       {saving ? 'Saving…' : 'Save Changes'}
                     </button>
-                    <button className={styles.btnGhost} onClick={handleCancel} disabled={saving}>Cancel</button>
+                    <button className={styles.cancelBtn} onClick={handleCancel} disabled={saving}>Cancel</button>
                   </div>
                 </div>
               ) : (
@@ -853,7 +924,7 @@ export default function ProfilePage() {
                         className={`${styles.skinCard} ${isActive ? styles.skinActive : ''} ${!isOwned ? styles.skinLocked : ''}`}
                         onClick={() => isOwned && applySkin(skin.slug)}
                         disabled={!isOwned}
-                        title={isOwned ? skin.desc : 'Earn via achievement milestones'}
+                        title={isOwned ? skin.desc : 'Locked — see the Achievements page → Themes for how to unlock'}
                       >
                         <div className={styles.skinPreview} style={{ background: skin.bg, border: `1px solid ${skin.accent}44` }}>
                           <div className={styles.skinDot} style={{ background: skin.accent }} />

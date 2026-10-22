@@ -40,9 +40,11 @@
 }
 
 .bannerActions {
-  position: absolute; top: 1rem; right: 1rem; z-index: 4;
+  position: absolute; top: 1rem; right: 1rem; z-index: 6;
   display: flex; align-items: center; gap: 0.4rem;
 }
+
+.bannerEdit { position: absolute; top: 1rem; left: 1rem; z-index: 6; }
 
 .editBtn {
   display: inline-flex; align-items: center; gap: 0.3rem;
@@ -74,6 +76,7 @@
   animation: fadeUp 0.18s ease both;
   max-width: calc(100% - 1.5rem);
   flex-wrap: wrap; justify-content: center;
+  max-height: calc(100% - 4rem); overflow-y: auto; overflow-x: hidden;
 }
 .bannerDot {
   width: 26px; height: 26px; border-radius: 50%;
@@ -263,19 +266,20 @@
   background: rgba(4,7,20,0.60);
   border: 1px solid rgba(99,102,241,0.15);
   border-radius: 14px;
-  padding: 1rem 1.1rem 0.85rem;
+  padding: 0.7rem 0.8rem 0.65rem;
+  max-width: 380px;
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 24px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
 }
-.editIdentityPreview { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.9rem; }
+.editIdentityPreview { display: none; }
 .editPreviewAvatar { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 50%; background: rgba(16,185,129,0.10); border: 1px solid rgba(52,211,153,0.28); font-size: 1.2rem; }
 .editPreviewAvatar .avatarArt { width: 100%; height: 100%; font-size: 1rem; }
 .editPreviewCopy { display: flex; flex-direction: column; gap: 0.1rem; color: #e2e8f0; font-size: 0.82rem; }
 .editPreviewLabel { color: #61788a; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-.editGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.editGrid { display: grid; grid-template-columns: 1fr; gap: 0.55rem; }
 .avatarPicker { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .avatarOption {
-  width: 34px; height: 34px; padding: 0;
+  width: 28px; height: 28px; padding: 0;
   display: grid; place-items: center;
   background: rgba(255,255,255,0.035);
   border: 1px solid rgba(255,255,255,0.10);
@@ -286,7 +290,7 @@
 }
 .avatarOption:hover { transform: translateY(-2px); border-color: rgba(34,211,238,0.45); }
 .avatarOptionActive { background: rgba(16,185,129,0.12); border-color: rgba(52,211,153,0.60); box-shadow: 0 0 0 2px rgba(16,185,129,0.10); }
-.avatarOption .avatarArt { width: 25px; height: 25px; font-size: 0.8rem; }
+.avatarOption .avatarArt { width: 21px; height: 21px; font-size: 0.7rem; }
 .characterCount { align-self: flex-end; margin-top: -0.2rem; color: #52677b; font-size: 0.65rem; font-variant-numeric: tabular-nums; }
 .saveMessage { margin: 0.65rem 0 0; font-size: 0.76rem; line-height: 1.4; }
 .saveMessageSuccess { color: #6ee7b7; }
@@ -334,7 +338,7 @@
   border-color: rgba(99,102,241,0.60);
   box-shadow: 0 0 0 3px rgba(99,102,241,0.14), inset 0 1px 4px rgba(0,0,0,0.35);
 }
-.actionRow { display: flex; gap: 0.6rem; margin-top: 1rem; }
+.actionRow { display: flex; gap: 0.5rem; margin-top: 0.7rem; }
 .btnPrimary {
   flex: 1; padding: 9px 16px; border-radius: 10px; border: none; cursor: pointer;
   background: linear-gradient(135deg, #5254c8 0%, #818cf8 50%, #06b6d4 100%);
@@ -344,6 +348,26 @@
 }
 .btnPrimary:hover { opacity: 0.92; transform: translateY(-1px); box-shadow: 0 4px 22px rgba(99,102,241,0.50); }
 .btnPrimary:disabled { opacity: 0.42; transform: none; cursor: default; }
+.saveBtn {
+  flex: 1; padding: 9px 16px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.28); border-bottom-color: rgba(255,255,255,0.10);
+  color: #fff; font-size: 0.83rem; font-weight: 700; letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 2px 12px rgba(0,0,0,0.30);
+  transition: filter 0.15s, transform 0.15s;
+}
+.saveBtn:hover { filter: brightness(1.12); transform: translateY(-1px); }
+.saveBtn:disabled { opacity: 0.45; transform: none; cursor: default; }
+.cancelBtn {
+  padding: 9px 18px; border-radius: 999px; cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.22); border-bottom-color: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.10); color: rgba(255,255,255,0.88);
+  font-size: 0.83rem; font-weight: 600;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.18);
+  transition: background 0.15s, transform 0.15s;
+}
+.cancelBtn:hover { background: rgba(255,255,255,0.20); transform: translateY(-1px); }
+.cancelBtn:disabled { opacity: 0.45; cursor: default; }
 .btnGhost {
   padding: 9px 16px; border-radius: 10px;
   background: rgba(255,255,255,0.04);
@@ -780,7 +804,7 @@
   .avatarFloat { width: 72px; height: 72px; font-size: 2.1rem; }
   .heroInfo { padding-top: 42px; }
   .displayName { font-size: 1.2rem; }
-  .bannerSwatchRow { max-width: calc(100% - 1.25rem); overflow-x: auto; justify-content: flex-start; }
+  .bannerSwatchRow { max-width: calc(100% - 1.25rem); overflow-x: hidden; justify-content: center; }
   .tabPane { padding: 1rem 0.9rem 1.2rem; }
   .tab { padding: 0.5rem 0.35rem; font-size: 0.68rem; }
   .settingsGear {
@@ -794,3 +818,28 @@
   .skinsGrid { grid-template-columns: repeat(2, 1fr); }
   .editGrid { grid-template-columns: 1fr; }
 }
+/* Emblem categories */
+.emblemTabs { display: flex; gap: 0.2rem; flex-wrap: wrap; margin-bottom: 0.5rem; padding: 0.2rem; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); width: fit-content; max-width: 100%; }
+.emblemTab {
+  padding: 0.22rem 0.7rem; border-radius: 999px; cursor: pointer;
+  border: 0; background: transparent;
+  color: rgba(255,255,255,0.6); font-size: 0.68rem; font-weight: 600;
+  transition: background 0.15s, color 0.15s;
+}
+.emblemTab:hover { background: rgba(255,255,255,0.12); }
+.emblemTabActive, .emblemTabActive:hover { background: linear-gradient(135deg, rgba(99,102,241,0.8), rgba(34,211,238,0.5)); color: #fff; box-shadow: 0 2px 10px rgba(99,102,241,0.35); }
+.emblemGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 0.4rem; }
+.emblemCard {
+  display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+  padding: 0.4rem 0.2rem; border-radius: 9px; cursor: pointer; text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.04);
+  color: #e2e8f0; transition: transform 0.15s, border-color 0.15s;
+}
+.emblemCard:hover { transform: translateY(-2px); border-color: rgba(34,211,238,0.45); }
+.emblemCardActive { background: rgba(16,185,129,0.12); border-color: rgba(52,211,153,0.60); }
+.emblemLocked { opacity: 0.75; cursor: not-allowed; }
+.emblemLocked:hover { transform: none; border-color: inherit; }
+.emblemArt { width: 38px; height: 38px; display: grid; place-items: center; }
+.emblemArt .avatarArt { width: 100%; height: 100%; font-size: 1.1rem; }
+.emblemName { font-size: 0.62rem; font-weight: 700; text-align: center; line-height: 1.15; }
+.emblemRarity { font-size: 0.55rem; color: #7c93a8; }

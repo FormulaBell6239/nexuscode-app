@@ -5,12 +5,12 @@ import PageShell from '@/components/PageShell';
 import styles from './Upgrade.module.css';
 
 const FREE_FEATURES = [
-  { icon: '⚡', text: '10 energy per day' },
+  { icon: '⚡', text: '10 max energy' },
   { icon: '◎', text: '4 tracks: HTML, CSS, JS, Python' },
   { icon: '◆', text: 'Leaderboards & achievements' },
   { icon: '⬡', text: 'Nexus Path progress tracking' },
   { icon: '◈', text: 'Mini-games & playground' },
-  { icon: '↻', text: 'Energy refills every midnight' },
+  { icon: '↻', text: '+1 energy every 30 minutes' },
   { icon: '▭', text: 'Ad-supported — helps keep the free tier free' },
 ];
 
@@ -197,11 +197,11 @@ export default function UpgradePage() {
             {[
               {
                 q: 'What happens to my progress if I cancel?',
-                a: "All your XP, completed lessons, and achievements are yours forever — cancelling just returns you to the 10-energy/day limit.",
+                a: "All your XP, completed lessons, and achievements are yours forever — cancelling just returns you to the 10-energy limit.",
               },
               {
                 q: 'What is energy?',
-                a: 'Energy powers your lessons. Each wrong answer costs energy. Nexus Core users get 10 energy that refills at midnight UTC. Nexus Pro and Quantum users have unlimited energy.',
+                a: 'Energy powers your lessons. Each wrong answer costs energy. Nexus Core users hold up to 10 energy, regain 1 every 30 minutes, and can buy instant refills in the Store with credits. Nexus Pro and Quantum users have unlimited energy.',
               },
               {
                 q: 'Can I switch from monthly to annual?',

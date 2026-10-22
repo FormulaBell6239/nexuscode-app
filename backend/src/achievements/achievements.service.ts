@@ -5,6 +5,7 @@ import { Achievement } from '../entities/Achievement';
 import { UserAchievement } from '../entities/UserAchievement';
 import { UserProgress } from '../entities/UserProgress';
 import { StoreService } from '../store/store.service';
+import { EMBLEM_REWARDS } from '../emblem-rewards';
 
 // Maps a credit reward amount to the tier skin applyValue
 function tierSkinForReward(creditReward: number): string {
@@ -30,8 +31,9 @@ export class AchievementsService {
     private readonly storeService: StoreService,
   ) {}
 
-  getAllAchievements() {
-    return this.achievementRepo.find();
+  async getAllAchievements() {
+    const all = await this.achievementRepo.find();
+    return all.map((a) => ({ ...a, emblemId: EMBLEM_REWARDS[a.name] ?? null }));
   }
 
   async getUserAchievements(userId: number) {
@@ -39,6 +41,14 @@ export class AchievementsService {
     const userProgress = await this.userAchievementRepo.find({ where: { userId } });
 
     const progressMap = new Map(userProgress.map((ua) => [ua.achievementId, ua]));
+
+    // Backfill emblems for achievements earned before emblems existed (idempotent)
+    for (const a of all) {
+      const emblemId = EMBLEM_REWARDS[a.name];
+      if (emblemId && progressMap.get(a.id)?.earned) {
+        await this.storeService.grantPrizeSkin(userId, emblemId).catch(() => null);
+      }
+    }
 
     return all.map((a) => {
       const ua = progressMap.get(a.id);
@@ -50,6 +60,7 @@ export class AchievementsService {
         type: a.type,
         requiredCount: a.requiredCount,
         creditReward: a.creditReward,
+        emblemId: EMBLEM_REWARDS[a.name] ?? null,
         progress: ua?.progress ?? 0,
         earned: ua?.earned ?? false,
         earnedAt: ua?.earnedAt ?? null,
@@ -103,6 +114,12 @@ export class AchievementsService {
         const skinSlug = tierSkinForReward(ach.creditReward);
         const prize = await this.storeService.grantPrizeSkin(userId, skinSlug).catch(() => null);
         if (prize) prizes.push(prize);
+
+        const emblemId = EMBLEM_REWARDS[ach.name];
+        if (emblemId) {
+          const emblemPrize = await this.storeService.grantPrizeSkin(userId, emblemId).catch(() => null);
+          if (emblemPrize) prizes.push(emblemPrize);
+        }
 
         if (ach.name === 'Unstoppable') {
           const avatarPrize = await this.storeService.grantPrizeSkin(userId, 'avatar-unbroken').catch(() => null);

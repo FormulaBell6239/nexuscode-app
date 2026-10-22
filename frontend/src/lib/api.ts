@@ -72,16 +72,19 @@ export interface XpResponse {
 
 export const getProfile = () => api.get<ProfileResponse>('/api/profile');
 
-export const submitXp = (amount: number, lessonKey?: string, firstTry?: boolean, gameRound?: boolean) =>
-  api.post<XpResponse>('/api/profile/xp', { amount, lessonKey, firstTry, gameRound });
+export const submitXp = (amount: number, lessonKey?: string, firstTry?: boolean, gameRound?: boolean, lessonIndex?: number, lessonTotal?: number) =>
+  api.post<XpResponse>('/api/profile/xp', { amount, lessonKey, firstTry, gameRound, lessonIndex, lessonTotal });
 
 export interface HeartsResponse {
   hearts: number;
+  maxHearts: number;
+  nextInSeconds: number | null;
   plan: string;
 }
 
 export interface DeductHeartResponse {
   hearts: number | null;
+  nextInSeconds?: number | null;
   pro?: boolean;
 }
 
@@ -108,12 +111,20 @@ const LOCAL_OWNED_KEY     = 'nexus_local_owned';
 const LOCAL_COMPLETED_KEY = 'nexus_local_completed';
 
 export const LOCAL_CREDIT_RATES = {
-  newLesson:     6,
-  firstTryBonus: 3,
+  firstTryBonus: 2,
+  sectionClear:  10,
   dailyBonus:    2,
   levelUp:       10,
   gameRound:     3,
 } as const;
+
+/** Lesson credits: 3 / 4 / 5 by section third, plus a section-clear bonus on the last lesson. */
+export function lessonCredits(index: number, total: number): number {
+  const t = Math.max(1, total);
+  const i = Math.max(0, Math.min(index, t - 1));
+  const base = i < t / 3 ? 3 : i < (2 * t) / 3 ? 4 : 5;
+  return base + (i === t - 1 ? LOCAL_CREDIT_RATES.sectionClear : 0);
+}
 
 /** Credits awarded for a PERFECT (zero-mistake) game session, keyed by difficulty. */
 export const GAME_CREDITS = {

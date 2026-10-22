@@ -5,6 +5,17 @@ import { useRouter } from "next/navigation";
 import PageShell from "@/components/PageShell";
 import styles from "./Roadmap.module.css";
 
+// ── Custom line icons (replace emoji) ────────────────────────────────────────
+const ip = { width: '1em', height: '1em', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
+const TRACK_ICONS: Record<string, React.ReactElement> = {
+  web: <svg {...ip}><circle cx="12" cy="12" r="9" /><path d="M3 12h18" /><path d="M12 3c2.8 2.6 4.2 5.6 4.2 9S14.800 18.400 12 21c-2.800-2.600-4.200-5.600-4.200-9S9.200 5.600 12 3z" /></svg>,
+  python: <svg {...ip}><path d="M12 3c-3.500 0-4 1.500-4 3v2h4.500a1.500 1.500 0 011.500 1.500v1" /><path d="M8 8H6.500A2.500 2.500 0 004 10.500v1A2.500 2.500 0 006.500 14H8v-2.500A2.500 2.500 0 0110.500 9H14V6c0-1.500-.500-3-2-3z" /><path d="M12 21c3.500 0 4-1.500 4-3v-2h-4.500A1.500 1.500 0 0110 14.500v-1" /><path d="M16 16h1.500a2.500 2.500 0 002.500-2.500v-1a2.500 2.500 0 00-2.500-2.500H16" /><circle cx="10" cy="5.500" r=".7" fill="currentColor" /><circle cx="14" cy="18.500" r=".7" fill="currentColor" /></svg>,
+  sql: <svg {...ip}><ellipse cx="12" cy="6" rx="7" ry="3" /><path d="M5 6v12c0 1.700 3.100 3 7 3s7-1.300 7-3V6" /><path d="M5 12c0 1.700 3.100 3 7 3s7-1.300 7-3" /></svg>,
+  typescript: <svg {...ip}><rect x="3.500" y="3.500" width="17" height="17" rx="3" /><path d="M8 10h6M11 10v7" /><path d="M16.500 10.500c-.500-.500-1.200-.700-2-.500s-1 1.200 0 1.700l1.200.600c1 .500.800 1.700 0 1.900-.800.200-1.700 0-2.200-.600" transform="translate(1 .5)" /></svg>,
+  react: <svg {...ip}><circle cx="12" cy="12" r="1.600" fill="currentColor" /><ellipse cx="12" cy="12" rx="9" ry="3.600" /><ellipse cx="12" cy="12" rx="9" ry="3.600" transform="rotate(60 12 12)" /><ellipse cx="12" cy="12" rx="9" ry="3.600" transform="rotate(120 12 12)" /></svg>,
+  lock: <svg {...ip}><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 018 0v3" /></svg>,
+};
+
 // ── Must match tracks + curriculum.json ──────────────────────────────────────
 const TRACKS = [
   {
@@ -283,7 +294,7 @@ export default function RoadmapPage() {
               return (
                 <div key={lesson.key} className={`${styles.node} ${isDone ? styles.nodeDone : ""} ${isCurrent ? styles.nodeCurrent : ""} ${!isUnlocked && !isDone ? styles.nodeLocked : ""}`}>
                   <div className={styles.nodeDot} style={isDone ? { background: section.color, boxShadow: `0 0 10px ${section.color}88` } : isCurrent ? { borderColor: section.color, boxShadow: `0 0 14px ${section.color}66` } : {}}>
-                    {isDone ? "✓" : isCurrent ? "▶" : !isUnlocked ? "🔒" : String(li + 1)}
+                    {isDone ? "✓" : isCurrent ? "▶" : !isUnlocked ? TRACK_ICONS.lock : String(li + 1)}
                   </div>
                   <div className={styles.nodeContent}>
                     <span className={styles.nodeLabel}>{lesson.label}</span>
@@ -319,25 +330,28 @@ export default function RoadmapPage() {
           ? 'Query thinking and data shaping from first principles.'
           : 'A focused learning path built for steady progression.';
 
+    const heroMark = track.id === 'web' ? 'HTML' : track.mark;
+
     return (
       <main className={styles.main}>
         <PageShell />
         <div className={styles.pathPage}>
           <div className={styles.trackViewHeader}>
             <div className={styles.trackViewCrumbRow}>
-              <button type="button" className={styles.trackBackBtn} onClick={() => setSelectedTrack(null)} aria-label="All Tracks">
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-                  <path d="M11 14L6 9L11 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <button type="button" className={styles.trackBackBtn} onClick={() => setSelectedTrack(null)} aria-label="Nexus Path">
+                <svg className={styles.backArrow} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M19 12H5M11 6l-6 6 6 6" />
                 </svg>
-                <span>All tracks</span>
+                <span>Nexus Path</span>
               </button>
               <p className={styles.pathHint}>scroll to explore · tap a section to drill in</p>
             </div>
             <header className={styles.trackHeroHeader} style={{ '--tc': track.glow, '--tg': track.gradient } as React.CSSProperties}>
+              <span className={styles.trackHeroWatermark} style={{ '--n': heroMark.length } as React.CSSProperties} aria-hidden="true">{heroMark}</span>
               <div className={styles.trackHeroCopy}>
                 <div className={styles.trackHeroEyebrow}>◈ Learning Path</div>
                 <h1 className={styles.trackHeroTitle}>
-                  <span className={styles.trackHeroIcon} aria-hidden="true">{track.icon}</span>
+                  <span className={styles.trackHeroIcon} aria-hidden="true">{TRACK_ICONS[track.id] ?? track.icon}</span>
                   {track.label}
                 </h1>
                 <p className={styles.trackHeroBlurb}>{trackCopy}</p>
@@ -394,7 +408,7 @@ export default function RoadmapPage() {
               const x = nx(node), y = ny(i), r = pR(node.kind, node.isCurrent);
               const isLeft  = node.kind === 'lesson' && node.lessonIdx % 2 === 0;
               const isRight = node.kind === 'lesson' && node.lessonIdx % 2 !== 0;
-              const inner = node.kind === 'chapter' ? (node.icon ?? '◎') : node.done ? '✓' : node.isCurrent ? '▶' : node.locked ? '🔒' : node.kind === 'section' ? '◈' : '·';
+              const inner = node.kind === 'chapter' ? (node.icon ?? '◎') : node.done ? '✓' : node.isCurrent ? '▶' : node.locked ? TRACK_ICONS.lock : node.kind === 'section' ? '◈' : '·';
               return (
                 <div key={node.id}
                   className={[styles.pNode, node.kind === 'chapter' ? styles.pNodeChapter : '', node.kind === 'section' ? styles.pNodeSection : '', node.done ? styles.pNodeDone : '', node.isCurrent ? styles.pNodeCurrent : '', node.locked ? styles.pNodeLocked : ''].filter(Boolean).join(' ')}
@@ -480,7 +494,7 @@ export default function RoadmapPage() {
         <div className={styles.trackSelectSoonGrid}>
           {FUTURE_TRACKS.map(ft => (
             <div key={ft.id} className={styles.trackSelectSoonCard}>
-              <span className={styles.trackSelectSoonIcon}>{ft.icon}</span>
+              <span className={styles.trackSelectSoonIcon}>{TRACK_ICONS[ft.id] ?? ft.icon}</span>
               <span className={styles.trackSelectSoonName}>{ft.label}</span>
               <p className={styles.trackSelectSoonDesc}>{ft.desc}</p>
               <span className={styles.trackSelectSoonBadge}>soon</span>

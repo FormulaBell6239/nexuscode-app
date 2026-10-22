@@ -25,6 +25,7 @@ export default function PlaygroundPage() {
   const [projects, setProjects] = useState<{htmlName: string, cssName: string, jsName: string, html: string, css: string, js: string}[]>([]);
   const [showProjects, setShowProjects] = useState(false);
   const [showStructure, setShowStructure] = useState(false);
+  const [showPyStructure, setShowPyStructure] = useState(false);
   const [draftLoaded, setDraftLoaded] = useState(false);
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,21 +58,11 @@ export default function PlaygroundPage() {
       const savedPy = localStorage.getItem("playgroundPyProjects");
       if (savedPy) setPyProjects(JSON.parse(savedPy));
     } catch {}
-    // Restore unsaved work from the last session
+    // Always start fresh; earlier work is reopened from Files
     try {
-      const w = JSON.parse(localStorage.getItem("playgroundWebDraft") || "null");
-      if (w) {
-        setHtmlCode(w.html ?? ""); setCssCode(w.css ?? ""); setJsCode(w.js ?? "");
-        setHtmlFileName(w.htmlName ?? ""); setCssFileName(w.cssName ?? ""); setJsFileName(w.jsName ?? "");
-        if (w.htmlName || w.cssName || w.jsName) setNamingMode(false);
-      }
-      const py = JSON.parse(localStorage.getItem("playgroundPyDraft") || "null");
-      if (py) {
-        setPyCode(py.code ?? ""); setPyFileName(py.name ?? "");
-        if (py.name) setNamingMode(false);
-      }
-      const last = localStorage.getItem("playgroundLastMode");
-      if (last === "web" || last === "python") setMode(last);
+      localStorage.removeItem("playgroundWebDraft");
+      localStorage.removeItem("playgroundPyDraft");
+      localStorage.removeItem("playgroundLastMode");
     } catch {}
     setDraftLoaded(true);
   }, []);
@@ -81,9 +72,6 @@ export default function PlaygroundPage() {
     if (!draftLoaded) return;
     const t = setTimeout(() => {
       try {
-        localStorage.setItem("playgroundWebDraft", JSON.stringify({ html: htmlCode, css: cssCode, js: jsCode, htmlName: htmlFileName, cssName: cssFileName, jsName: jsFileName }));
-        localStorage.setItem("playgroundPyDraft", JSON.stringify({ code: pyCode, name: pyFileName }));
-        if (mode) localStorage.setItem("playgroundLastMode", mode); else localStorage.removeItem("playgroundLastMode");
         if (mode === "web" && (htmlFileName || cssFileName || jsFileName)) handleSaveProject(true);
         if (mode === "python" && pyFileName) handleSavePyProject(true);
         setSavedAt(Date.now());
@@ -376,6 +364,7 @@ export default function PlaygroundPage() {
           ) : null}
           <div className={styles.topBarActions}>
                         <span className={styles.autoSaved}>{savedAt ? "Autosaved ✓" : ""}</span>
+            <button onClick={() => setShowPyStructure(v => !v)} className={styles.toggleButton}>Cheat Sheet</button>
             <button onClick={() => setShowPyProjects(v => !v)} className={styles.toggleButton}>Files</button>
             <button
               onClick={handleRunPython}
@@ -386,6 +375,14 @@ export default function PlaygroundPage() {
             </button>
           </div>
         </div>
+
+        {showPyStructure && (
+          <StructureGuide
+            language="py"
+            onClose={() => setShowPyStructure(false)}
+            onInsert={code => setPyCode(prev => prev.trim() ? `${prev.replace(/\s+$/, '')}\n\n${code}` : code)}
+          />
+        )}
 
         {/* ── Python Projects drawer ── */}
         {showPyProjects && (
@@ -479,7 +476,7 @@ export default function PlaygroundPage() {
         ) : null}
         <div className={styles.topBarActions}>
                     <span className={styles.autoSaved}>{savedAt ? "Autosaved ✓" : ""}</span>
-          <button onClick={() => setShowStructure(v => !v)} className={styles.toggleButton}>Structure</button>
+          <button onClick={() => setShowStructure(v => !v)} className={styles.toggleButton}>Cheat Sheet</button>
           <button onClick={() => setShowProjects(!showProjects)} className={styles.toggleButton}>Files</button>
         </div>
       </div>
