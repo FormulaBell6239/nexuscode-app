@@ -1,8 +1,14 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import StatIcon from "@/components/StatIcon";
 import styles from './Leaderboard.module.css';
 import PageShell from '@/components/PageShell';
 import { api } from '@/lib/api';
+import EmblemAvatar from '@/components/EmblemAvatar';
+
+function Avatar({ value }: { value: string }) {
+  return <EmblemAvatar value={value} className={styles.emblemAvatar} />;
+}
 
 interface LeaderboardEntry {
   rank: number;
@@ -67,7 +73,7 @@ export default function Leaderboard() {
                     style={{ '--pc': meta.color, '--pg': meta.glow, '--pb': meta.border } as React.CSSProperties}
                   >
                     {isFirst && <div className={styles.podiumCrown}>👑</div>}
-                    <div className={styles.podiumAvatar}>{user.avatar}</div>
+                    <div className={styles.podiumAvatar}><Avatar value={user.avatar} /></div>
                     <span className={styles.podiumName}>{user.username}</span>
                     <span className={styles.podiumXp}>{user.xp.toLocaleString()} XP</span>
                     <div className={styles.podiumRankBadge} style={{ height: meta.height }}>
@@ -86,11 +92,11 @@ export default function Leaderboard() {
                   {rest.map((user) => (
                     <div key={user.rank} className={styles.listRow}>
                       <span className={styles.listRank}>#{user.rank}</span>
-                      <span className={styles.listAvatar}>{user.avatar}</span>
+                      <span className={styles.listAvatar}><Avatar value={user.avatar} /></span>
                       <span className={styles.listName}>{user.username}</span>
                       <div className={styles.listRight}>
                         <span className={styles.listXp}>{user.xp.toLocaleString()} XP</span>
-                        <span className={styles.listMeta}>Lv.{user.level} · 🔥{user.streak}d</span>
+                        <span className={styles.listMeta}>Lv.{user.level} · <StatIcon name="streak" size={12} /> {user.streak}d</span>
                       </div>
                     </div>
                   ))}

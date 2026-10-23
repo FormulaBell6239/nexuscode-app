@@ -98,13 +98,13 @@ const STORE_ITEMS = [
   { name: 'Pair Mode',        description: 'Collaborate on a challenge with a partner',          icon: '🤝',  category: 'game',     creditCost: 150, gameSlug: 'pair-mode',        cosmeticType: null, applyValue: '/games/pair-mode',          oneTimePurchase: true, milestoneOnly: false },
   { name: 'Tournament',       description: 'Bracket-style competition across 8 players',         icon: '🏆',  category: 'game',     creditCost: 300, gameSlug: 'tournament',       cosmeticType: null, applyValue: '/games/tournament',         oneTimePurchase: true, milestoneOnly: false },
   // ── Power-ups ─────────────────────────────────────────────────────────
-  { name: 'XP Boost',         description: '2× XP on all activities for 24 hours',               icon: '⚡',  category: 'powerup',  creditCost: 80,  gameSlug: null,               cosmeticType: null, applyValue: 'xp_boost_24h',              oneTimePurchase: false, milestoneOnly: false },
-  { name: 'Energy Refill',    description: 'Instantly restore all energy to full',               icon: '🔋',  category: 'powerup',  creditCost: 40,  gameSlug: null,               cosmeticType: null, applyValue: 'energy_refill',             oneTimePurchase: false, milestoneOnly: false },
-  { name: 'Streak Shield',    description: 'Protect your streak for one missed day',             icon: '🛡️',  category: 'powerup',  creditCost: 60,  gameSlug: null,               cosmeticType: null, applyValue: 'streak_shield',             oneTimePurchase: false, milestoneOnly: false },
+  { name: 'XP Boost',         description: '2× XP on all activities for 24 hours',               icon: '⚡',  category: 'powerup',  creditCost: 150,  gameSlug: null,               cosmeticType: null, applyValue: 'xp_boost_24h',              oneTimePurchase: false, milestoneOnly: false },
+  { name: 'Energy Refill',    description: 'Instantly restore all energy to full',               icon: '🔋',  category: 'powerup',  creditCost: 250,  gameSlug: null,               cosmeticType: null, applyValue: 'energy_refill',             oneTimePurchase: false, milestoneOnly: false },
+  { name: 'Streak Shield',    description: 'Protect your streak for one missed day',             icon: '🛡️',  category: 'powerup',  creditCost: 250,  gameSlug: null,               cosmeticType: null, applyValue: 'streak_shield',             oneTimePurchase: false, milestoneOnly: false },
   // ── Cosmetics ─────────────────────────────────────────────────────────
-  { name: 'Cyber Neon Theme', description: 'Unlock the Cyber Neon UI theme',                    icon: '🔮',  category: 'cosmetic', creditCost: 80,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'cyber-neon',                oneTimePurchase: true, milestoneOnly: false },
-  { name: 'Matrix Green Theme', description: 'Unlock the Matrix Green UI theme',                icon: '⍇',  category: 'cosmetic', creditCost: 80,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'matrix-green',              oneTimePurchase: true, milestoneOnly: false },
-  { name: 'Midnight Theme',   description: 'Unlock the Midnight UI theme',                      icon: '🌑',  category: 'cosmetic', creditCost: 60,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'minimal-dark',              oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Cyber Neon Theme', description: 'Unlock the Cyber Neon UI theme',                    icon: '🔮',  category: 'cosmetic', creditCost: 2500,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'cyber-neon',                oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Matrix Green Theme', description: 'Unlock the Matrix Green UI theme',                icon: '⍇',  category: 'cosmetic', creditCost: 500,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'matrix-green',              oneTimePurchase: true, milestoneOnly: false },
+  { name: 'Midnight Theme',   description: 'Unlock the Midnight UI theme',                      icon: '🌑',  category: 'cosmetic', creditCost: 1000,  gameSlug: null,               cosmeticType: 'theme',       applyValue: 'minimal-dark',              oneTimePurchase: true, milestoneOnly: false },
   { name: '⚡ Elite Card',     description: 'Exclusive calling card for dedicated coders',       icon: '🏦',  category: 'cosmetic', creditCost: 75,  gameSlug: null,               cosmeticType: 'callingCard', applyValue: 'elite',                     oneTimePurchase: true, milestoneOnly: false },
   { name: '🔥 Inferno Card',  description: 'Calling card for players on a 30-day streak',      icon: '🏦',  category: 'cosmetic', creditCost: 100, gameSlug: null,               cosmeticType: 'callingCard', applyValue: 'inferno',                   oneTimePurchase: true, milestoneOnly: false },
   { name: 'Cipher Sigil',     description: 'A precision-cut emblem for your profile',           icon: '⌘',   category: 'cosmetic', creditCost: 120, gameSlug: null,               cosmeticType: 'avatar',      applyValue: 'avatar-cipher',             oneTimePurchase: true, milestoneOnly: false },
@@ -199,6 +199,10 @@ async function seed() {
     if (!existing) {
       await storeItemRepo.save(storeItemRepo.create(s as unknown as Partial<StoreItem>));
       newStoreItems++;
+    } else if (existing.creditCost !== s.creditCost) {
+      existing.creditCost = s.creditCost;
+      await storeItemRepo.save(existing);
+      console.log(`Updated price of ${s.name} to ${s.creditCost}`);
     }
   }
   console.log(newStoreItems > 0 ? `Seeded ${newStoreItems} new store items` : 'Store items already up-to-date');

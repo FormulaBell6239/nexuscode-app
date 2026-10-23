@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import StatIcon from "@/components/StatIcon";
+import LivePreview, { usePullPreview, usePreviewMode, previewBaseStyle, PreviewModeToggle } from "./LivePreview";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { css } from "@codemirror/lang-css";
@@ -105,12 +107,12 @@ type SqlDataTableId = typeof SQL_DATA_TABLES[number]['id'];
 const checkers: {
   [key: string]: (code: string) => boolean;
 } = {
-  "html-headings":    (c) => /<h1>[^<]*Welcome to NexusCode[^<]*<\/h1>/i.test(c),
-  "html-paragraphs":  (c) => /<p>\s*\S[\s\S]*?\s*<\/p>/i.test(c),
-  "html-links":       (c) => /<a\s[^>]*href\s*=/i.test(c),
-  "html-images":      (c) => /<img\s[^>]*src\s*=[^>]*alt\s*=/i.test(c),
-  "html-lists":       (c) => /<(ul|ol)[\s>][\s\S]*?<li/i.test(c),
-  "html-forms":       (c) => /<form[\s>][\s\S]*?<input/i.test(c),
+  "html-headings":    (c) => /<h1>[^<]*Welcome to NexusCode[^<]*<\/h1>/i.test(c) && /<h2>\s*[^<\s][^<]*<\/h2>/i.test(c),
+  "html-paragraphs":  (c) => /<p>\s*[^<\s][\s\S]*?<\/p>[\s\S]*<p>\s*[^<\s][\s\S]*?<\/p>/i.test(c),
+  "html-links":       (c) => /<a\s[^>]*href\s*=\s*["'][^"']+["'][^>]*>\s*[^<\s][^<]*<\/a>/i.test(c),
+  "html-images":      (c) => /<img\b(?=[^>]*\ssrc\s*=\s*["'][^"']+["'])(?=[^>]*\salt\s*=\s*["'][^"']+["'])[^>]*>/i.test(c),
+  "html-lists":       (c) => /<ul[\s>](?:[\s\S]*?<li[\s>][\s\S]*?<\/li>){3}/i.test(c),
+  "html-forms":       (c) => /<form[\s>][\s\S]*?<label\s[^>]*for\s*=\s*["']([^"']+)["'][\s\S]*?<input\s[^>]*id\s*=\s*["']\1["'][\s\S]*?<\/form>/i.test(c),
   "css-selectors":    (c) => /h1\s*{[^}]*color\s*:\s*blue\s*;?[^}]*}/i.test(c),
   "css-background":   (c) => /body\s*{[^}]*background(-color)?\s*:\s*lightgr[ae]y\s*;?[^}]*}/i.test(c),
   "css-font-size":    (c) => /p\s*{[^}]*font-size\s*:\s*20px\s*;?[^}]*}/i.test(c),
@@ -130,18 +132,18 @@ const checkers: {
   "py-functions":    (c) => /def\s+greet\s*\(/.test(c),
   "py-lists":        (c) => /^\s*fruits\s*=\s*\[/m.test(c) && /print\s*\(\s*fruits\s*\)/.test(c),
   // ── HTML extras ──────────────────────────────────────────────────────────
-  "html-divs":           (c) => /<div[\s>]/i.test(c),
-  "html-tables":         (c) => /<table[\s>][\s\S]*?<tr/i.test(c),
-  "html-semantic":       (c) => /<(header|main|footer|nav|section|article)[\s>]/i.test(c),
-  "html-buttons":        (c) => /<button[\s>]/i.test(c),
-  "html-textarea":       (c) => /<textarea[\s>]/i.test(c),
-  "html-select":         (c) => /<select[\s>][\s\S]*?<option/i.test(c),
-  "html-comments":       (c) => /<!--[\s\S]*?-->/.test(c),
-  "html-classes":        (c) => /class\s*=\s*["'][^"']+["']/i.test(c),
-  "html-anchor-target":  (c) => /<a\s[^>]*target\s*=\s*["']_blank["']/i.test(c),
-  "html-ordered-list":   (c) => /<ol[\s>][\s\S]*?<li/i.test(c),
-  "html-input-types":    (c) => /<input\s[^>]*type\s*=\s*["'](email|password|number)["']/i.test(c),
-  "html-meta":           (c) => /<meta\s[^>]*name\s*=\s*["']description["']/i.test(c),
+  "html-divs":           (c) => /<div[\s>][\s\S]*?<h[1-6][\s>][\s\S]*?<\/h[1-6]>[\s\S]*?<p[\s>][\s\S]*?<\/p>[\s\S]*?<\/div>/i.test(c),
+  "html-tables":         (c) => /<table[\s>][\s\S]*?<tr[\s>][\s\S]*?<th[\s>][\s\S]*?<tr[\s>][\s\S]*?<td[\s>]/i.test(c),
+  "html-semantic":       (c) => /<header[\s>]/i.test(c) && /<main[\s>]/i.test(c) && /<footer[\s>]/i.test(c),
+  "html-buttons":        (c) => /<button\s[^>]*type\s*=\s*["'](button|submit|reset)["'][^>]*>\s*[^<\s]/i.test(c),
+  "html-textarea":       (c) => /<textarea(?=[^>]*\srows\s*=\s*["']?\d)(?=[^>]*\splaceholder\s*=\s*["'][^"']+["'])[^>]*>/i.test(c),
+  "html-select":         (c) => /<select[\s>](?:[\s\S]*?<option\s[^>]*value\s*=[^>]*>[\s\S]*?<\/option>){3}/i.test(c),
+  "html-comments":       (c) => /<!--[\s\S]*?-->\s*<h1[\s>][\s\S]*<!--[\s\S]*?-->\s*<p[\s>]/i.test(c),
+  "html-classes":        (c) => /class\s*=\s*["']([\w-]+)["'][\s\S]*class\s*=\s*["']\1["']/i.test(c),
+  "html-anchor-target":  (c) => /<a\s(?=[^>]*target\s*=\s*["']_blank["'])(?=[^>]*rel\s*=\s*["'][^"']*noopener)[^>]*>/i.test(c),
+  "html-ordered-list":   (c) => /<ol[\s>](?:[\s\S]*?<li[\s>][\s\S]*?<\/li>){3}/i.test(c),
+  "html-input-types":    (c) => /<input\s[^>]*type\s*=\s*["']email["']/i.test(c) && /<input\s[^>]*type\s*=\s*["']password["']/i.test(c),
+  "html-meta":           (c) => /<meta\s(?=[^>]*name\s*=\s*["']description["'])(?=[^>]*content\s*=\s*["'][^"']+["'])[^>]*>/i.test(c),
   // ── CSS extras ───────────────────────────────────────────────────────────
   "css-colors":          (c) => /color\s*:\s*#[0-9a-f]{3,6}/i.test(c),
   "css-font-weight":     (c) => /font-weight\s*:\s*(bold|[0-9]+)/i.test(c),
@@ -398,6 +400,8 @@ export default function CurriculumPage() {
   // ---------------------------------------------
   const splitContainerRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const pull = usePullPreview();
+  const preview = usePreviewMode();
   const leftPaneRef = useRef<HTMLDivElement>(null);
   const isResizingRef = useRef(false);
   const resizeStartXRef = useRef(0);
@@ -991,7 +995,7 @@ export default function CurriculumPage() {
               {isPro && localStorage.getItem('token') ? (
                 <span className={styles.mobileEnergyLabel}>✦∞</span>
               ) : (
-                <span className={styles.mobileEnergyLabel}>⚡{hearts}/10</span>
+                <span className={styles.mobileEnergyLabel}><StatIcon name="energy" size={13} /> {hearts}/10</span>
               )}
             </div>
           )}
@@ -1075,7 +1079,7 @@ export default function CurriculumPage() {
                   <span className={styles.proBadge}>✦ Pro · ∞</span>
                 ) : (
                   <div className={styles.energyBar}>
-                    <span className={styles.energyLabel}>⚡</span>
+                    <span className={styles.energyLabel}><StatIcon name="energy" size={14} /></span>
                     <div className={styles.energyTrack}>
                       {[1,2,3,4,5,6,7,8,9,10].map(n => (
                         <div key={n} className={`${styles.energyCell} ${n <= hearts ? styles.energyCellFull : styles.energyCellEmpty}`} />
@@ -1113,7 +1117,7 @@ export default function CurriculumPage() {
                     </button>
                   )}
                   <button type="button" onClick={() => setShowHint(v => !v)} className={styles.hintButtonInline}>
-                    💡 Hint
+                    <StatIcon name="hint" size={14} /> Hint
                   </button>
                 </div>
               </div>
@@ -1143,7 +1147,7 @@ export default function CurriculumPage() {
                     <span className={styles.levelNumber}>Lesson {i + 1}</span>
                     <span className={styles.levelLabel}>{s.label}</span>
                     <span className={styles.levelStatus}>
-                      {isCompleted ? "✓" : isLocked ? "🔒" : isActive ? "→" : ""}
+                      {isCompleted ? "✓" : isLocked ? <StatIcon name="lock" size={12} /> : isActive ? "→" : ""}
                     </span>
                   </button>
                 );
@@ -1161,12 +1165,12 @@ export default function CurriculumPage() {
             {/* Feedback banners */}
             {!isMobile && feedback === "wrong" && (
               <div className={styles.wrongBanner}>
-                ❌ Not quite — keep trying or grab a hint!
+                <StatIcon name="cross" size={14} /> Not quite — keep trying or grab a hint!
               </div>
             )}
             {!isMobile && feedback === "correct" && (
               <div className={styles.correctBanner}>
-                ✅ Correct! Press Submit to complete this lesson.
+                <StatIcon name="check" size={14} /> Correct! Press Submit to complete this lesson.
               </div>
             )}
             <h1 className={styles.title}>{currentLesson.lesson.title}</h1>
@@ -1320,6 +1324,7 @@ export default function CurriculumPage() {
               <button
                 className={activeTab === "browser" ? styles.activeTab : styles.tab}
                 onClick={() => handleTabClick("browser")}
+                {...pull.tabProps}
               >Browser</button>
             )}
           </div>
@@ -1384,10 +1389,10 @@ export default function CurriculumPage() {
                   <div className={styles.pyTerminalHeader}>● Output</div>
                   <pre className={styles.pyTerminalOutput}>{pyOutput}</pre>
                   {feedback === 'correct' && (
-                    <div className={styles.pyFeedbackCorrect}>✅ Correct! Press Submit to complete this lesson.</div>
+                    <div className={styles.pyFeedbackCorrect}><StatIcon name="check" size={14} /> Correct! Press Submit to complete this lesson.</div>
                   )}
                   {feedback === 'wrong' && pyOutput && pyOutput !== '(no output)' && (
-                    <div className={styles.pyFeedbackWrong}>❌ Output doesn&apos;t match — check your code and run again.</div>
+                    <div className={styles.pyFeedbackWrong}><StatIcon name="cross" size={14} /> Output doesn&apos;t match — check your code and run again.</div>
                   )}
                 </div>
               </div>
@@ -1415,19 +1420,26 @@ export default function CurriculumPage() {
               />
             )}
             {activeTab === "browser" && (
+              <div style={{ position: "relative", flex: 1, display: "flex", minHeight: "400px" }}>
+              <PreviewModeToggle mode={preview.mode} onToggle={preview.toggle} className={styles.previewModeBtn} />
               <iframe
                 title="output"
                 style={{
+                  display: "block",
                   width: "100%",
+                  height: "100%",
+                  flex: 1,
                   minHeight: "400px",
                   border: "1px solid #1e293b",
                   borderRadius: "8px",
-                  background: "#080d17",
-                  colorScheme: "dark"
+                  background: preview.mode === "dark" ? "#0b1220" : "#e9e6df",
+                  colorScheme: preview.mode,
+                  filter: preview.mode === "light" ? "brightness(0.85) contrast(0.95)" : undefined
                 }}
-                srcDoc={output}
+                srcDoc={`${previewBaseStyle(preview.mode)}${output}`}
                 ref={iframeRef}
               />
+              </div>
             )}
           </div>
           {/* Sample Output (Hint) */}
@@ -1439,6 +1451,9 @@ export default function CurriculumPage() {
           )}
         </section>
       </div>
+      {pull.open && tracks.find(t => t.id === selectedTrack)?.langs.includes("html") && (
+        <LivePreview html={htmlCode} css={cssCode} js={jsCode} grab={pull.grab} mode={preview.mode} onToggleMode={preview.toggle} onClose={pull.close} />
+      )}
     </main>
   );
 }

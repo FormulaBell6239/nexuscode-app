@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
+import GameIcon, { slugifyGame } from "@/components/GameIcon";
+import StatIcon from "@/components/StatIcon";
 import Link from 'next/link';
 import styles from './Games.module.css';
 import PageShell from '@/components/PageShell';
@@ -181,7 +183,7 @@ export default function Games() {
             return (
               <div key={i} className={`${styles.gameCard} ${effectiveLocked ? styles.gameCardLocked : ''}`}>
                 <div className={styles.gameCardContent}>
-                  <span className={styles.gameIcon}>{game.icon}</span>
+                  <span className={styles.gameIcon}><GameIcon slug={slugifyGame(game.title)} fallback={game.icon} size={26} /></span>
                   <span className={styles.diffBadge} style={{ color: DIFFICULTY_COLORS[game.difficulty] }}>
                     {game.difficulty}
                   </span>
@@ -207,7 +209,7 @@ export default function Games() {
                       </button>
                     ) : (
                       <>
-                        <span className={styles.lockIcon}>🔒</span>
+                        <span className={styles.lockIcon}><StatIcon name="lock" size={14} /></span>
                         <span className={`${styles.lockCredits} ${almostThere ? styles.lockCreditsClose : ''}`}>
                           {almostThere
                             ? `${g.creditsRequired - credits} more to unlock`

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import styles from './Navbar.module.css';
 import StreakTracker from './StreakTracker';
+import StatIcon from './StatIcon';
 import { api } from '@/lib/api';
 import { endSession } from '@/lib/session';
 
@@ -32,9 +33,9 @@ function NavStats() {
   return (
     <>
       <div className={styles.statPills}>
-        <span className={styles.statPill} title="Energy">⚡ {stats.energy}<span className={styles.statMax}>/{stats.maxEnergy}</span></span>
-        <span className={styles.statPill} title="Credits">💎 {stats.credits}</span>
-        <span className={styles.statPill} title={`${stats.xp} XP`}>⭐ Lv.{stats.level}</span>
+        <span className={styles.statPill} title="Energy"><StatIcon name="energy" /> {stats.energy}<span className={styles.statMax}>/{stats.maxEnergy}</span></span>
+        <span className={styles.statPill} title="Credits"><StatIcon name="credits" /> {stats.credits}</span>
+        <span className={styles.statPill} title={`${stats.xp} XP`}><StatIcon name="level" /> Lv.{stats.level}</span>
       </div>
       <StreakTracker streak={stats.streak} />
     </>
@@ -70,7 +71,7 @@ const BOTTOM_GROUPS: NavGroup[] = [
     label: 'compete',
     items: [
       { href: '/leaderboard',  icon: '◆',  label: 'leaderboard'  },
-      { href: '/achievements', icon: '🏅', label: 'achievements' },
+      { href: '/achievements', icon: '✧',  label: 'achievements' },
       { href: '/store',        icon: '⬡',  label: 'store'        },
     ],
   },
@@ -112,7 +113,7 @@ const SIDEBAR_SECTIONS = [
     label: 'compete',
     items: [
       { href: '/leaderboard',  icon: '◆',  label: 'leaderboard'  },
-      { href: '/achievements', icon: '🏅', label: 'achievements' },
+      { href: '/achievements', icon: '✧',  label: 'achievements' },
       { href: '/store',        icon: '⬡',  label: 'store'        },
     ],
   },

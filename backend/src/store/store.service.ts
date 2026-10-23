@@ -90,17 +90,6 @@ export class StoreService {
     const purchase = this.purchaseRepo.create({ userId, itemId });
     await this.purchaseRepo.save(purchase);
 
-    // Apply cosmetic immediately
-    if (item.category === 'cosmetic' && item.cosmeticType && item.applyValue) {
-      const user = await this.userRepo.findOne({ where: { id: userId } });
-      if (user) {
-        if (item.cosmeticType === 'theme') user.theme = item.applyValue;
-        if (item.cosmeticType === 'callingCard') user.callingCard = item.applyValue;
-        if (item.cosmeticType === 'avatar') user.avatar = item.applyValue;
-        await this.userRepo.save(user);
-      }
-    }
-
     return {
       success: true,
       credits: progress.credits,
@@ -151,17 +140,6 @@ export class StoreService {
     // Record as prize (no credit deduction)
     const purchase = this.purchaseRepo.create({ userId, itemId: item.id, isPrize: true });
     await this.purchaseRepo.save(purchase);
-
-    // Apply cosmetic to user profile
-    if (item.category === 'cosmetic' && item.cosmeticType && item.applyValue) {
-      const user = await this.userRepo.findOne({ where: { id: userId } });
-      if (user) {
-        if (item.cosmeticType === 'theme') user.theme = item.applyValue;
-        if (item.cosmeticType === 'callingCard') user.callingCard = item.applyValue;
-        if (item.cosmeticType === 'avatar') user.avatar = item.applyValue;
-        await this.userRepo.save(user);
-      }
-    }
 
     return { name: item.name, icon: item.icon, applyValue: item.applyValue };
   }

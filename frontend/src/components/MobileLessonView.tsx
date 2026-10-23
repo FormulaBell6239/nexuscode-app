@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import StatIcon from "@/components/StatIcon";
 import { MOBILE_LESSONS, MobileStep } from '../lib/mobileLessons';
 import styles from './MobileLessonView.module.css';
 
@@ -284,7 +285,7 @@ function SuccessCard({
   return (
     <>
       <div className={styles.successCard}>
-        <div className={styles.successIcon}>⚡</div>
+        <div className={styles.successIcon}><StatIcon name="energy" size={40} /></div>
         <p className={styles.successTitle}>Lesson Complete!</p>
         <p className={styles.xpBadge}>+50 XP</p>
       </div>

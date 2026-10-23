@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import StatIcon from "@/components/StatIcon";
 import dynamic from "next/dynamic";
 import styles from "./Playground.module.css";
 import StructureGuide from "./StructureGuide";
@@ -19,10 +20,12 @@ export default function PlaygroundPage() {
   const [jsCode, setJsCode] = useState("");
   const [output, setOutput] = useState("");
   // Per-tab file names ('' = no file created yet)
+  const [webFolder, setWebFolder] = useState("");
+  const [folderInput, setFolderInput] = useState("");
   const [htmlFileName, setHtmlFileName] = useState("");
   const [cssFileName, setCssFileName] = useState("");
   const [jsFileName, setJsFileName] = useState("");
-  const [projects, setProjects] = useState<{htmlName: string, cssName: string, jsName: string, html: string, css: string, js: string}[]>([]);
+  const [projects, setProjects] = useState<{folder?: string, htmlName: string, cssName: string, jsName: string, html: string, css: string, js: string}[]>([]);
   const [showProjects, setShowProjects] = useState(false);
   const [showStructure, setShowStructure] = useState(false);
   const [showPyStructure, setShowPyStructure] = useState(false);
@@ -43,9 +46,10 @@ export default function PlaygroundPage() {
   const [pyodideReady, setPyodideReady] = useState(false);
   const pyodideRef = useRef<any>(null);
   const [pyFileName, setPyFileName] = useState("");
+  const [pyFolder, setPyFolder] = useState("");
 
   // ── Python projects state ──
-  const [pyProjects, setPyProjects] = useState<{name: string, code: string}[]>([]);
+  const [pyProjects, setPyProjects] = useState<{folder?: string, name: string, code: string}[]>([]);
   const [showPyProjects, setShowPyProjects] = useState(false);
   const [pySearchTerm, setPySearchTerm] = useState("");
 
@@ -72,14 +76,14 @@ export default function PlaygroundPage() {
     if (!draftLoaded) return;
     const t = setTimeout(() => {
       try {
-        if (mode === "web" && (htmlFileName || cssFileName || jsFileName)) handleSaveProject(true);
-        if (mode === "python" && pyFileName) handleSavePyProject(true);
+        if (mode === "web" && webFolder) handleSaveProject(true);
+        if (mode === "python" && pyFolder) handleSavePyProject(true);
         setSavedAt(Date.now());
       } catch {}
     }, 800);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draftLoaded, mode, htmlCode, cssCode, jsCode, htmlFileName, cssFileName, jsFileName, pyCode, pyFileName]);
+  }, [draftLoaded, mode, htmlCode, cssCode, jsCode, htmlFileName, cssFileName, jsFileName, pyCode, pyFileName, webFolder, pyFolder]);
 
   // ── Load Pyodide when Python mode is selected ──
   useEffect(() => {
@@ -123,7 +127,7 @@ export default function PlaygroundPage() {
     }
   };
 
-  const handleRun = () => {
+  const buildPreview = () => {
     const css = `<style>${cssCode.replace(/<\/style>/gi, '<\\/style>')}</style>`;
     const js = `<script>${jsCode.replace(/<\/script>/gi, '<\\/script>')}<\/script>`;
     let doc = htmlCode;
@@ -131,22 +135,34 @@ export default function PlaygroundPage() {
     if (/<\/head>/i.test(doc)) doc = doc.replace(/<\/head>/i, () => `${css}</head>`);
     else if (/<body[\s>]/i.test(doc)) doc = doc.replace(/<body[\s>]/i, m => `${css}${m}`);
     else doc = `<!DOCTYPE html><html><head><meta charset="UTF-8">${css}</head><body>${doc}</body></html>`;
-    doc = /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, () => `${js}</body>`) : doc + js;
-    setOutput(doc);
+    return /<\/body>/i.test(doc) ? doc.replace(/<\/body>/i, () => `${js}</body>`) : doc + js;
   };
+
+  const handleRun = () => setOutput(buildPreview());
+
+  // Keep the preview in sync with the code (debounced) so it never shows stale output
+  useEffect(() => {
+    if (mode !== "web") return;
+    const t = setTimeout(() => setOutput(buildPreview()), 250);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, htmlCode, cssCode, jsCode]);
 
   const handleTabClick = (tab: "html" | "css" | "js" | "browser") => {
     if (tab === "browser") handleRun();
     setActiveTab(tab);
-    setNamingMode(false);
+    const nameForTab = tab === "html" ? htmlFileName : tab === "css" ? cssFileName : tab === "js" ? jsFileName : "x";
+    setNamingMode(!nameForTab);
+    setNamingValue("");
   };
 
   const handleSavePyProject = (silent = false) => {
-    if (!pyFileName) return;
-    const existingIdx = pyProjects.findIndex(p => p.name === pyFileName);
+    if (!pyFolder) return;
+    const entry = { folder: pyFolder, name: pyFileName, code: pyCode };
+    const existingIdx = pyProjects.findIndex(p => (p.folder ?? p.name) === pyFolder);
     const updated = existingIdx >= 0
-      ? pyProjects.map((p, i) => i === existingIdx ? { ...p, code: pyCode } : p)
-      : [...pyProjects, { name: pyFileName, code: pyCode }];
+      ? pyProjects.map((p, i) => i === existingIdx ? entry : p)
+      : [...pyProjects, entry];
     setPyProjects(updated);
     localStorage.setItem('playgroundPyProjects', JSON.stringify(updated));
   };
@@ -154,6 +170,8 @@ export default function PlaygroundPage() {
   const handleNewPyProject = () => {
     setPyCode("");
     setPyFileName("");
+    setPyFolder("");
+    setFolderInput("");
     setPyOutput("");
     setNamingValue("");
     setNamingMode(true);
@@ -163,6 +181,7 @@ export default function PlaygroundPage() {
   const handleNewProject = () => {
     setHtmlCode(""); setCssCode(""); setJsCode("");
     setHtmlFileName(""); setCssFileName(""); setJsFileName("");
+    setWebFolder(""); setFolderInput("");
     setOutput("");
     setActiveTab("html");
     setNamingValue("");
@@ -177,14 +196,13 @@ export default function PlaygroundPage() {
   };
 
   const filteredPyProjects = pySearchTerm
-    ? pyProjects.filter(p => p.name.toLowerCase().includes(pySearchTerm.toLowerCase()))
+    ? pyProjects.filter(p => (p.folder ?? p.name).toLowerCase().includes(pySearchTerm.toLowerCase()))
     : pyProjects;
 
   const handleSaveProject = (silent = false) => {
-    const primaryName = htmlFileName || cssFileName || jsFileName;
-    if (!primaryName) return;
-    const newProj = { htmlName: htmlFileName, cssName: cssFileName, jsName: jsFileName, html: htmlCode, css: cssCode, js: jsCode };
-    const existingIdx = projects.findIndex(p => (p.htmlName || p.cssName || p.jsName) === primaryName);
+    if (!webFolder) return;
+    const newProj = { folder: webFolder, htmlName: htmlFileName, cssName: cssFileName, jsName: jsFileName, html: htmlCode, css: cssCode, js: jsCode };
+    const existingIdx = projects.findIndex(p => (p.folder ?? (p.htmlName || p.cssName || p.jsName)) === webFolder);
     const updated = existingIdx >= 0
       ? projects.map((p, i) => i === existingIdx ? newProj : p)
       : [...projects, newProj];
@@ -201,7 +219,7 @@ export default function PlaygroundPage() {
   // Filter projects by search term
   const filteredProjects = searchTerm
     ? projects.filter(proj =>
-        (proj.htmlName || proj.cssName || proj.jsName || '').toLowerCase().includes(searchTerm.toLowerCase())
+        (proj.folder ?? (proj.htmlName || proj.cssName || proj.jsName || '')).toLowerCase().includes(searchTerm.toLowerCase())
       )
     : projects;
 
@@ -213,6 +231,39 @@ export default function PlaygroundPage() {
     activeTab === 'html' ? htmlFileName :
     activeTab === 'css'  ? cssFileName  :
     activeTab === 'js'   ? jsFileName   : '';
+
+  const handleCreateFolder = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    const name = folderInput.trim().replace(/[\\/:*?"<>|]/g, '').replace(/\s+/g, '-');
+    if (!name) return;
+    if (mode === 'python') setPyFolder(name); else setWebFolder(name);
+    setFolderInput('');
+    setNamingValue('');
+    setNamingMode(true);
+  };
+
+  const folderForm = (
+    <form className={styles.fileArea} onSubmit={handleCreateFolder}>
+      <span className={styles.extBadge} style={{ color: '#a5b4fc', borderColor: 'rgba(129,140,248,0.35)' }}>folder</span>
+      <input
+        type="text"
+        autoFocus
+        placeholder="my-project"
+        value={folderInput}
+        onChange={e => setFolderInput(e.target.value)}
+        className={styles.fileNameInput}
+      />
+      <button type="submit" className={styles.createBtn}>Create folder</button>
+    </form>
+  );
+
+  const folderEmpty = (
+    <div className={styles.folderEmpty}>
+      <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>
+      <p className={styles.folderEmptyTitle}>Create a folder to get started</p>
+      <p className={styles.folderEmptyHint}>Name your project folder in the top bar, then add files and start coding. Open past folders from Files.</p>
+    </div>
+  );
 
   const handleCreateFile = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -341,7 +392,8 @@ export default function PlaygroundPage() {
         </div>
         <div className={styles.topBar}>
           <button onClick={() => setMode(null)} className={styles.backBtn} aria-label="Back">←</button>
-          {namingMode ? (
+          {!pyFolder ? folderForm : (<span className={styles.folderPill}>{pyFolder}/</span>)}
+          {!pyFolder ? null : namingMode ? (
             <form className={styles.fileArea} onSubmit={handleCreateFile}>
               <span className={styles.extBadge} style={{ color: '#10b981', borderColor: 'rgba(16,185,129,0.3)' }}>.py</span>
               <input
@@ -359,7 +411,7 @@ export default function PlaygroundPage() {
             <div className={styles.fileArea}>
               <span className={styles.extBadge} style={{ color: '#10b981', borderColor: 'rgba(16,185,129,0.3)' }}>.py</span>
               <span className={styles.fileNamePill} style={{ color: '#10b981' }}>{pyFileName}</span>
-              <button onClick={() => handleSavePyProject()} className={styles.saveIconBtn} title="Save">💾</button>
+              <button onClick={() => handleSavePyProject()} className={styles.saveIconBtn} title="Save"><StatIcon name="save" size={15} /></button>
             </div>
           ) : null}
           <div className={styles.topBarActions}>
@@ -389,10 +441,10 @@ export default function PlaygroundPage() {
           <div className={styles.drawerOverlay} onClick={() => setShowPyProjects(false)}>
             <div className={styles.drawer} onClick={e => e.stopPropagation()}>
               <div className={styles.drawerHeader}>
-                <span className={styles.drawerTitle}>🐍 Python Files</span>
+                <span className={styles.drawerTitle}><StatIcon name="python" size={14} /> Python Files</span>
                 <button className={styles.drawerClose} onClick={() => setShowPyProjects(false)} aria-label="Close">✕</button>
               </div>
-              <button className={styles.drawerNew} onClick={handleNewPyProject}>＋ New file</button>
+              <button className={styles.drawerNew} onClick={handleNewPyProject}>＋ New folder</button>
               <input
                 type="text"
                 placeholder="Search files…"
@@ -403,19 +455,19 @@ export default function PlaygroundPage() {
               <div className={styles.drawerList}>
                 {filteredPyProjects.length === 0 ? (
                   <div className={styles.drawerEmpty}>
-                    <span className={styles.drawerEmptyIcon}>📂</span>
-                    <p>No saved Python files yet.</p>
-                    <p className={styles.drawerEmptyHint}>Save a file to see it here.</p>
+                    <span className={styles.drawerEmptyIcon}><StatIcon name="folder" size={28} /></span>
+                    <p>No Python folders yet.</p>
+                    <p className={styles.drawerEmptyHint}>Create a folder to see it here.</p>
                   </div>
                 ) : filteredPyProjects.map((proj, idx) => (
                   <div key={idx} className={styles.drawerFile}>
-                    <span className={styles.drawerFileIcon}>🐍</span>
+                    <span className={styles.drawerFileIcon}><StatIcon name="python" size={15} /></span>
                     <div className={styles.drawerFileInfo}>
-                      <span className={styles.drawerFileName}>{proj.name}</span>
-                      <span className={styles.drawerFilePreview}>{proj.code?.split('\n')[0]?.slice(0, 50) || ''}</span>
+                      <span className={styles.drawerFileName}>{(proj.folder ?? proj.name.replace(/\.py$/, ''))}/</span>
+                      <span className={styles.drawerFilePreview}>{proj.name || 'no files yet'}</span>
                     </div>
                     <div className={styles.drawerFileBtns}>
-                      <button className={styles.drawerLoad} onClick={() => { setPyCode(proj.code); setPyFileName(proj.name); setShowPyProjects(false); }}>Open</button>
+                      <button className={styles.drawerLoad} onClick={() => { setPyCode(proj.code); setPyFileName(proj.name); setPyFolder(proj.folder ?? proj.name.replace(/\.py$/, '')); setNamingMode(!proj.name); setShowPyProjects(false); }}>Open</button>
                       <button className={styles.drawerDelete} onClick={() => handleDeletePyProject(pyProjects.indexOf(proj))}>✕</button>
                     </div>
                   </div>
@@ -425,6 +477,7 @@ export default function PlaygroundPage() {
           </div>
         )}
 
+        {!pyFolder ? folderEmpty : (
         <div className={styles.pyLayout}>
           <div className={styles.pyEditorPane}>
             <PlaygroundEditor
@@ -439,6 +492,7 @@ export default function PlaygroundPage() {
             <pre className={styles.pyOutputBody}>{pyOutput || (pyodideReady ? "Click ▶ Run to execute your code." : "Loading Python runtime…")}</pre>
           </div>
         </div>
+        )}
       </main>
     );
   }
@@ -449,7 +503,8 @@ export default function PlaygroundPage() {
       {/* ── Top bar ── */}
       <div className={styles.topBar}>
         <button onClick={() => setMode(null)} className={styles.backBtn} aria-label="Back">←</button>
-        {namingMode ? (
+        {!webFolder ? folderForm : (<span className={styles.folderPill}>{webFolder}/</span>)}
+        {!webFolder ? null : namingMode ? (
           <form className={styles.fileArea} onSubmit={handleCreateFile}>
             <span className={styles.extBadge} style={{ color: LANG_COLORS[activeTab] || '#94a3b8', borderColor: (LANG_COLORS[activeTab] || '#334155') + '44' }}>
               {LANG_EXT[activeTab] || '.html'}
@@ -471,7 +526,7 @@ export default function PlaygroundPage() {
               {LANG_EXT[activeTab]}
             </span>
             <span className={styles.fileNamePill} style={{ color: LANG_COLORS[activeTab] }}>{currentTabFileName}</span>
-            <button onClick={() => handleSaveProject()} className={styles.saveIconBtn} title="Save">💾</button>
+            <button onClick={() => handleSaveProject()} className={styles.saveIconBtn} title="Save"><StatIcon name="save" size={15} /></button>
           </div>
         ) : null}
         <div className={styles.topBarActions}>
@@ -481,6 +536,7 @@ export default function PlaygroundPage() {
         </div>
       </div>
 
+      {!webFolder ? folderEmpty : (<>
       {/* ── Editor tabs ── */}
       <div className={styles.editorTabs}>
         <button className={activeTab === "html" ? styles.activeTab : styles.tab} onClick={() => handleTabClick("html")}>HTML</button>
@@ -504,6 +560,7 @@ export default function PlaygroundPage() {
           <iframe title="output" srcDoc={output} className={styles.browserFrame} />
         )}
       </div>
+      </>)}
 
       {showStructure && activeTab !== 'browser' && (
         <StructureGuide
@@ -523,10 +580,10 @@ export default function PlaygroundPage() {
         <div className={styles.drawerOverlay} onClick={() => setShowProjects(false)}>
           <div className={styles.drawer} onClick={e => e.stopPropagation()}>
             <div className={styles.drawerHeader}>
-              <span className={styles.drawerTitle}>🌐 Web Files</span>
+              <span className={styles.drawerTitle}><StatIcon name="web" size={14} /> Web Files</span>
               <button className={styles.drawerClose} onClick={() => setShowProjects(false)} aria-label="Close">✕</button>
             </div>
-            <button className={styles.drawerNew} onClick={handleNewProject}>＋ New project</button>
+            <button className={styles.drawerNew} onClick={handleNewProject}>＋ New folder</button>
             <input
               type="text"
               placeholder="Search files…"
@@ -537,19 +594,19 @@ export default function PlaygroundPage() {
             <div className={styles.drawerList}>
               {filteredProjects.length === 0 ? (
                 <div className={styles.drawerEmpty}>
-                  <span className={styles.drawerEmptyIcon}>📂</span>
-                  <p>No saved web files yet.</p>
-                  <p className={styles.drawerEmptyHint}>Save a file to see it here.</p>
+                  <span className={styles.drawerEmptyIcon}><StatIcon name="folder" size={28} /></span>
+                  <p>No web folders yet.</p>
+                  <p className={styles.drawerEmptyHint}>Create a folder to see it here.</p>
                 </div>
               ) : filteredProjects.map((proj, idx) => (
                 <div key={idx} className={styles.drawerFile}>
-                  <span className={styles.drawerFileIcon}>🌐</span>
+                  <span className={styles.drawerFileIcon}><StatIcon name="web" size={15} /></span>
                   <div className={styles.drawerFileInfo}>
-                    <span className={styles.drawerFileName}>{proj.htmlName || proj.cssName || proj.jsName || 'untitled'}</span>
-                    <span className={styles.drawerFilePreview}>{proj.html?.split('\n')[0]?.slice(0, 50) || ''}</span>
+                    <span className={styles.drawerFileName}>{proj.folder ?? (proj.htmlName || proj.cssName || proj.jsName || 'untitled').replace(/\.\w+$/, '')}/</span>
+                    <span className={styles.drawerFilePreview}>{[proj.htmlName, proj.cssName, proj.jsName].filter(Boolean).join(', ') || 'no files yet'}</span>
                   </div>
                   <div className={styles.drawerFileBtns}>
-                    <button className={styles.drawerLoad} onClick={() => { setHtmlCode(proj.html); setCssCode(proj.css); setJsCode(proj.js); setHtmlFileName(proj.htmlName || ''); setCssFileName(proj.cssName || ''); setJsFileName(proj.jsName || ''); setShowProjects(false); }}>Open</button>
+                    <button className={styles.drawerLoad} onClick={() => { setHtmlCode(proj.html); setCssCode(proj.css); setJsCode(proj.js); setHtmlFileName(proj.htmlName || ''); setCssFileName(proj.cssName || ''); setJsFileName(proj.jsName || ''); setWebFolder(proj.folder ?? (proj.htmlName || proj.cssName || proj.jsName || 'project').replace(/\.\w+$/, '')); setActiveTab('html'); setNamingMode(!proj.htmlName); setShowProjects(false); }}>Open</button>
                     <button className={styles.drawerDelete} onClick={() => handleDeleteProject(projects.indexOf(proj))}>✕</button>
                   </div>
                 </div>

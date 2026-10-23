@@ -1,5 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
+import GameIcon, { slugifyGame } from "@/components/GameIcon";
+import StatIcon from "@/components/StatIcon";
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api, getOwnedItems } from '@/lib/api';
@@ -106,7 +108,7 @@ export default function LockedGamePage() {
         <div className={styles.orb2} />
         <div className={styles.dotGrid} />
         <div className={`${styles.card} ${styles.comingSoonCard}`}>
-          <div className={styles.comingSoonRing}>{item?.icon ?? '🎮'}</div>
+          <div className={styles.comingSoonRing}><GameIcon slug={slug} fallback={item?.icon ?? '🎮'} size={34} /></div>
           <span className={styles.comingSoonBadge}>Coming Soon</span>
           <h1 className={styles.title}>{item?.name ?? 'This Game'}</h1>
           <p className={styles.desc}>
@@ -128,8 +130,8 @@ export default function LockedGamePage() {
       <div className={styles.orb2} />
       <div className={styles.dotGrid} />
       <div className={styles.card}>
-        <div className={styles.lockRing}>🔒</div>
-        <span className={styles.gameIcon}>{item?.icon ?? '🎮'}</span>
+        <div className={styles.lockRing}><StatIcon name="lock" size={28} /></div>
+        <span className={styles.gameIcon}><GameIcon slug={slug} fallback={item?.icon ?? '🎮'} size={30} /></span>
         <span className={styles.badge}>Locked Game</span>
         <h1 className={styles.title}>{item?.name ?? slug}</h1>
         <p className={styles.desc}>{item?.description ?? 'Unlock this game to start playing.'}</p>
@@ -147,11 +149,11 @@ export default function LockedGamePage() {
           {isGuest ? (
             <>
               <Link href="/auth/signin" className={styles.btnPrimary}>Sign In to Unlock</Link>
-              <Link href="/store" className={styles.btnGhost}>🔒 View in Store</Link>
+              <Link href="/store" className={styles.btnGhost}><StatIcon name="lock" size={13} /> View in Store</Link>
             </>
           ) : (
             <>
-              <Link href="/store" className={styles.btnPrimary}>🔒 Unlock in Store →</Link>
+              <Link href="/store" className={styles.btnPrimary}><StatIcon name="lock" size={13} /> Unlock in Store →</Link>
               <Link href="/achievements" className={styles.btnGhost}>Earn free via challenges →</Link>
             </>
           )}

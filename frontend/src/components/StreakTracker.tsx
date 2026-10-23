@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import StatIcon from './StatIcon';
 import { api, ProfileResponse } from '@/lib/api';
 
 export default function StreakTracker({ streak: streakProp }: { streak?: number }) {
@@ -28,7 +29,7 @@ export default function StreakTracker({ streak: streakProp }: { streak?: number 
         color: streak > 0 ? '#f59e0b' : '#64748b',
       }}
     >
-      🔥 {streak}d
+      <StatIcon name="streak" size={14} muted={streak === 0} /> {streak}d
     </span>
   );
 }

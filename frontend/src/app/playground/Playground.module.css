@@ -970,3 +970,43 @@
 
 
 .autoSaved { font-size: 0.68rem; color: #34d399; opacity: 0.75; white-space: nowrap; }
+
+.folderPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #a5b4fc;
+  background: rgba(129, 140, 248, 0.1);
+  border: 1px solid rgba(129, 140, 248, 0.25);
+  white-space: nowrap;
+}
+
+.folderEmpty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 24px;
+  text-align: center;
+  color: #818cf8;
+}
+
+.folderEmptyTitle {
+  margin: 6px 0 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.folderEmptyHint {
+  margin: 0;
+  max-width: 360px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #94a3b8;
+}

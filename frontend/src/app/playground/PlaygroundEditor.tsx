@@ -1,4 +1,5 @@
 "use client";
+import { useMemo } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { html } from "@codemirror/lang-html";
 import { css } from "@codemirror/lang-css";
@@ -26,12 +27,13 @@ function getExtensions(language: Language) {
 }
 
 export default function PlaygroundEditor({ value, onChange, language, className }: Props) {
+  const extensions = useMemo(() => getExtensions(language), [language]);
   return (
     <CodeMirror
       value={value}
       height="100%"
       theme={nexusTheme}
-      extensions={getExtensions(language)}
+      extensions={extensions}
       onChange={onChange}
       className={className}
     />

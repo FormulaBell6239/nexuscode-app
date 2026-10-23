@@ -5,10 +5,10 @@
       "label": "Headings",
       "lesson": {
         "title": "HTML Headings",
-        "instructions": "🧱 Every webpage starts with structure — and headings are the foundation.\nHTML uses <h1> through <h6> tags to create headings. <h1> is the biggest and most important.\n👉 Your mission: type an <h1> tag, write Welcome to NexusCode inside it, then close it with </h1>.\nIt should look like: <h1>Welcome to NexusCode</h1>",
-        "starterCode": "<!-- Write your heading below -->\n",
-        "sampleOutput": "<h1>Welcome to NexusCode</h1>",
-        "hint": "Open with <h1>, write the text, then close with </h1>. Make sure the text is exactly: Welcome to NexusCode"
+        "instructions": "🧱 Every webpage starts with structure — and headings are the outline of that structure.\nHeadings run from h1 to h6. The number is the level of importance, not the size: h1 is the page title, h2 is a major section, h3 a sub-section, and so on.\nBrowsers, screen readers and search engines all use headings to understand what your page is about, so the order matters.\n• Use exactly one h1 per page\n• Never skip levels (an h2 should not jump straight to an h4)\n• Pick a heading for its meaning, then style its size with CSS\nExample:\n<h1>My Portfolio</h1>\n<h2>About Me</h2>\n<h2>Projects</h2>\n<h3>Weather App</h3>\n• Common mistake: choosing a heading because it looks big. Choose it for the role it plays in the outline.\n👉 Your mission: write an h1 containing Welcome to NexusCode, then add an h2 below it with any section title.",
+        "starterCode": "<!-- Write your headings below -->\n",
+        "sampleOutput": "<h1>Welcome to NexusCode</h1>\n<h2>Getting Started</h2>",
+        "hint": "Open with <h1>Welcome to NexusCode</h1>, then on the next line add <h2>Any title</h2>."
       },
       "language": "html"
     },
@@ -17,10 +17,10 @@
       "label": "Paragraphs",
       "lesson": {
         "title": "HTML Paragraphs",
-        "instructions": "📝 Headings grab attention — paragraphs tell the story.\nThe <p> tag wraps a block of regular text. Browsers add spacing around it automatically.\n👉 Your mission: below the existing <h1>, add a <p> tag with any sentence you like.\nExample: <p>I am learning HTML!</p>",
-        "starterCode": "<h1>Welcome to NexusCode</h1>\n<!-- Add your paragraph below -->\n",
-        "sampleOutput": "<h1>Welcome to NexusCode</h1>\n<p>I am learning HTML!</p>",
-        "hint": "Type <p> then your text then </p> on the line below the heading."
+        "instructions": "📝 Text is the heart of most pages, and the p tag is how you group it into readable chunks.\nEach p element is a block: the browser starts it on a new line and adds space above and below automatically.\nHTML collapses extra spaces and line breaks in your source, so pressing Enter inside a paragraph will not create a new line on screen.\n• One idea per paragraph keeps text easy to scan\n• Use br only for a forced line break inside one block (poems, addresses)\n• Do not use empty paragraphs for spacing, use CSS margin instead\nExample:\n<p>HTML gives a page its structure.</p>\n<p>CSS styles it and JavaScript brings it to life.</p>\n• Common mistake: typing blank lines in the editor and expecting gaps. Only tags create layout in HTML.\n👉 Your mission: write two separate paragraphs about anything you like, each wrapped in its own p tags.",
+        "starterCode": "<!-- Write two paragraphs below -->\n",
+        "sampleOutput": "<p>I am learning HTML.</p>\n<p>Next up is CSS.</p>",
+        "hint": "Each paragraph needs an opening <p> and a closing </p>. Write the tags twice."
       },
       "language": "html"
     },
@@ -29,10 +29,10 @@
       "label": "Links",
       "lesson": {
         "title": "HTML Links",
-        "instructions": "🔗 Links are what make the web a web — they connect pages together.\nThe <a> tag creates a clickable link. The href attribute tells the browser where to go.\n👉 Your mission: create a link that points to https://nexuscode.app\nThe clickable text can be anything you want, like: Visit NexusCode\nStructure: <a href=\"URL\">your text here</a>",
-        "starterCode": "<!-- Create a clickable link below -->\n",
-        "sampleOutput": "<a href=\"https://nexuscode.app\">Visit NexusCode</a>",
-        "hint": "Type <a href=\"https://nexuscode.app\"> then your link text then </a>"
+        "instructions": "🔗 Links are what make it the web. Without them every page would be a dead end.\nA link is an a (anchor) element. The href attribute says where it goes, and the text between the tags is what the visitor clicks.\nAttributes always live inside the opening tag as name=\"value\" pairs.\n• Absolute URLs start with https:// and point to other sites\n• Relative URLs like about.html point to pages in your own site\n• Write link text that makes sense alone, never \"click here\"\nExample:\n<a href=\"https://developer.mozilla.org\">MDN Web Docs</a>\n<a href=\"about.html\">About us</a>\n• Common mistake: forgetting the quotes around the href value, or leaving the link text empty so nothing is clickable.\n👉 Your mission: create a link to https://nexuscode.dev whose visible text is Visit NexusCode.",
+        "starterCode": "<!-- Write your link below -->\n",
+        "sampleOutput": "<a href=\"https://nexuscode.dev\">Visit NexusCode</a>",
+        "hint": "Format: <a href=\"URL\">text</a>. The URL goes in quotes after href=."
       },
       "language": "html"
     },
@@ -41,10 +41,10 @@
       "label": "Images",
       "lesson": {
         "title": "HTML Images",
-        "instructions": "🖼️ Images make pages come alive. The <img> tag embeds a picture.\n<img> is self-closing — it doesn't need a closing tag.\nIt needs two attributes:\n  • src — the path or URL of the image\n  • alt — a text description (used if the image fails to load)\n👉 Your mission: add an <img> tag with any src value and any alt value.\nExample: <img src=\"cat.jpg\" alt=\"A cute cat\">",
-        "starterCode": "<!-- Add your image below -->\n",
-        "sampleOutput": "<img src=\"cat.jpg\" alt=\"A cute cat\">",
-        "hint": "Type <img src=\"anything.jpg\" alt=\"any description\"> — both attributes are required."
+        "instructions": "🖼️ Images make pages memorable, but in HTML they carry a responsibility too: describing themselves.\nThe img tag is a void element: it has no closing tag and no content. Everything it needs lives in attributes.\nsrc tells the browser which file to load. alt is a text description shown if the image fails to load and read aloud by screen readers.\n• Always write alt text, even a short one\n• Describe what the image shows, not \"image of\"\n• Purely decorative images can use alt=\"\" so screen readers skip them\nExample:\n<img src=\"logo.png\" alt=\"NexusCode logo\">\n<img src=\"team.jpg\" alt=\"Four developers at a whiteboard\">\n• Common mistake: leaving out alt, or writing a closing </img> tag which does not exist.\n👉 Your mission: add an img tag with a src of cat.jpg and a meaningful, non-empty alt description.",
+        "starterCode": "<!-- Write your image below -->\n",
+        "sampleOutput": "<img src=\"cat.jpg\" alt=\"A grey cat sleeping on a sofa\">",
+        "hint": "Use <img src=\"cat.jpg\" alt=\"...\"> and put a real description inside the alt quotes."
       },
       "language": "html"
     },
@@ -53,10 +53,10 @@
       "label": "Lists",
       "lesson": {
         "title": "HTML Lists",
-        "instructions": "📋 Lists organise information — menus, steps, features — they're everywhere.\nAn unordered list uses <ul> as the container, and each item goes inside a <li> tag.\n👉 Your mission: build a <ul> list with at least 2 items inside it.\nStructure:\n<ul>\n  <li>First item</li>\n  <li>Second item</li>\n</ul>",
+        "instructions": "📋 Menus, steps, features, shopping carts: nearly everything on the web is secretly a list.\nAn unordered list uses ul as the container with one li (list item) per entry. Browsers render each item with a bullet.\nThe only valid direct children of a ul are li elements. Anything else belongs inside an li.\n• Use ul when the order does not matter\n• Navigation menus are usually built as lists too\n• You can nest a whole ul inside an li to create sub-items\nExample:\n<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>\n• Common mistake: putting text directly inside ul without wrapping each item in an li.\n👉 Your mission: build an unordered list with at least three list items.",
         "starterCode": "<!-- Build your list below -->\n",
-        "sampleOutput": "<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n</ul>",
-        "hint": "Start with <ul>, add at least two <li>items</li> inside, then close with </ul>."
+        "sampleOutput": "<ul>\n  <li>HTML</li>\n  <li>CSS</li>\n  <li>JavaScript</li>\n</ul>",
+        "hint": "Open <ul>, add three <li>...</li> lines, then close with </ul>."
       },
       "language": "html"
     },
@@ -65,10 +65,10 @@
       "label": "Forms",
       "lesson": {
         "title": "HTML Forms",
-        "instructions": "📬 Forms let users send data — login boxes, search bars, sign-up pages all use them.\nA <form> wraps your inputs. The <input> tag creates a field the user can type into.\n👉 Your mission: create a <form> that contains at least one <input> inside it.\nTry giving the input a type and placeholder attribute:\n<form>\n  <input type=\"text\" placeholder=\"Your name\">\n</form>",
+        "instructions": "📨 Forms are how a website listens: logins, searches, sign-ups, and checkouts all start here.\nA form element wraps the controls. Inside, each input collects one piece of data, and a label tells the user what it is for.\nConnect a label to its input by matching the label for attribute to the input id. Clicking the label then focuses the field, which also helps screen readers.\n• name decides the key the data is sent under\n• Always include a button to submit the form\n• Never use placeholder as a replacement for a label\nExample:\n<form>\n  <label for=\"email\">Email</label>\n  <input id=\"email\" name=\"email\">\n  <button type=\"submit\">Join</button>\n</form>\n• Common mistake: mismatching for and id, which silently breaks the link between label and input.\n👉 Your mission: build a form containing a label and an input field, with the label for matching the input id.",
         "starterCode": "<!-- Build your form below -->\n",
-        "sampleOutput": "<form>\n  <input type=\"text\" placeholder=\"Your name\">\n</form>",
-        "hint": "Wrap an <input> tag inside <form> and </form>. The input doesn't need a closing tag."
+        "sampleOutput": "<form>\n  <label for=\"name\">Name</label>\n  <input id=\"name\" name=\"name\">\n</form>",
+        "hint": "Inside <form>, add <label for=\"x\">Name</label> and <input id=\"x\">. The two x values must match."
       },
       "language": "html"
     },
@@ -77,10 +77,10 @@
       "label": "Divs",
       "lesson": {
         "title": "HTML Divs",
-        "instructions": "📦 The <div> is HTML's most versatile container — a plain box you can style and position however you like.\nDivs have no visual appearance by default; CSS brings them to life.\n👉 Your mission: add a <div> element that wraps some text.\nExample: <div>I am a container!</div>",
-        "starterCode": "<!-- Add a div below -->\n",
-        "sampleOutput": "<div>I am a container!</div>",
-        "hint": "Type <div> then any text then </div>."
+        "instructions": "📦 Sometimes you need an invisible box to group things so you can style or move them together. That is div.\nA div has no meaning and no default look. It is a generic block container, and its power shows up once you add CSS.\nDivs can be nested: a card div can contain a heading and a paragraph, and the card itself can sit inside a larger grid div.\n• Use div when no semantic tag (header, nav, section) fits\n• Group related content so it can be laid out as one unit\n• Indent nested elements so the structure is easy to read\nExample:\n<div>\n  <h2>Starter Plan</h2>\n  <p>Free forever.</p>\n</div>\n• Common mistake: forgetting the closing </div>, which makes everything after it end up nested inside.\n👉 Your mission: create a div that contains an h2 heading and a p paragraph.",
+        "starterCode": "<!-- Build your card below -->\n",
+        "sampleOutput": "<div>\n  <h2>My Card</h2>\n  <p>Card description.</p>\n</div>",
+        "hint": "Wrap an <h2> and a <p> together inside one <div>...</div>."
       },
       "language": "html"
     },
@@ -89,10 +89,10 @@
       "label": "Tables",
       "lesson": {
         "title": "HTML Tables",
-        "instructions": "📊 Tables organise data into rows and columns — perfect for schedules, scores, and comparisons.\nA table needs three tags: <table> wraps everything, <tr> creates a row, <td> creates a cell.\n👉 Your mission: build a table with at least one row and two cells.\nStructure:\n<table>\n  <tr>\n    <td>Name</td>\n    <td>Score</td>\n  </tr>\n</table>",
+        "instructions": "📊 When your data has rows and columns, such as schedules, pricing, or scores, a table is the right tool.\nA table is built row by row. Each tr is a row, th is a header cell (bold and centered by default), and td is a normal data cell.\nHeader cells describe the column, so screen readers can announce which column each value belongs to.\n• Every row should have the same number of cells\n• The first row usually holds th headers\n• Use tables for data, never for page layout\nExample:\n<table>\n  <tr><th>Name</th><th>Score</th></tr>\n  <tr><td>Ada</td><td>98</td></tr>\n</table>\n• Common mistake: using td for the header row, which loses the accessibility benefit of th.\n👉 Your mission: build a table with one header row (th cells) and one data row (td cells).",
         "starterCode": "<!-- Build your table below -->\n",
-        "sampleOutput": "<table>\n  <tr>\n    <td>Name</td>\n    <td>Score</td>\n  </tr>\n</table>",
-        "hint": "Start with <table>, add a <tr> row inside, then put at least two <td> cells inside the row."
+        "sampleOutput": "<table>\n  <tr><th>Name</th><th>Score</th></tr>\n  <tr><td>Ada</td><td>98</td></tr>\n</table>",
+        "hint": "Start <table>, then a <tr> with <th> cells, then a second <tr> with <td> cells."
       },
       "language": "html"
     },
@@ -101,10 +101,10 @@
       "label": "Semantic Tags",
       "lesson": {
         "title": "Semantic HTML",
-        "instructions": "🧠 Semantic tags tell the browser — and search engines — what a section of content *is*, not just where it sits.\nCommon semantic tags: <header>, <nav>, <main>, <section>, <article>, <footer>.\nThey work exactly like <div> but carry meaning.\n👉 Your mission: use at least one semantic tag to wrap some content.\nExample: <main><p>My main content</p></main>",
-        "starterCode": "<!-- Use a semantic tag below -->\n",
-        "sampleOutput": "<main><p>My main content</p></main>",
-        "hint": "Try <header>, <main>, <footer>, <nav>, <section>, or <article> — wrap any text inside it."
+        "instructions": "🏛️ Semantic tags say what content is, not just how it looks. They make a page easier to navigate for people and for machines.\nA div tells the browser nothing. A header, main or footer tells it exactly what role that block plays.\nAssistive technology lets users jump straight to the main content or navigation, but only when you use the right tags.\n• header: intro or branding at the top of a page or section\n• main: the single central content of the page\n• footer: closing info like copyright and links\nExample:\n<header><h1>NexusCode</h1></header>\n<main><p>Lessons live here.</p></main>\n<footer><p>© 2026</p></footer>\n• Common mistake: wrapping everything in divs out of habit. If a semantic tag fits, use it.\n👉 Your mission: lay out a page using all three: a header, a main and a footer, each with content inside.",
+        "starterCode": "<!-- Structure your page below -->\n",
+        "sampleOutput": "<header><h1>NexusCode</h1></header>\n<main><p>Welcome!</p></main>\n<footer><p>© 2026</p></footer>",
+        "hint": "You need three separate elements: <header>, <main> and <footer>, each with a closing tag."
       },
       "language": "html"
     },
@@ -113,10 +113,10 @@
       "label": "Buttons",
       "lesson": {
         "title": "HTML Buttons",
-        "instructions": "🔘 Buttons trigger actions — submitting forms, opening modals, running scripts.\nThe <button> tag creates a clickable button. The text between the tags is the button label.\n👉 Your mission: create a <button> with any label you like.\nExample: <button>Click Me</button>",
-        "starterCode": "<!-- Add a button below -->\n",
-        "sampleOutput": "<button>Click Me</button>",
-        "hint": "Type <button> then your label text then </button>."
+        "instructions": "🔘 Buttons are how users take action: submit, save, open, delete. HTML gives you a dedicated element for it.\nA button element holds any text between its tags. The type attribute tells the browser what the button does.\nInside a form, a button defaults to submit, which can send the form when you did not mean to.\n• type=\"submit\" sends the surrounding form\n• type=\"button\" does nothing until JavaScript listens to it\n• Use a link (a) to navigate and a button to act\nExample:\n<button type=\"button\">Save draft</button>\n<button type=\"submit\">Send</button>\n• Common mistake: leaving type off, then wondering why a button inside a form reloads the page.\n👉 Your mission: create a button with a type attribute and the label Click me.",
+        "starterCode": "<!-- Write your button below -->\n",
+        "sampleOutput": "<button type=\"button\">Click me</button>",
+        "hint": "Write <button type=\"button\">Click me</button>."
       },
       "language": "html"
     },
@@ -125,10 +125,10 @@
       "label": "Textarea",
       "lesson": {
         "title": "HTML Textarea",
-        "instructions": "📝 Unlike <input>, a <textarea> lets users type multiple lines of text — great for comments or messages.\nIt has an opening and closing tag, and you can set placeholder text with the placeholder attribute.\n👉 Your mission: add a <textarea> with a placeholder that says \"Write something here...\".\nExample: <textarea placeholder=\"Write something here...\"></textarea>",
-        "starterCode": "<!-- Add a textarea below -->\n",
-        "sampleOutput": "<textarea placeholder=\"Write something here...\"></textarea>",
-        "hint": "Type <textarea placeholder=\"Write something here...\"></textarea> — it's a paired tag unlike <input>."
+        "instructions": "✍️ A single-line input is too small for messages, bios and feedback. textarea gives users room to write.\nUnlike input, textarea is not a void element: it has an opening and closing tag, and anything between them is the starting text.\nrows sets how many lines tall it appears, and placeholder shows a faint hint until the user starts typing.\n• Add a name so the text can be submitted\n• Pair it with a label like any other field\n• Users can resize it by default, which you can control with CSS\nExample:\n<label for=\"msg\">Message</label>\n<textarea id=\"msg\" name=\"message\" rows=\"4\" placeholder=\"Tell us more\"></textarea>\n• Common mistake: self-closing it like an input. A textarea must always have a closing </textarea>.\n👉 Your mission: create a textarea with rows set to 4 and a placeholder.",
+        "starterCode": "<!-- Write your textarea below -->\n",
+        "sampleOutput": "<textarea rows=\"4\" placeholder=\"Write your message\"></textarea>",
+        "hint": "Add both attributes: <textarea rows=\"4\" placeholder=\"...\"></textarea>."
       },
       "language": "html"
     },
@@ -136,11 +136,11 @@
       "key": "html-select",
       "label": "Dropdowns",
       "lesson": {
-        "title": "HTML Select & Option",
-        "instructions": "🔽 A dropdown menu lets users pick from a list — <select> is the container, <option> is each choice.\n👉 Your mission: create a <select> dropdown with at least two <option> items inside.\nStructure:\n<select>\n  <option>HTML</option>\n  <option>CSS</option>\n</select>",
+        "title": "HTML Select",
+        "instructions": "🔽 When the user must pick from a known set of choices, a dropdown prevents typos and saves space.\nA select is the dropdown container, and each choice is an option inside it.\nThe text between the option tags is what the user sees. The value attribute is what gets sent when the form is submitted.\n• Provide a clear first option such as \"Choose one\"\n• Add the selected attribute to preselect a choice\n• For fewer than five choices, radio buttons are often friendlier\nExample:\n<select name=\"language\">\n  <option value=\"html\">HTML</option>\n  <option value=\"css\">CSS</option>\n  <option value=\"js\">JavaScript</option>\n</select>\n• Common mistake: putting the options outside the select, or giving every option the same value.\n👉 Your mission: build a select dropdown with at least three option choices, each with a value.",
         "starterCode": "<!-- Build your dropdown below -->\n",
-        "sampleOutput": "<select>\n  <option>HTML</option>\n  <option>CSS</option>\n</select>",
-        "hint": "Wrap at least two <option> tags inside <select> and </select>."
+        "sampleOutput": "<select name=\"language\">\n  <option value=\"html\">HTML</option>\n  <option value=\"css\">CSS</option>\n  <option value=\"js\">JavaScript</option>\n</select>",
+        "hint": "Open <select>, add three <option value=\"...\"> lines, then close with </select>."
       },
       "language": "html"
     },
@@ -149,10 +149,10 @@
       "label": "Comments",
       "lesson": {
         "title": "HTML Comments",
-        "instructions": "💬 Comments let you leave notes in your code that the browser ignores completely.\nThey're great for explaining what a section does or temporarily disabling code.\nHTML comments start with <!-- and end with -->.\n👉 Your mission: write at least one HTML comment anywhere in the editor.\nExample: <!-- This is a comment -->",
-        "starterCode": "<!-- Write your comment here -->\n<p>This paragraph is visible.</p>\n",
-        "sampleOutput": "<!-- This is my comment -->\n<p>This paragraph is visible.</p>",
-        "hint": "Type <!-- your note here --> anywhere in the code — it won't show in the browser."
+        "instructions": "💬 Comments are notes to your future self and your teammates. Browsers read them and then ignore them completely.\nA comment begins with an exclamation-dash-dash opener and ends with a dash-dash-closing-bracket. Anything between is invisible on the page.\nVisitors can still see comments by viewing the page source, so never put passwords or secrets in them.\n• Label big sections so long files are easier to scan\n• Explain why something is done, not what the tag is\n• Wrap a block in a comment to temporarily switch it off\nExample:\n<!-- Site title -->\n<h1>My Site</h1>\n<!-- Intro text -->\n<p>Welcome!</p>\n• Common mistake: forgetting the closing marker, which turns the rest of your page into one giant comment.\n👉 Your mission: add a comment directly above the h1 and another directly above the p.",
+        "starterCode": "<h1>My Page</h1>\n<p>Welcome to my first page.</p>",
+        "sampleOutput": "<!-- Page title -->\n<h1>My Page</h1>\n<!-- Intro text -->\n<p>Welcome to my first page.</p>",
+        "hint": "A comment looks like <!-- your note -->. Put one before each element."
       },
       "language": "html"
     },
@@ -161,10 +161,10 @@
       "label": "Classes",
       "lesson": {
         "title": "HTML Classes",
-        "instructions": "🏷️ The class attribute labels an element so CSS (and JavaScript) can target it.\nYou can give the same class to multiple elements — they'll all share the same style.\n👉 Your mission: add a class attribute to any HTML element.\nExample: <p class=\"intro\">Hello!</p>",
-        "starterCode": "<!-- Add a class attribute to the paragraph below -->\n<p>I need a class!</p>\n",
-        "sampleOutput": "<p class=\"intro\">I need a class!</p>",
-        "hint": "Add class=\"anything\" inside the opening tag: <p class=\"intro\">I need a class!</p>"
+        "instructions": "🏷️ Classes are name tags for elements. They are how CSS and JavaScript find the things you want to style.\nAdd a class attribute to any element and give it a short, descriptive name. The same class can be reused on as many elements as you like.\nAn element can also carry several classes at once, separated by spaces.\n• Name by purpose (card, warning) not by looks (big-red)\n• Use lowercase and hyphens: user-card\n• Use id only for something truly unique on the page\nExample:\n<p class=\"note\">Remember to save.</p>\n<p class=\"note\">Check your spelling.</p>\n• Common mistake: misspelling the class name, so the style never applies.\n👉 Your mission: give two different elements the same class name, for example card.",
+        "starterCode": "<!-- Add classes below -->\n<div>First</div>\n<div>Second</div>",
+        "sampleOutput": "<div class=\"card\">First</div>\n<div class=\"card\">Second</div>",
+        "hint": "Add class=\"card\" to the opening tag of both divs, spelled identically."
       },
       "language": "html"
     },
@@ -172,11 +172,11 @@
       "key": "html-anchor-target",
       "label": "Open in New Tab",
       "lesson": {
-        "title": "Links: New Tab",
-        "instructions": "🔗 By default a link replaces the current page. Adding target=\"_blank\" opens the link in a new tab.\nThis is handy when linking to external sites — users stay on your page too.\n👉 Your mission: create a link that opens in a new tab.\nExample: <a href=\"https://example.com\" target=\"_blank\">Open</a>",
-        "starterCode": "<!-- Add a link that opens in a new tab -->\n",
-        "sampleOutput": "<a href=\"https://example.com\" target=\"_blank\">Open</a>",
-        "hint": "Add target=\"_blank\" inside the <a> tag alongside the href attribute."
+        "title": "Link Targets",
+        "instructions": "🧭 By default a link replaces the current page. Sometimes you want it to open on the side instead.\nThe target attribute controls where the link opens. target=\"_blank\" opens a new tab.\nPages opened this way can get partial access to the page that opened them. Add rel=\"noopener\" to cut that connection.\n• Use new tabs for external sites, not for your own pages\n• Warn users in the link text if it opens a new tab\n• Modern browsers add noopener automatically, but being explicit is good practice\nExample:\n<a href=\"https://example.com\" target=\"_blank\" rel=\"noopener\">Example</a>\n• Common mistake: adding target=\"_blank\" without rel=\"noopener\".\n👉 Your mission: write a link to any URL that opens in a new tab and includes rel=\"noopener\".",
+        "starterCode": "<!-- Write your link below -->\n",
+        "sampleOutput": "<a href=\"https://example.com\" target=\"_blank\" rel=\"noopener\">Open example</a>",
+        "hint": "Include both attributes: target=\"_blank\" rel=\"noopener\"."
       },
       "language": "html"
     },
@@ -185,10 +185,10 @@
       "label": "Ordered Lists",
       "lesson": {
         "title": "Ordered Lists",
-        "instructions": "🔢 An ordered list numbers its items automatically — perfect for steps, rankings, and recipes.\nUse <ol> as the container and <li> for each item, just like unordered lists.\n👉 Your mission: build an <ol> with at least two <li> items.\nStructure:\n<ol>\n  <li>Step one</li>\n  <li>Step two</li>\n</ol>",
-        "starterCode": "<!-- Build your ordered list below -->\n",
-        "sampleOutput": "<ol>\n  <li>Step one</li>\n  <li>Step two</li>\n</ol>",
-        "hint": "Use <ol> instead of <ul> — everything else is the same: each item goes in a <li> tag."
+        "instructions": "🔢 When sequence matters, such as recipes, tutorials and rankings, an ordered list numbers the items for you.\nAn ol works exactly like a ul, with li items inside, except the browser counts them 1, 2, 3 automatically.\nReorder the items in your code and the numbers update on their own.\n• start=\"5\" begins counting from a different number\n• reversed counts down instead of up\n• type=\"a\" switches to letters\nExample:\n<ol>\n  <li>Open the editor</li>\n  <li>Write some HTML</li>\n  <li>Save and preview</li>\n</ol>\n• Common mistake: typing the numbers yourself inside the li text, which gives you double numbering.\n👉 Your mission: build an ordered list with at least three steps.",
+        "starterCode": "<!-- Build your numbered list below -->\n",
+        "sampleOutput": "<ol>\n  <li>Open the editor</li>\n  <li>Write some HTML</li>\n  <li>Save and preview</li>\n</ol>",
+        "hint": "Same as a bullet list, but start with <ol> and end with </ol>."
       },
       "language": "html"
     },
@@ -197,10 +197,10 @@
       "label": "Input Types",
       "lesson": {
         "title": "Input Types",
-        "instructions": "🔑 The type attribute on <input> changes its behaviour — number adds a spinner, email validates format, password hides the text.\n👉 Your mission: add an <input> with type set to email, password, or number.\nExample: <input type=\"email\" placeholder=\"your@email.com\">",
-        "starterCode": "<!-- Add a typed input below -->\n",
-        "sampleOutput": "<input type=\"email\" placeholder=\"your@email.com\">",
-        "hint": "Set type=\"email\", type=\"password\", or type=\"number\" on your input tag."
+        "instructions": "⌨️ The type of an input changes how it behaves, what keyboard a phone shows, and what the browser validates.\nOne tag, many behaviors. email checks for an @ sign, password hides the characters, and number only accepts digits and shows arrows.\nPicking the correct type gives users free validation and the right mobile keyboard.\n• text is the default for general input\n• date, color and range open built-in pickers\n• Add required to stop empty submissions\nExample:\n<input type=\"email\" name=\"email\">\n<input type=\"password\" name=\"password\">\n• Common mistake: using type=\"text\" for everything and then writing validation by hand.\n👉 Your mission: create one input with type email and another with type password.",
+        "starterCode": "<!-- Add your inputs below -->\n",
+        "sampleOutput": "<input type=\"email\" name=\"email\">\n<input type=\"password\" name=\"password\">",
+        "hint": "You need two input tags, one for each type."
       },
       "language": "html"
     },
@@ -208,11 +208,11 @@
       "key": "html-meta",
       "label": "Meta Tags",
       "lesson": {
-        "title": "HTML Meta Tags",
-        "instructions": "🔍 Meta tags live inside <head> and give browsers and search engines information about the page.\nThe description meta tag provides the blurb you see on Google results.\n👉 Your mission: add a <meta> tag with name=\"description\" and a content attribute.\nExample: <meta name=\"description\" content=\"A coding learning app\">",
-        "starterCode": "<head>\n  <!-- Add your meta tag below -->\n</head>\n",
-        "sampleOutput": "<head>\n  <meta name=\"description\" content=\"A coding learning app\">\n</head>",
-        "hint": "Type <meta name=\"description\" content=\"anything\"> inside the <head> tags."
+        "title": "Meta Tags",
+        "instructions": "🛰️ Not everything in HTML is for the visitor. Meta tags quietly tell browsers and search engines about your page.\nMeta tags live in the head of a document, which is the invisible part before body.\nThe description meta is often shown as the grey summary text under your page title in Google results.\n• charset=\"UTF-8\" makes sure every character displays correctly\n• viewport makes pages scale properly on phones\n• Keep descriptions short, around 150 characters\nExample:\n<meta charset=\"UTF-8\">\n<meta name=\"description\" content=\"Learn to code with NexusCode.\">\n• Common mistake: putting the text in name instead of content. name says what it is, content says the value.\n👉 Your mission: write a meta tag with name=\"description\" and a non-empty content.",
+        "starterCode": "<!-- Write your meta tag below -->\n",
+        "sampleOutput": "<meta name=\"description\" content=\"Learn to code with NexusCode.\">",
+        "hint": "Use both attributes: <meta name=\"description\" content=\"your summary\">."
       },
       "language": "html"
     }

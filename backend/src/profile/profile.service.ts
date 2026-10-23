@@ -105,10 +105,7 @@ export class ProfileService {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
-    let progress = await this.progressRepo.findOne({ where: { userId } });
-    if (!progress) {
-      progress = this.progressRepo.create({ userId, energy: 10, maxEnergy: 10, energyLastRegen: new Date() });
-    }
+    const progress = await this.findOrCreateProgress(userId);
 
     const prevLevel = progress.level;
     progress.xp += dto.amount;
@@ -224,14 +221,16 @@ export class ProfileService {
     };
   }
 
+  private async findOrCreateProgress(userId: number) {
+    const existing = await this.progressRepo.findOne({ where: { userId } });
+    return existing ?? this.progressRepo.create({ userId, energy: 10, maxEnergy: 10, energyLastRegen: new Date() });
+  }
+
   private async loadEnergy(userId: number) {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
-    let progress = await this.progressRepo.findOne({ where: { userId } });
-    if (!progress) {
-      progress = this.progressRepo.create({ userId, energy: 10, maxEnergy: 10, energyLastRegen: new Date() });
-    }
+    const progress = await this.findOrCreateProgress(userId);
     applyEnergyRegen(progress);
     return { user, progress };
   }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import StatIcon from "@/components/StatIcon";
 import { useRouter } from 'next/navigation';
 import styles from './Auth.module.css';
 import PageShell from '@/components/PageShell';
@@ -102,7 +103,7 @@ export default function Auth() {
             <div className={styles.passwordWrap}>
               <input type={showPw ? 'text' : 'password'} name="password" required className={styles.input} placeholder="••••••••" minLength={isLogin ? 1 : 12} autoComplete={isLogin ? 'current-password' : 'new-password'} />
               <button type="button" className={styles.eyeBtn} onClick={() => setShowPw(v => !v)} aria-label="Toggle password">
-                {showPw ? '🙈' : '👁'}
+                {showPw ? <StatIcon name="eyeOff" size={16} /> : <StatIcon name="eye" size={16} />}
               </button>
             </div>
             {!isLogin && <p className={styles.hint}>Use at least 12 characters with uppercase, lowercase, a number, and a symbol.</p>}

@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import StatIcon from "@/components/StatIcon";
 import Link from 'next/link';
 import styles from './Achievements.module.css';
 import PageShell from '@/components/PageShell';
@@ -81,7 +82,7 @@ function AchCard({ ach }: { ach: AchievementEntry }) {
         <div className={styles.emblemMedal} style={{ background: 'linear-gradient(145deg,#141a2a,#070a12)', borderColor: col, filter: ach.earned ? 'none' : 'grayscale(0.8)' }}>
           <span style={{ display: 'inline-flex', transform: 'scale(2.1)' }}>{GROUP_ICONS[TYPE_ICON[ach.type] ?? 'other']}</span>
         </div>
-        {!ach.earned && <span className={styles.emblemLock}>🔒</span>}
+        {!ach.earned && <span className={styles.emblemLock}><StatIcon name="lock" size={13} /></span>}
       </div>
       <div className={styles.emblemTileName}>{ach.name}</div>
       <div className={styles.emblemReq}>{ach.description}</div>
@@ -95,7 +96,7 @@ function AchCard({ ach }: { ach: AchievementEntry }) {
         {ach.earned
           ? `✓ Completed${ach.earnedAt ? ' · ' + new Date(ach.earnedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}`
           : 'In progress'}
-        {em && <div style={{ marginTop: 4, color: ach.earned ? '#6ee7b7' : '#a5b4fc' }}>{ach.earned ? '✓' : '🔒'} Emblem: {em.mark} {em.name}</div>}
+        {em && <div style={{ marginTop: 4, color: ach.earned ? '#6ee7b7' : '#a5b4fc' }}>{ach.earned ? '✓' : <StatIcon name="lock" size={11} />} Emblem: {em.mark} {em.name}</div>}
       </div>
     </div>
   );
@@ -104,9 +105,9 @@ function AchCard({ ach }: { ach: AchievementEntry }) {
 // ── Themes (interface skins) ────────────────────────────────────────────────
 const THEMES: { slug: string; name: string; icon: string; bg: string; accent: string; accent2: string; free?: boolean; how: string; cost?: number }[] = [
   { slug: 'solar-light',  name: 'Solar Light',  icon: '◐',  bg: '#091628', accent: '#60a5fa', accent2: '#a78bfa', free: true, how: 'Included for everyone' },
-  { slug: 'minimal-dark', name: 'Midnight',     icon: '🌑', bg: '#0a0a0a', accent: '#94a3b8', accent2: '#e2e8f0', how: 'Buy in the Store', cost: 60 },
-  { slug: 'cyber-neon',   name: 'Cyber Neon',   icon: '🔮', bg: '#000a08', accent: '#10b981', accent2: '#00ff88', how: 'Buy in the Store', cost: 80 },
-  { slug: 'matrix-green', name: 'Matrix',       icon: '⌨️', bg: '#000500', accent: '#22c55e', accent2: '#4ade80', how: 'Complete a mid-reward milestone (16–50 ⬡), or buy in the Store', cost: 80 },
+  { slug: 'minimal-dark', name: 'Midnight',     icon: '🌑', bg: '#0a0a0a', accent: '#94a3b8', accent2: '#e2e8f0', how: 'Buy in the Store', cost: 1000 },
+  { slug: 'cyber-neon',   name: 'Cyber Neon',   icon: '🔮', bg: '#000a08', accent: '#10b981', accent2: '#00ff88', how: 'Buy in the Store', cost: 2500 },
+  { slug: 'matrix-green', name: 'Matrix',       icon: '⌨️', bg: '#000500', accent: '#22c55e', accent2: '#4ade80', how: 'Complete a mid-reward milestone (16–50 ⬡), or buy in the Store', cost: 500 },
   { slug: 'ember',        name: 'Ember',        icon: '🔥', bg: '#0d0705', accent: '#ea580c', accent2: '#fbbf24', how: 'Complete a starter milestone (up to 15 ⬡)' },
   { slug: 'solar',        name: 'Solara',       icon: '☀️', bg: '#0d0a03', accent: '#f59e0b', accent2: '#fde68a', how: 'Complete a high-reward milestone (51+ ⬡)' },
 ];
@@ -272,7 +273,7 @@ export default function AchievementsPage() {
                         </span>
                       </span>
                     </div>
-                    {!owned && <span className={styles.emblemLock}>🔒</span>}
+                    {!owned && <span className={styles.emblemLock}><StatIcon name="lock" size={13} /></span>}
                   </div>
                   <div className={styles.emblemTileName}>{t.name}</div>
                   <div className={styles.emblemReq}>{owned ? '✓ Unlocked — equip it on your Profile' : t.how}</div>
@@ -323,7 +324,7 @@ export default function AchievementsPage() {
                       <div className={styles.emblemMedal} style={{ background: e.background, color: e.color, borderColor: e.border, textShadow: e.textShadow }}>
                         {e.mark}
                       </div>
-                      {!owned && <span className={styles.emblemLock}>🔒</span>}
+                      {!owned && <span className={styles.emblemLock}><StatIcon name="lock" size={13} /></span>}
                     </div>
                     <div className={styles.emblemTileName}>{e.name}</div>
                     <div className={styles.emblemReq}>

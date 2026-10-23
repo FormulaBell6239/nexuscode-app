@@ -381,3 +381,11 @@
 }
 .playLink:hover { background: rgba(99,102,241,0.18); }
 
+
+.storeSection { margin-bottom: 2rem; }
+.sectionTitle {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 1.15rem; font-weight: 700; margin: 0 0 0.85rem;
+  padding-bottom: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sectionCount { font-size: 0.75rem; opacity: 0.6; font-weight: 500; }

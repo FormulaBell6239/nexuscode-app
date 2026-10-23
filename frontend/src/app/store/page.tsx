@@ -1,5 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
+import GameIcon, { stripLeadingEmoji } from "@/components/GameIcon";
+import StatIcon from "@/components/StatIcon";
 import Link from 'next/link';
 import PageShell from '@/components/PageShell';
 import {
@@ -34,6 +36,15 @@ const CATEGORY_META: Record<string, { label: string; icon: string }> = {
   powerup:  { label: 'Power-Ups',  icon: '⟁' },
   cosmetic: { label: 'Cosmetics',  icon: '◎' },
 };
+
+const SECTION_META: Record<string, { label: string; icon: string }> = {
+  game:     { label: 'Games',            icon: '◈' },
+  powerup:  { label: 'Power-Ups',        icon: '⟁' },
+  theme:    { label: 'Themes',           icon: '◐' },
+  emblem:   { label: 'Emblems',          icon: '✦' },
+  cosmetic: { label: 'Other Cosmetics',  icon: '◎' },
+};
+const SECTION_ORDER = ['game', 'powerup', 'theme', 'emblem', 'cosmetic'];
 
 const TABS = ['game', 'powerup', 'cosmetic', 'all'] as const;
 type Tab = typeof TABS[number];
@@ -101,7 +112,7 @@ export default function StorePage() {
         return { ...prev, credits: newCredits, items: newItems };
       });
       if (item.gameSlug) setOwnedGameSlugs(prev => new Set([...prev, item.gameSlug!]));
-      showToast(`${item.icon} ${item.name} unlocked!`, 'success');
+      showToast(`${stripLeadingEmoji(item.name)} unlocked!`, 'success');
       setPurchasing(null);
       return;
     }
@@ -117,7 +128,7 @@ export default function StorePage() {
       if (item.gameSlug) {
         setOwnedGameSlugs(prev => new Set([...prev, item.gameSlug!]));
       }
-      showToast(`${item.icon} ${item.name} unlocked!`, 'success');
+      showToast(`${stripLeadingEmoji(item.name)} unlocked!`, 'success');
     } catch (e: any) {
       showToast(e?.message ?? 'Purchase failed', 'error');
     } finally {
@@ -146,6 +157,14 @@ export default function StorePage() {
 
   const spotlightItem = spotlightItems[rotIdx] ?? null;
   const displayed = catalog?.items.filter(i => tab === 'all' || i.category === tab) ?? [];
+  const sectionOf = (i: StoreItemData) =>
+    i.category !== 'cosmetic' ? i.category
+      : i.cosmeticType === 'theme' ? 'theme'
+      : i.cosmeticType === 'avatar' ? 'emblem'
+      : 'cosmetic';
+  const sections = SECTION_ORDER
+    .map(key => ({ key, items: displayed.filter(i => sectionOf(i) === key) }))
+    .filter(sec => sec.items.length > 0);
   const credits = catalog?.credits ?? 0;
 
   const spotlightCanAfford = spotlightItem ? credits >= spotlightItem.creditCost : false;
@@ -186,7 +205,7 @@ export default function StorePage() {
         {!loading && spotlightItem && spotlightCatMeta && (
           <section className={styles.featuredSection}>
             <div className={styles.featuredHeader}>
-              <h2 className={styles.featuredTitle}>⚡ Spotlight</h2>
+              <h2 className={styles.featuredTitle}><StatIcon name="energy" size={16} /> Spotlight</h2>
               <span className={styles.spotlightDots}>
                 {spotlightItems.map((_, i) => (
                   <button
@@ -200,9 +219,9 @@ export default function StorePage() {
             </div>
             <div className={styles.spotlightCard}>
               <span className={styles.spotlightBadge}>{spotlightCatMeta.icon} {spotlightCatMeta.label}</span>
-              <span className={styles.spotlightIcon}>{spotlightItem.icon}</span>
+              <span className={styles.spotlightIcon}><GameIcon slug={spotlightItem.gameSlug ?? spotlightItem.applyValue} fallback={spotlightItem.icon} size={34} /></span>
               <div className={styles.spotlightInfo}>
-                <span className={styles.spotlightName}>{spotlightItem.name}</span>
+                <span className={styles.spotlightName}>{stripLeadingEmoji(spotlightItem.name)}</span>
                 <span className={styles.spotlightDesc}>{spotlightItem.description}</span>
               </div>
               <button
@@ -228,12 +247,21 @@ export default function StorePage() {
           ))}
         </nav>
 
-        <div className={styles.grid}>
-          {loading
-            ? Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className={styles.skeleton} />
-              ))
-            : displayed.map(item => {
+        {loading && (
+          <div className={styles.grid}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className={styles.skeleton} />
+            ))}
+          </div>
+        )}
+        {!loading && sections.map(sec => (
+          <section key={sec.key} className={styles.storeSection}>
+            <h2 className={styles.sectionTitle}>
+              {SECTION_META[sec.key].icon} {SECTION_META[sec.key].label}
+              <span className={styles.sectionCount}>{sec.items.length}</span>
+            </h2>
+            <div className={styles.grid}>
+              {sec.items.map(item => {
                 const isGameOwned = item.category === 'game' && item.gameSlug
                   ? ownedGameSlugs.has(item.gameSlug) || item.owned
                   : item.owned;
@@ -245,21 +273,21 @@ export default function StorePage() {
                     className={`${styles.card} ${isGameOwned ? styles.cardOwned : ''} ${!canAfford && !isGameOwned ? styles.cardAffordable : ''}`}
                   >
                     <div className={styles.cardTop}>
-                      <span className={styles.itemIcon}>{item.icon}</span>
+                      <span className={styles.itemIcon}><GameIcon slug={item.gameSlug ?? item.applyValue} fallback={item.icon} size={26} /></span>
                       <span className={`${styles.categoryChip} ${styles[`cat_${item.category}`]}`}>
                         {CATEGORY_META[item.category]?.label ?? item.category}
                       </span>
                       {item.category === 'game' && !isGameOwned && (
-                        <span style={{ marginLeft: 'auto', fontSize: '0.75rem' }}>🔒</span>
+                        <span style={{ marginLeft: 'auto', fontSize: '0.75rem' }}><StatIcon name="lock" size={12} /></span>
                       )}
                     </div>
-                    <h3 className={styles.itemName}>{item.name}</h3>
+                    <h3 className={styles.itemName}>{stripLeadingEmoji(item.name)}</h3>
                     <p className={styles.itemDesc}>{item.description}</p>
                     <div className={styles.cardFooter}>
                       {isGameOwned ? (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', width: '100%' }}>
                           {item.isPrize ? (
-                            <span className={styles.ownedBadge}>🏅 Earned as Prize</span>
+                            <span className={styles.ownedBadge}><StatIcon name="medal" size={12} /> Earned as Prize</span>
                           ) : (
                             <span className={styles.ownedBadge}>✶ Owned</span>
                           )}
@@ -292,7 +320,9 @@ export default function StorePage() {
                   </div>
                 );
               })}
-        </div>
+            </div>
+          </section>
+        ))}
       </div>
     </main>
   );

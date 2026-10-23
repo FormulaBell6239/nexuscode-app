@@ -1,25 +1,16 @@
 'use client';
 import { useState, useEffect } from 'react';
+import StatIcon from "@/components/StatIcon";
 import Link from 'next/link';
 import PageShell from '@/components/PageShell';
 import styles from './Profile.module.css';
 import { api, getOwnedItems, getLocalCredits } from '@/lib/api';
+import EmblemAvatar from '@/components/EmblemAvatar';
 import { EMBLEMS, EMBLEM_CATEGORIES } from '@/lib/emblems';
 
 const AVATARS = ["👾", "🤖", "🦾", "💀", "⚡", "🔮", "🪐", "🎮", "👽", "👻", "🦊", "🐙", "🦈", "🦉", "🐉", "🐺", "🐱", "🐸", "🦄", "🐼", "🐧", "🦋", "🦖", "🥷", "🧑‍🚀", "🧙", "🦇", "🦂", "🌙", "💎"];
 function AvatarVisual({ value }: { value: string }) {
-  const emblem = EMBLEMS[value];
-  if (!emblem) return <>{value}</>;
-  return (
-    <span
-      className={styles.avatarArt}
-      style={{ background: emblem.background, color: emblem.color, borderColor: emblem.border, textShadow: emblem.textShadow }}
-      title={`${emblem.name} · ${emblem.rarity}`}
-      aria-label={`${emblem.rarity} ${emblem.name}`}
-    >
-      {emblem.mark}
-    </span>
-  );
+  return <EmblemAvatar value={value} className={styles.avatarArt} />;
 }
 
 const CALLING_CARDS = [
@@ -97,6 +88,17 @@ const ALL_LESSONS: Record<string, string> = {
 };
 
 const TOTAL = Object.keys(ALL_LESSONS).length;
+
+// Each learning path is a point on the neural matrix and fills with its colour as lessons are completed.
+const PATHS = [
+  { id: 'html',       label: 'Web Fundamentals', sub: 'HTML',       color: '#f97316', prefix: 'html',  curriculumKey: 'html',       x: 150, y: 28 },
+  { id: 'css',        label: 'Styling',          sub: 'CSS',        color: '#22d3ee', prefix: 'css',   curriculumKey: 'css',        x: 245, y: 64 },
+  { id: 'javascript', label: 'JavaScript',       sub: 'JS',         color: '#facc15', prefix: 'js-',   curriculumKey: 'javascript', x: 245, y: 136 },
+  { id: 'python',     label: 'Python',           sub: 'Python',     color: '#22c55e', prefix: 'py-',   curriculumKey: 'python',     x: 150, y: 172 },
+  { id: 'sql',        label: 'Databases',        sub: 'SQL',        color: '#a78bfa', prefix: 'sql-',  curriculumKey: 'sql',        x: 55,  y: 136 },
+  { id: 'typescript', label: 'TypeScript',       sub: 'TS',         color: '#3b82f6', prefix: 'ts-',   curriculumKey: 'typescript', x: 55,  y: 64 },
+] as const;
+const MATRIX_CENTER = { x: 150, y: 100 };
 const XP_PER_LESSON = 50;
 const XP_PER_LEVEL  = 300;
 function levelFromXP(xp: number) { return Math.floor(xp / XP_PER_LEVEL) + 1; }
@@ -226,6 +228,7 @@ export default function ProfilePage() {
   const [ringColor, setRingColor] = useState('#10b981');
   const [bannerPack, setBannerPack] = useState(0);
   const [activeMatrixNodeId, setActiveMatrixNodeId] = useState('core');
+  const [pathTotals, setPathTotals] = useState<Record<string, number>>({});
 
   useEffect(() => {
     try { const r = localStorage.getItem('nexus_completed'); if (r) setCompleted(JSON.parse(r)); } catch {}
@@ -246,6 +249,13 @@ export default function ProfilePage() {
     if (Number.isFinite(savedStrength) && savedStrength >= 20 && savedStrength <= 100) {
       setTextureStrength(savedStrength);
     }
+
+    fetch('/curriculum.json')
+      .then(r => r.json())
+      .then((data: Record<string, unknown[]>) => {
+        setPathTotals(Object.fromEntries(Object.entries(data).map(([k, v]) => [k, v.length])));
+      })
+      .catch(() => {});
 
     const token = localStorage.getItem('token');
 
@@ -356,10 +366,12 @@ export default function ProfilePage() {
       delete document.documentElement.dataset.theme;
       localStorage.removeItem('theme');
       setActiveTheme('');
+      api.put('/api/profile', { theme: 'default' }).catch(() => {});
     } else {
       document.documentElement.dataset.theme = slug;
       localStorage.setItem('theme', slug);
       setActiveTheme(slug);
+      api.put('/api/profile', { theme: slug }).catch(() => {});
     }
   }
 
@@ -391,15 +403,20 @@ export default function ProfilePage() {
     langCounts[lang] = (langCounts[lang] || 0) + 1;
   });
 
+  const pathStats = PATHS.map(p => {
+    const done = completed.filter(k => k.startsWith(p.prefix)).length;
+    const total = Math.max(pathTotals[p.curriculumKey] ?? 0, done);
+    return { ...p, done, total, pct: total > 0 ? done / total : 0 };
+  });
+  const pathsStarted = pathStats.filter(p => p.done > 0).length;
   const matrixNodes = [
-    { id: 'core', label: 'Identity core', detail: `LEVEL ${level} · ${xp.toLocaleString()} XP`, x: 150, y: 100 },
-    { id: 'level', label: 'Level signal', detail: `${xpNow} / ${XP_PER_LEVEL} XP TO LEVEL ${level + 1}`, x: 150, y: 22 },
-    { id: 'learning', label: 'Learning node', detail: `${completed.length} LESSONS SYNCHRONIZED`, x: 62, y: 44 },
-    { id: 'streak', label: 'Streak relay', detail: `${profile?.streak ?? 0} DAY LEARNING STREAK`, x: 238, y: 44 },
-    { id: 'focus', label: 'Focus node', detail: `${Object.keys(langCounts).length} TRACKS ACTIVE`, x: 28, y: 112 },
-    { id: 'credits', label: 'Credit relay', detail: `${credits} CREDITS AVAILABLE`, x: 272, y: 112 },
-    { id: 'progress', label: 'Progress node', detail: `${completed.length} OF ${TOTAL} LESSONS COMPLETE`, x: 72, y: 170 },
-    { id: 'milestones', label: 'Milestone node', detail: 'ACHIEVEMENT SIGNALS READY', x: 228, y: 170 },
+    { id: 'core', label: 'Learning core', detail: `LEVEL ${level} · ${completed.length} OF ${TOTAL} LESSONS · ${pathsStarted} OF ${PATHS.length} PATHS STARTED`, x: MATRIX_CENTER.x, y: MATRIX_CENTER.y, color: '#818cf8' },
+    ...pathStats.map(p => ({
+      id: p.id,
+      label: `${p.label} path`,
+      detail: p.total > 0 ? `${p.done} OF ${p.total} LESSONS · ${Math.round(p.pct * 100)}% COMPLETE` : `${p.done} LESSONS COMPLETE`,
+      x: p.x, y: p.y, color: p.color,
+    })),
   ];
   const activeMatrixNode = matrixNodes.find(node => node.id === activeMatrixNodeId) ?? matrixNodes[0];
 
@@ -419,7 +436,7 @@ export default function ProfilePage() {
   return (
     <main className={styles.main}>
       <PageShell />
-      <Link href="/settings" className={styles.settingsGear} aria-label="Settings">⚙</Link>
+      <Link href="/settings" className={styles.settingsGear} aria-label="Settings"><StatIcon name="gear" size={18} /></Link>
 
       <div className={styles.container}>
         {loadError && (
@@ -555,7 +572,7 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div className={styles.field}>
-                      <label className={styles.lbl}>Avatar</label>
+                      <label className={styles.lbl}>Emblem</label>
                         <div className={styles.emblemTabs} role="tablist" aria-label="Emblem categories">
                           {[{ id: 'classic', name: 'Classic' }, ...EMBLEM_CATEGORIES].map(c => (
                             <button
@@ -605,7 +622,7 @@ export default function ProfilePage() {
                                 <div key={e.id} aria-disabled="true" className={`${styles.emblemCard} ${styles.emblemLocked}`} title={e.unlockedBy ? `Earn the “${e.unlockedBy}” achievement, or buy it in the Store for ${e.cost} credits` : `Buy in the Store for ${e.cost} credits`}>
                                   <span className={styles.emblemArt}><AvatarVisual value={e.id} /></span>
                                   <span className={styles.emblemName}>{e.name}</span>
-                                  <span className={styles.emblemRarity}>🔒 {e.unlockedBy ?? `${e.cost} ⬡`}</span>
+                                  <span className={styles.emblemRarity}><StatIcon name="lock" size={11} /> {e.unlockedBy ?? `${e.cost} ⬡`}</span>
                                 </div>
                               );
                             })}
@@ -687,7 +704,7 @@ export default function ProfilePage() {
             <span className={styles.statCardKey}>Level</span>
           </div>
           <div className={`${styles.statCard} ${styles.statCardXP}`}>
-            <span className={styles.statCardIcon}>⚡</span>
+            <span className={styles.statCardIcon}><StatIcon name="xp" size={18} /></span>
             <span className={styles.statCardVal}>{xp.toLocaleString()}</span>
             <span className={styles.statCardKey}>Total XP</span>
           </div>
@@ -698,7 +715,7 @@ export default function ProfilePage() {
           </div>
           <div className={`${styles.statCard} ${styles.statCardStreak}`}>
             <span className={styles.statCardIcon}>◎</span>
-            <span className={styles.statCardVal}>{profile?.streak ?? 0}🔥</span>
+            <span className={styles.statCardVal}>{profile?.streak ?? 0} <StatIcon name="streak" size={16} /></span>
             <span className={styles.statCardKey}>Day Streak</span>
           </div>
         </div>
@@ -730,7 +747,7 @@ export default function ProfilePage() {
                   <header className={styles.matrixHeader}>
                     <div>
                       <p className={styles.matrixEyebrow}>Profile system</p>
-                      <h2 className={styles.matrixTitle}>Neural matrix</h2>
+                      <h2 className={styles.matrixTitle}>Learning paths</h2>
                     </div>
                     <span className={styles.matrixOnline}><i /> Network online</span>
                   </header>
@@ -750,125 +767,45 @@ export default function ProfilePage() {
                         <feGaussianBlur stdDeviation="7" result="blur"/>
                         <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
                       </filter>
-                      <radialGradient id="pf_bg" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor="#6366f1" stopOpacity="0.10"/>
-                        <stop offset="100%" stopColor="#6366f1" stopOpacity="0"/>
-                      </radialGradient>
                     </defs>
 
-                    {/* Ambient glow */}
-                    <ellipse cx="150" cy="100" rx="115" ry="78" fill="url(#pf_bg)"/>
+                    {/* Empty path tracks */}
+                    {pathStats.map(p => (
+                      <line key={`track-${p.id}`} x1={p.x} y1={p.y} x2={MATRIX_CENTER.x} y2={MATRIX_CENTER.y} stroke="rgba(148,163,184,0.18)" strokeWidth="1" strokeDasharray="2 4" />
+                    ))}
 
-                    {/* Center-to-outer lines */}
-                    <line x1="150" y1="100" x2="150" y2="22" stroke="rgba(129,140,248,0.30)" strokeWidth="0.8">
-                      <animate attributeName="strokeOpacity" values="0.30;0.60;0.30" dur="3.1s" repeatCount="indefinite"/>
-                    </line>
-                    <line x1="150" y1="100" x2="62" y2="44" stroke="rgba(99,102,241,0.30)" strokeWidth="0.8">
-                      <animate attributeName="strokeOpacity" values="0.30;0.55;0.30" dur="2.3s" repeatCount="indefinite"/>
-                    </line>
-                    <line x1="150" y1="100" x2="238" y2="44" stroke="rgba(6,182,212,0.30)" strokeWidth="0.8">
-                      <animate attributeName="strokeOpacity" values="0.30;0.58;0.30" dur="2.7s" repeatCount="indefinite"/>
-                    </line>
-                    <line x1="150" y1="100" x2="28" y2="112" stroke="rgba(99,102,241,0.25)" strokeWidth="0.8">
-                      <animate attributeName="strokeOpacity" values="0.25;0.50;0.25" dur="3.4s" repeatCount="indefinite"/>
-                    </line>
-                    <line x1="150" y1="100" x2="272" y2="112" stroke="rgba(6,182,212,0.25)" strokeWidth="0.8">
-                      <animate attributeName="strokeOpacity" values="0.25;0.52;0.25" dur="2.1s" repeatCount="indefinite"/>
-                    </line>
-                    <line x1="150" y1="100" x2="72" y2="170" stroke="rgba(99,102,241,0.30)" strokeWidth="0.8">
-                      <animate attributeName="strokeOpacity" values="0.30;0.55;0.30" dur="2.9s" repeatCount="indefinite"/>
-                    </line>
-                    <line x1="150" y1="100" x2="228" y2="170" stroke="rgba(6,182,212,0.30)" strokeWidth="0.8">
-                      <animate attributeName="strokeOpacity" values="0.30;0.55;0.30" dur="3.6s" repeatCount="indefinite"/>
-                    </line>
+                    {/* Colour fills from the outer point toward the centre as lessons are completed */}
+                    {pathStats.map(p => p.pct > 0 && (
+                      <line
+                        key={`fill-${p.id}`}
+                        x1={p.x} y1={p.y}
+                        x2={p.x + (MATRIX_CENTER.x - p.x) * p.pct}
+                        y2={p.y + (MATRIX_CENTER.y - p.y) * p.pct}
+                        stroke={p.color} strokeWidth="2" strokeLinecap="round" filter="url(#pf_glow)"
+                      />
+                    ))}
 
-                    {/* Outer-to-outer lines */}
-                    <line x1="62" y1="44" x2="238" y2="44" stroke="rgba(129,140,248,0.14)" strokeWidth="0.6" strokeDasharray="3 5"/>
-                    <line x1="62" y1="44" x2="72" y2="170" stroke="rgba(99,102,241,0.12)" strokeWidth="0.6"/>
-                    <line x1="238" y1="44" x2="228" y2="170" stroke="rgba(6,182,212,0.12)" strokeWidth="0.6"/>
-                    <line x1="28" y1="112" x2="72" y2="170" stroke="rgba(99,102,241,0.10)" strokeWidth="0.5"/>
-                    <line x1="272" y1="112" x2="228" y2="170" stroke="rgba(6,182,212,0.10)" strokeWidth="0.5"/>
-                    <line x1="150" y1="22" x2="238" y2="44" stroke="rgba(129,140,248,0.10)" strokeWidth="0.5"/>
-                    <line x1="150" y1="22" x2="62" y2="44" stroke="rgba(129,140,248,0.10)" strokeWidth="0.5"/>
+                    {/* Path points */}
+                    {pathStats.map(p => (
+                      <g key={`node-${p.id}`}>
+                        <circle cx={p.x} cy={p.y} r="7" fill="#0b1220" stroke={p.done > 0 ? p.color : 'rgba(148,163,184,0.35)'} strokeWidth="1.2" />
+                        <circle cx={p.x} cy={p.y} r={2 + 3.5 * p.pct} fill={p.done > 0 ? p.color : 'rgba(148,163,184,0.35)'} filter={p.done > 0 ? 'url(#pf_glow)' : undefined} />
+                        <text x={p.x} y={p.y + (p.y < 100 ? -11 : 17)} textAnchor="middle" fontSize="7" fontWeight="700" fill={p.done > 0 ? p.color : '#64748b'}>{p.sub}</text>
+                      </g>
+                    ))}
 
-                    {/* Traveling signal pulses */}
-                    <circle r="2.2" fill="#a5b4fc" filter="url(#pf_glow)">
-                      <animateMotion dur="1.8s" repeatCount="indefinite" begin="0s" path="M150,100 L150,22"/>
-                    </circle>
-                    <circle r="2.2" fill="#67e8f9" filter="url(#pf_glow)">
-                      <animateMotion dur="2.2s" repeatCount="indefinite" begin="0.4s" path="M150,100 L238,44"/>
-                    </circle>
-                    <circle r="2.2" fill="#a5b4fc" filter="url(#pf_glow)">
-                      <animateMotion dur="1.6s" repeatCount="indefinite" begin="0.9s" path="M62,44 L150,100"/>
-                    </circle>
-                    <circle r="2.2" fill="#67e8f9" filter="url(#pf_glow)">
-                      <animateMotion dur="2.5s" repeatCount="indefinite" begin="1.3s" path="M150,100 L272,112"/>
-                    </circle>
-                    <circle r="2.0" fill="#818cf8" filter="url(#pf_glow)">
-                      <animateMotion dur="2.0s" repeatCount="indefinite" begin="0.2s" path="M150,100 L72,170"/>
-                    </circle>
-                    <circle r="2.0" fill="#22d3ee" filter="url(#pf_glow)">
-                      <animateMotion dur="1.9s" repeatCount="indefinite" begin="1.5s" path="M228,170 L150,100"/>
-                    </circle>
-                    <circle r="1.8" fill="#a5b4fc" filter="url(#pf_glow)">
-                      <animateMotion dur="2.8s" repeatCount="indefinite" begin="0.6s" path="M28,112 L150,100"/>
-                    </circle>
-                    <circle r="1.8" fill="#67e8f9" filter="url(#pf_glow)">
-                      <animateMotion dur="3.2s" repeatCount="indefinite" begin="1.0s" path="M62,44 L238,44"/>
-                    </circle>
-                    <circle r="1.8" fill="#a5b4fc" filter="url(#pf_glow)">
-                      <animateMotion dur="2.6s" repeatCount="indefinite" begin="0.3s" path="M62,44 L72,170"/>
-                    </circle>
-                    <circle r="1.8" fill="#22d3ee" filter="url(#pf_glow)">
-                      <animateMotion dur="2.4s" repeatCount="indefinite" begin="1.8s" path="M238,44 L228,170"/>
-                    </circle>
+                    {/* Core takes on the average colour of the started paths */}
+                    <circle cx={MATRIX_CENTER.x} cy={MATRIX_CENTER.y} r="11" fill="#3730a3" opacity={0.35 + 0.65 * (pathsStarted / PATHS.length)} filter="url(#pf_coreGlow)" />
+                    <circle cx={MATRIX_CENTER.x} cy={MATRIX_CENTER.y} r="5" fill="#e0e7ff" />
+                    {pathStats.filter(p => p.pct >= 1).map(p => (
+                      <circle key={`done-${p.id}`} cx={MATRIX_CENTER.x} cy={MATRIX_CENTER.y} r={7 + pathStats.filter(q => q.pct >= 1).indexOf(p) * 2} fill="none" stroke={p.color} strokeWidth="1" />
+                    ))}
 
-                    {/* Outer nodes */}
-                    <circle cx="150" cy="22" r="4" fill="#818cf8" filter="url(#pf_glow)">
-                      <animate attributeName="r" values="3.5;5.5;3.5" dur="2.8s" repeatCount="indefinite"/>
-                      <animate attributeName="opacity" values="0.6;1;0.6" dur="2.8s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="62" cy="44" r="4" fill="#6366f1" filter="url(#pf_glow)">
-                      <animate attributeName="r" values="3;5.5;3" dur="2.1s" repeatCount="indefinite"/>
-                      <animate attributeName="opacity" values="0.6;1;0.6" dur="2.1s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="238" cy="44" r="4" fill="#06b6d4" filter="url(#pf_glow)">
-                      <animate attributeName="r" values="3.5;5.5;3.5" dur="3.2s" repeatCount="indefinite"/>
-                      <animate attributeName="opacity" values="0.6;1;0.6" dur="3.2s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="28" cy="112" r="3.5" fill="#818cf8" filter="url(#pf_glow)">
-                      <animate attributeName="r" values="2.5;4.5;2.5" dur="2.5s" repeatCount="indefinite"/>
-                      <animate attributeName="opacity" values="0.5;0.95;0.5" dur="2.5s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="272" cy="112" r="3.5" fill="#22d3ee" filter="url(#pf_glow)">
-                      <animate attributeName="r" values="2.5;4.5;2.5" dur="1.9s" repeatCount="indefinite"/>
-                      <animate attributeName="opacity" values="0.5;1;0.5" dur="1.9s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="72" cy="170" r="4" fill="#6366f1" filter="url(#pf_glow)">
-                      <animate attributeName="r" values="3;5;3" dur="3.5s" repeatCount="indefinite"/>
-                      <animate attributeName="opacity" values="0.6;1;0.6" dur="3.5s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="228" cy="170" r="4" fill="#06b6d4" filter="url(#pf_glow)">
-                      <animate attributeName="r" values="3;5;3" dur="2.3s" repeatCount="indefinite"/>
-                      <animate attributeName="opacity" values="0.6;1;0.6" dur="2.3s" repeatCount="indefinite"/>
-                    </circle>
-
-                    {/* Core */}
-                    <circle cx="150" cy="100" r="11" fill="#3730a3" filter="url(#pf_coreGlow)">
-                      <animate attributeName="r" values="9;13;9" dur="2.4s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="150" cy="100" r="5.5" fill="#818cf8">
-                      <animate attributeName="r" values="4.5;6.5;4.5" dur="2.4s" repeatCount="indefinite"/>
-                      <animate attributeName="opacity" values="0.85;1;0.85" dur="2.4s" repeatCount="indefinite"/>
-                    </circle>
-                    <circle cx="150" cy="100" r="2.5" fill="#e0e7ff">
-                      <animate attributeName="opacity" values="0.7;1;0.7" dur="1.2s" repeatCount="indefinite"/>
-                    </circle>
                     <circle
                       className={styles.matrixSelectionRing}
                       cx={activeMatrixNode.x}
                       cy={activeMatrixNode.y}
-                      r="9"
+                      r="11"
                     />
                     {matrixNodes.map((node, index) => (
                       <g
@@ -893,12 +830,12 @@ export default function ProfilePage() {
                   </div>
                   <div className={styles.matrixTelemetry} aria-live="polite">
                     <span className={styles.matrixNodeIndex}>NODE {String(matrixNodes.indexOf(activeMatrixNode) + 1).padStart(2, '0')} / {String(matrixNodes.length).padStart(2, '0')}</span>
-                    <strong>{activeMatrixNode.label}</strong>
+                    <strong style={{ color: activeMatrixNode.color }}>{activeMatrixNode.label}</strong>
                     <span>{activeMatrixNode.detail}</span>
                   </div>
                   <footer className={styles.matrixFooter}>
-                    <span><i /> 08 nodes active</span>
-                    <span>{completed.length} learning signals</span>
+                    <span><i /> {pathsStarted} of {PATHS.length} paths started</span>
+                    <span>{completed.length} lessons completed</span>
                   </footer>
                 </section>
                 <p className={styles.subLabel} style={{ marginTop: '1.4rem' }}>Theme Skin</p>
@@ -929,7 +866,7 @@ export default function ProfilePage() {
                         <div className={styles.skinPreview} style={{ background: skin.bg, border: `1px solid ${skin.accent}44` }}>
                           <div className={styles.skinDot} style={{ background: skin.accent }} />
                           <div className={styles.skinDot} style={{ background: skin.accent2, opacity: 0.7 }} />
-                          {!isOwned && <span className={styles.skinLockIcon}>🔒</span>}
+                          {!isOwned && <span className={styles.skinLockIcon}><StatIcon name="lock" size={14} /></span>}
                         </div>
                         <span className={styles.skinIcon}>{skin.icon}</span>
                         <span className={styles.skinName}>{skin.name}</span>
@@ -954,7 +891,7 @@ export default function ProfilePage() {
                     <span className={styles.statKey}>Remaining</span>
                   </div>
                   <div className={styles.statBox}>
-                    <span className={styles.statVal}>{profile?.streak ?? 0}<span style={{ fontSize: '0.85em' }}>🔥</span></span>
+                    <span className={styles.statVal}>{profile?.streak ?? 0}<StatIcon name="streak" size={15} /></span>
                     <span className={styles.statKey}>Day Streak</span>
                   </div>
                 </div>

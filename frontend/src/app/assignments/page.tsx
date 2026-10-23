@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import StatIcon from "@/components/StatIcon";
 import Link from "next/link";
 import PageShell from "@/components/PageShell";
 import { addLocalCredits, submitXp } from "@/lib/api";
@@ -385,7 +386,7 @@ function TierSection({
       {/* ── Lock banner (higher-tier sections) ── */}
       {!canAccess && (
         <div className={styles.tierLockBanner} style={{ borderColor: `${tier.accentColor}30` }}>
-          <span>🔒</span>
+          <span><StatIcon name="lock" size={13} /></span>
           <span>
             {tier.id === 'pro' ? 'Nexus Pro' : 'Nexus Quantum'} exclusive —{' '}
             <Link href="/upgrade" className={styles.tierLockLink}>upgrade to unlock</Link>
@@ -544,7 +545,7 @@ function LockedCard({ a, plan }: { a: Assignment; plan: PlanTier }) {
             </>
           ) : (
             <>
-              <span className={styles.lockIcon}>🔒</span>
+              <span className={styles.lockIcon}><StatIcon name="lock" size={13} /></span>
               <p className={styles.lockReason}>
                 {a.requiredTier === 'pro' ? 'Nexus Pro' : 'Nexus Quantum'} exclusive
               </p>

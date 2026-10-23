@@ -15,10 +15,11 @@ export default function ThemeProvider() {
     if (!token) return;
     getProfile()
       .then(profile => {
+        // The account is the source of truth, so a theme only changes when the user applies one
         if (profile.theme && profile.theme !== 'default') {
           document.documentElement.dataset.theme = profile.theme;
           localStorage.setItem('theme', profile.theme);
-        } else if (profile.theme === 'default') {
+        } else {
           delete document.documentElement.dataset.theme;
           localStorage.removeItem('theme');
         }

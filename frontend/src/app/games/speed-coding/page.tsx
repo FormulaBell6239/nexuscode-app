@@ -1,5 +1,6 @@
 'use client';
 import { useState, useRef } from 'react';
+import StatIcon from "@/components/StatIcon";
 import Link from 'next/link';
 import { submitXp, addLocalCredits, getLocalCredits, GAME_CREDITS } from '@/lib/api';
 
@@ -156,7 +157,7 @@ export default function SpeedCoding() {
     return (
       <main style={{ maxWidth: 560, margin: '2.5rem auto', padding: '0 1rem' }}>
         <div style={{ background: '#0d1424', border: '1px solid #1e3a5f', borderRadius: 20, padding: '2.5rem 2rem', textAlign: 'center', boxShadow: '0 8px 40px rgba(6,182,212,0.12)' }}>
-          <div style={{ fontSize: '3.5rem', marginBottom: '0.5rem' }}>⚡</div>
+          <div style={{ fontSize: '3.5rem', marginBottom: '0.5rem' }}><StatIcon name="energy" size={56} /></div>
           <h2 style={{ fontSize: '1.8rem', fontWeight: 800, background: 'linear-gradient(135deg,#e0e7ff,#818cf8,#06b6d4)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', margin: '0 0 0.35rem' }}>
             Speed Run Complete!
           </h2>
