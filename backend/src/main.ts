@@ -86,7 +86,7 @@ async function bootstrap() {
 
   // Strict localhost origin check — matches only http://localhost or http://localhost:<port>
   // Prevents bypass via http://localhost.evil.com (startsWith was vulnerable to this)
-  const LOCALHOST_ORIGIN = /^http:\/\/localhost(:\d+)?$/;
+  const LOCALHOST_ORIGIN = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
   // Allow LAN IPs (192.168.x.x / 10.x.x.x) for mobile dev access on the same network
   const LAN_ORIGIN = /^http:\/\/(192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3})(:\d+)?$/;
 

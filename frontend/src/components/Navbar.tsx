@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import styles from './Navbar.module.css';
 import StreakTracker from './StreakTracker';
 import { api } from '@/lib/api';
+import { endSession } from '@/lib/session';
 
 interface ProfileSnap {
   energy: number;
@@ -155,9 +156,7 @@ export default function Navbar() {
   const openGroupData = BOTTOM_GROUPS.find(g => g.id === openGroup) ?? null;
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('nexus_guest');
+    endSession();
     setLoggedIn(false);
     router.push('/auth');
   };

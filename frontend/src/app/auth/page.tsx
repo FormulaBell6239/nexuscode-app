@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './Auth.module.css';
 import PageShell from '@/components/PageShell';
-import { api } from '@/lib/api';
+import { api, getProfile } from '@/lib/api';
+import { startSession } from '@/lib/session';
 
 interface AuthResponse {
   token: string;
@@ -42,9 +43,11 @@ export default function Auth() {
             password: formData.get('password'),
           });
 
-      localStorage.setItem('token', session.token);
-      localStorage.setItem('user', JSON.stringify(session.user));
-      localStorage.removeItem('nexus_guest');
+      startSession(session);
+      try {
+        const profile = await getProfile();
+        localStorage.setItem('nexus_completed', JSON.stringify(profile.completedLessons ?? []));
+      } catch {}
 
       if (isLogin) {
         router.push('/');
@@ -111,7 +114,7 @@ export default function Auth() {
         </form>
 
         <button className={styles.toggle} onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? 'Don&apos;t have an account? Register' : 'Already have an account? Sign in'}
+          {isLogin ? "Don't have an account? Register" : 'Already have an account? Sign in'}
         </button>
 
         <div className={styles.divider}><span>or</span></div>

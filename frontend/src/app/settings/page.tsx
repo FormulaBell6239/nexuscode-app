@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { endSession } from '@/lib/session';
 import styles from './Settings.module.css';
 
 export default function SettingsPage() {
@@ -13,8 +14,7 @@ export default function SettingsPage() {
   }, []);
 
   const signOut = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    endSession();
     router.push('/');
   };
 
