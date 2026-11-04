@@ -3,12 +3,15 @@ import Link from 'next/link';
 import styles from './More.module.css';
 
 const MORE_LINKS = [
+  { href: '/community',    icon: '❖',  label: 'Community',     desc: 'Ask, share and collaborate' },
   { href: '/achievements', icon: '🏅', label: 'Achievements',  desc: 'Track your milestones' },
   { href: '/leaderboard',  icon: '◆',  label: 'Leaderboard',   desc: "See who's on top"       },
   { href: '/roadmap',      icon: '⬡',  label: 'Nexus Path',    desc: 'Your learning roadmap' },
   { href: '/playground',   icon: '⌥',  label: 'Playground',    desc: 'Free-form coding space' },
   { href: '/about',        icon: '◉',  label: 'About',         desc: 'About NexusCode'        },
   { href: '/contact',      icon: '✉',  label: 'Contact',       desc: 'Get in touch'           },
+  { href: '/terms',        icon: '§',  label: 'Terms',         desc: 'Terms of Service'       },
+  { href: '/privacy',      icon: '◍',  label: 'Privacy',       desc: 'Privacy Policy'         },
   { href: '/settings',     icon: '⚙',  label: 'Settings',      desc: 'Account & preferences'  },
 ];
 

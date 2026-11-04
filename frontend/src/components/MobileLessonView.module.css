@@ -13,21 +13,21 @@
 .progressTrack {
   width: 100%;
   height: 4px;
-  background: #1a2744;
+  background: var(--border);
   border-radius: 2px;
   overflow: hidden;
 }
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(90deg, #6366f1, #818cf8);
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, white));
   border-radius: 2px;
   transition: width 0.4s ease;
 }
 
 .stepLabel {
   font-size: 11px;
-  color: #475569;
+  color: var(--text-muted);
   text-align: right;
   margin: -8px 0 0;
 }
@@ -35,8 +35,8 @@
 /* ── Explain card ─────────────────────────────────────────────────────────── */
 
 .explainCard {
-  background: #0d1b2e;
-  border: 1px solid #1e2d45;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px 16px 16px;
   display: flex;
@@ -46,14 +46,14 @@
 
 .explainText {
   font-size: 15px;
-  color: #cbd5e1;
+  color: var(--text-secondary);
   line-height: 1.65;
   margin: 0;
 }
 
 .explainCode {
   background: #071121;
-  border: 1px solid #1e2d45;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 12px 14px;
   font-family: 'Fira Code', 'JetBrains Mono', 'Menlo', monospace;
@@ -70,7 +70,7 @@
   padding: 13px;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(135deg, #6366f1, #818cf8);
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, white));
   color: #fff;
   font-size: 15px;
   font-weight: 700;
@@ -89,8 +89,8 @@
 
 
 .questionCard {
-  background: #0d1b2e;
-  border: 1px solid #1e2d45;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
 }
@@ -100,14 +100,14 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #818cf8;
+  color: color-mix(in srgb, var(--accent) 70%, white);
   margin: 0 0 10px;
 }
 
 .questionText {
   font-size: 15px;
   font-weight: 500;
-  color: #e2e8f0;
+  color: var(--text-primary);
   margin: 0;
   line-height: 1.5;
 }
@@ -124,13 +124,13 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: #0d1b2e;
-  border: 1.5px solid #1e2d45;
+  background: var(--surface-2);
+  border: 1.5px solid var(--border);
   border-radius: 10px;
   padding: 14px 16px;
   font-size: 14px;
   font-weight: 500;
-  color: #cbd5e1;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: border-color 0.15s, background 0.15s, transform 0.1s;
   text-align: left;
@@ -145,8 +145,8 @@
 }
 
 .option:hover {
-  border-color: #818cf8;
-  color: #e2e8f0;
+  border-color: color-mix(in srgb, var(--accent) 70%, white);
+  color: var(--text-primary);
 }
 
 .optionLetter {
@@ -156,10 +156,10 @@
   width: 26px;
   height: 26px;
   border-radius: 6px;
-  background: #1a2744;
+  background: var(--border);
   font-size: 12px;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--text-secondary);
   flex-shrink: 0;
 }
 
@@ -191,7 +191,7 @@
 
 .codeBlock {
   background: #071121;
-  border: 1px solid #1e2d45;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 16px;
   font-family: 'Fira Code', 'JetBrains Mono', 'Menlo', monospace;
@@ -204,30 +204,30 @@
 
 .blankInput {
   display: inline;
+  font-size: 16px;
   background: transparent;
   border: none;
-  border-bottom: 2px solid #818cf8;
-  color: #f1f5f9;
+  border-bottom: 2px solid color-mix(in srgb, var(--accent) 70%, white);
+  color: var(--text-primary);
   font-family: inherit;
-  font-size: inherit;
   line-height: inherit;
   padding: 0 4px;
   outline: none;
   min-width: 48px;
   width: auto;
   max-width: 180px;
-  caret-color: #818cf8;
+  caret-color: color-mix(in srgb, var(--accent) 70%, white);
   text-align: center;
   border-radius: 0;
   -webkit-appearance: none;
 }
 
 .blankInput::placeholder {
-  color: #475569;
+  color: var(--text-muted);
 }
 
 .blankInput:focus {
-  border-bottom-color: #a5b4fc;
+  border-bottom-color: color-mix(in srgb, var(--accent) 70%, white);
 }
 
 .blankInputCorrect {
@@ -245,7 +245,7 @@
 
 .hint {
   font-size: 12px;
-  color: #64748b;
+  color: var(--text-muted);
   margin: 0;
   padding: 0 2px;
 }
@@ -257,7 +257,7 @@
   padding: 14px;
   border-radius: 10px;
   border: none;
-  background: linear-gradient(135deg, #6366f1, #818cf8);
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, white));
   color: #fff;
   font-size: 15px;
   font-weight: 700;
@@ -352,8 +352,8 @@
 /* ── Fallback ──────────────────────────────────────────────────────────────── */
 
 .fallbackCard {
-  background: #0d1b2e;
-  border: 1px solid #1e2d45;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
   text-align: center;
@@ -361,7 +361,7 @@
 
 .fallbackText {
   font-size: 14px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   margin: 0 0 16px;
 }
 

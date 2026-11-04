@@ -7,7 +7,7 @@ import {
   ViewUpdate,
   keymap,
 } from '@codemirror/view';
-import { StateEffect, StateField, Extension } from '@codemirror/state';
+import { StateEffect, StateField, Extension, Prec } from '@codemirror/state';
 
 // ── Language type ─────────────────────────────────────────────────────────────
 export type GhostLanguage = 'html' | 'css' | 'js' | 'python';
@@ -50,7 +50,14 @@ const JS_CHAINS: Record<string, string> = {
   'function init() {': '  ',
 };
 
-type Suggestion = { pos: number; text: string; cursor?: number };
+const PY_CHAINS: Record<string, string> = {
+  'if __name__ == "__main__":': '    main()',
+  "if __name__ == '__main__':": '    main()',
+  'try:': '    ',
+  'except Exception as e:': '    print(e)',
+};
+
+type Suggestion = { pos: number; text: string; cursor?: number; from?: number };
 
 const VOID_TAGS = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
 const COMMON_TAGS = [
@@ -128,7 +135,14 @@ function getHtmlSuggestion(view: EditorView, typed: boolean): Suggestion | null 
   if (before !== '') return null;
   const prevText = line.number > 1 ? doc.line(line.number - 1).text.trim() : '';
   const chain = HTML_CHAINS[prevText];
-  if (chain) return { pos, text: chain };
+  if (chain) {
+    // Fit the chain's own indentation to what the editor already auto-indented
+    const want = chain.length - chain.trimStart().length;
+    const have = line.text.length;
+    const body = chain.trimStart();
+    if (have > want) return { pos, from: line.from + want, text: body };
+    return { pos, text: ' '.repeat(want - have) + body };
+  }
   const stack = openTagStack(doc.sliceString(0, line.from));
   const top = stack[stack.length - 1];
   if (!top) return null;
@@ -154,9 +168,14 @@ function getLocalChainSuggestion(
   const map =
     language === 'css' ? CSS_CHAINS :
     language === 'js'  ? JS_CHAINS  :
+    language === 'python' ? PY_CHAINS :
     HTML_CHAINS;
   const suggestion = map[prevText];
-  return suggestion ? { pos, text: suggestion } : null;
+  if (!suggestion) return null;
+  // The editor may already have auto-indented this line; don't double it
+  const have = line.text.length;
+  const text = suggestion.startsWith(line.text) ? suggestion.slice(have) : suggestion;
+  return text ? { pos, text } : null;
 }
 
 // ── Effects ──────────────────────────────────────────────────────────────────
@@ -167,26 +186,32 @@ const clearSuggestion = StateEffect.define<null>();
 const ghostField = StateField.define<Suggestion | null>({
   create: () => null,
   update(val, tr) {
-    if (tr.docChanged) return null;
+    let next = tr.docChanged ? null : val;
+    // Apply every effect in order so "clear, then set" in one transaction works
     for (const e of tr.effects) {
-      if (e.is(setSuggestion)) return e.value;
-      if (e.is(clearSuggestion)) return null;
+      if (e.is(setSuggestion)) next = e.value;
+      else if (e.is(clearSuggestion)) next = null;
     }
-    return val;
+    return next;
   },
 });
 
 // ── Ghost text widget ─────────────────────────────────────────────────────────
 class GhostWidget extends WidgetType {
   constructor(readonly text: string) { super(); }
-  toDOM(): HTMLElement {
+  eq(other: GhostWidget) { return other.text === this.text; }
+  toDOM(view: EditorView): HTMLElement {
     const span = document.createElement('span');
-    span.style.cssText =
-      'color:#4b5563;opacity:0.7;pointer-events:none;font-style:italic;white-space:pre;';
+    span.className = 'cm-ghost';
     span.textContent = this.text;
+    // Tap/click the suggestion to accept it (phones have no Tab key)
+    span.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      acceptGhost(view);
+    });
     return span;
   }
-  ignoreEvent() { return true; }
+  ignoreEvent() { return false; }
 }
 
 // ── Decorations from state ───────────────────────────────────────────────────
@@ -219,21 +244,24 @@ function makeGhostFetchPlugin(language: GhostLanguage) {
           }
           // 2. No local match — clear then start AI debounce
           view.dispatch({ effects: clearSuggestion.of(null) });
-          this.timer = setTimeout(() => this.fetch(view), 500);
+          this.timer = setTimeout(() => this.fetch(view), 700);
         });
       }
 
       async fetch(view: EditorView) {
+        if (view.state.doc.length > 6000) return;
         const pos    = view.state.selection.main.head;
         const prefix = view.state.doc.sliceString(0, pos);
         const suffix = view.state.doc.sliceString(pos);
         if (prefix.trim().length < 3) return;
 
         try {
-          const res = await fetch('/api/complete', {
+          const token = localStorage.getItem('token');
+          if (!token) return;
+          const res = await fetch('/api/ai/complete', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prefix, suffix }),
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ prefix, suffix, language }),
           });
           if (!res.ok) return;
           const { completion } = (await res.json()) as { completion: string };
@@ -243,7 +271,7 @@ function makeGhostFetchPlugin(language: GhostLanguage) {
           if (view.state.field(ghostField)) return;
           view.dispatch({ effects: setSuggestion.of({ pos, text: completion }) });
         } catch {
-          // Ollama not running — silent fail
+          // Suggestions are optional: fail silently
         }
       }
 
@@ -254,33 +282,51 @@ function makeGhostFetchPlugin(language: GhostLanguage) {
   );
 }
 
-// ── Keymap: Tab to accept, Escape to dismiss ─────────────────────────────────
+// ── Accept / dismiss ─────────────────────────────────────────────────────────
+export function hasGhost(view: EditorView): boolean {
+  return !!view.state.field(ghostField, false);
+}
+
+export function getGhostText(view: EditorView): string | null {
+  return view.state.field(ghostField, false)?.text ?? null;
+}
+
+export function acceptGhost(view: EditorView): boolean {
+  const s = view.state.field(ghostField, false);
+  if (!s) return false;
+  view.dispatch({
+    changes: { from: s.from ?? s.pos, to: s.pos, insert: s.text },
+    effects: clearSuggestion.of(null),
+    selection: { anchor: (s.from ?? s.pos) + (s.cursor ?? s.text.length) },
+    userEvent: 'input.complete',
+  });
+  return true;
+}
+
 const ghostKeymap = keymap.of([
-  {
-    key: 'Tab',
-    run(view) {
-      const s = view.state.field(ghostField);
-      if (!s) return false;
-      view.dispatch({
-        changes: { from: s.pos, insert: s.text },
-        effects: clearSuggestion.of(null),
-        selection: { anchor: s.pos + (s.cursor ?? s.text.length) },
-      });
-      return true;
-    },
-  },
+  { key: 'Tab', run: acceptGhost },
   {
     key: 'Escape',
     run(view) {
-      const s = view.state.field(ghostField);
-      if (!s) return false;
+      if (!hasGhost(view)) return false;
       view.dispatch({ effects: clearSuggestion.of(null) });
       return true;
     },
   },
 ]);
 
+const ghostTheme = EditorView.baseTheme({
+  '.cm-ghost': {
+    color: '#22d3ee',
+    opacity: '0.45',
+    fontStyle: 'italic',
+    whiteSpace: 'pre',
+    cursor: 'pointer',
+    borderBottom: '1px dotted rgba(34,211,238,0.5)',
+  },
+});
+
 // ── Public export ─────────────────────────────────────────────────────────────
 export function ghostTextExtension(language: GhostLanguage = 'html'): Extension[] {
-  return [ghostField, ghostDecorations, makeGhostFetchPlugin(language), ghostKeymap];
+  return [ghostField, ghostDecorations, ghostTheme, makeGhostFetchPlugin(language), Prec.highest(ghostKeymap)];
 }

@@ -197,8 +197,8 @@ type PathNode = {
   done: boolean; locked: boolean; isCurrent: boolean;
   lessonIdx: number;
 };
-const STEP = 88, PAD_TOP = 64, L_FRAC = 0.28, R_FRAC = 0.72;
-const CH_R = 26, SEC_R = 18, LES_R = 14;
+const STEP = 100, PAD_TOP = 72, L_FRAC = 0.3, R_FRAC = 0.7;
+const CH_R = 30, SEC_R = 22, LES_R = 17;
 function pR(kind: PathNode['kind'], cur: boolean) {
   return kind === 'chapter' ? CH_R : kind === 'section' ? SEC_R : cur ? LES_R + 2 : LES_R;
 }
@@ -349,7 +349,7 @@ export default function RoadmapPage() {
             <header className={styles.trackHeroHeader} style={{ '--tc': track.glow, '--tg': track.gradient } as React.CSSProperties}>
               <span className={styles.trackHeroWatermark} style={{ '--n': heroMark.length } as React.CSSProperties} aria-hidden="true">{heroMark}</span>
               <div className={styles.trackHeroCopy}>
-                <div className={styles.trackHeroEyebrow}>◈ Learning Path</div>
+                <div className={styles.trackHeroEyebrow}><span className={styles.heroDot} /> LEARNING PATH</div>
                 <h1 className={styles.trackHeroTitle}>
                   <span className={styles.trackHeroIcon} aria-hidden="true">{TRACK_ICONS[track.id] ?? track.icon}</span>
                   {track.label}
@@ -451,9 +451,9 @@ export default function RoadmapPage() {
       <PageShell />
       <div className={styles.trackSelectPage}>
         <header className={styles.trackSelectHeader}>
-          <div className={styles.badge}>Signal · Your Journey</div>
-          <h1 className={styles.title}><span className={styles.titleGradient}>Nexus Path</span></h1>
-          <p className={styles.subtitle}>Choose a track to start your journey.</p>
+          <div className={styles.landingEyebrow}><span className={styles.landingDot} /> SIGNAL · YOUR JOURNEY</div>
+          <h1 className={styles.landingTitle}>Nexus<span>Path</span></h1>
+          <p className={styles.landingSubtitle}>Choose a track to start your journey. Every lesson you finish lights up the next step.</p>
         </header>
 
         <div className={styles.trackSelectList}>

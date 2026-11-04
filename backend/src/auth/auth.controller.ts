@@ -1,15 +1,18 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards } from '@nestjs/common';
-import { IsEmail, IsString, Length, MinLength, Matches } from 'class-validator';
+import { Controller, Post, Body, HttpCode, HttpStatus, UseGuards, BadRequestException } from '@nestjs/common';
+import { IsEmail, IsOptional, IsString, Length, MinLength, Matches } from 'class-validator';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { AuthService } from './auth.service';
 
 class RegisterDto {
+  @IsOptional()
   @IsString()
   @Length(3, 30)
-  username: string;
+  @Matches(/^[A-Za-z0-9_.-]+$/, { message: 'Username may only contain letters, numbers, _ . -' })
+  username?: string;
 
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
 
   @MinLength(12)
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+[\]{};':",./<>?\\|`~])/, {
@@ -36,7 +39,12 @@ export class AuthController {
 
   @Post('register')
   register(@Body() body: RegisterDto) {
-    return this.authService.register(body.username, body.email, body.password);
+    const username = body.username?.trim() || undefined;
+    const email = body.email?.trim().toLowerCase() || undefined;
+    if (!username && !email) {
+      throw new BadRequestException('Provide an email or a username');
+    }
+    return this.authService.register(username, email, body.password);
   }
 
   @Post('login')

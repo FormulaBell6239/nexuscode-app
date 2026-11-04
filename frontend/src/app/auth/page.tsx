@@ -10,7 +10,7 @@ import { startSession } from '@/lib/session';
 
 interface AuthResponse {
   token: string;
-  user: { id: number; username: string; email: string; plan: string };
+  user: { id: number; username: string; email: string | null; plan: string };
 }
 
 export default function Auth() {
@@ -32,6 +32,12 @@ export default function Auth() {
 
     const formData = new FormData(e.currentTarget);
 
+    if (!isLogin && !String(formData.get('username') ?? '').trim() && !String(formData.get('email') ?? '').trim()) {
+      setError('Enter an email or a username (you can add both).');
+      setLoading(false);
+      return;
+    }
+
     try {
       const session = isLogin
         ? await api.post<AuthResponse>('/api/auth/login', {
@@ -39,8 +45,8 @@ export default function Auth() {
             password: formData.get('password'),
           })
         : await api.post<AuthResponse>('/api/auth/register', {
-            username: formData.get('username'),
-            email: formData.get('email'),
+            username: String(formData.get('username') ?? '').trim() || undefined,
+            email: String(formData.get('email') ?? '').trim() || undefined,
             password: formData.get('password'),
           });
 
@@ -83,12 +89,12 @@ export default function Auth() {
           {!isLogin && (
             <>
               <div className={styles.field}>
-                <label className={styles.label}>Username</label>
-                <input type="text" name="username" required className={styles.input} placeholder="nexuscoder" minLength={3} maxLength={30} autoComplete="username" />
+                <label className={styles.label}>Username <span style={{ opacity: 0.6 }}>(optional if you add an email)</span></label>
+                <input type="text" name="username" className={styles.input} placeholder="nexuscoder" minLength={3} maxLength={30} autoComplete="username" />
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>Email</label>
-                <input type="email" name="email" required className={styles.input} placeholder="you@example.com" autoComplete="email" />
+                <label className={styles.label}>Email <span style={{ opacity: 0.6 }}>(optional if you add a username)</span></label>
+                <input type="email" name="email" className={styles.input} placeholder="you@example.com" autoComplete="email" />
               </div>
             </>
           )}
@@ -117,6 +123,12 @@ export default function Auth() {
         <button className={styles.toggle} onClick={() => setIsLogin(!isLogin)}>
           {isLogin ? "Don't have an account? Register" : 'Already have an account? Sign in'}
         </button>
+
+        {!isLogin && (
+          <p style={{ fontSize: '0.78rem', opacity: 0.7, textAlign: 'center', margin: '0.5rem 0 0' }}>
+            By creating an account you agree to our <a href="/terms" target="_blank" rel="noreferrer">Terms</a> and <a href="/privacy" target="_blank" rel="noreferrer">Privacy Policy</a>.
+          </p>
+        )}
 
         <div className={styles.divider}><span>or</span></div>
 

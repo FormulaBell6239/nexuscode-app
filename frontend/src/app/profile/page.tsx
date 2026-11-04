@@ -1,10 +1,11 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import StatIcon from "@/components/StatIcon";
 import Link from 'next/link';
 import PageShell from '@/components/PageShell';
 import styles from './Profile.module.css';
-import { api, getOwnedItems, getLocalCredits } from '@/lib/api';
+import { api, getOwnedItems, getCredits, CREDITS_CHANGED_EVENT } from '@/lib/api';
 import EmblemAvatar from '@/components/EmblemAvatar';
 import { EMBLEMS, EMBLEM_CATEGORIES } from '@/lib/emblems';
 
@@ -177,10 +178,10 @@ const APPEARANCE_SKINS: SkinDef[] = [
     name: 'Cyber Neon',
     label: 'Store',
     icon: '🔮',
-    accent: '#10b981',
-    accent2: '#00ff88',
-    bg: '#000a08',
-    desc: 'Neon green on deep black',
+    accent: '#00e5ff',
+    accent2: '#ff2a6d',
+    bg: '#03060f',
+    desc: 'Cyberpunk cyan and hot pink on a dark city grid',
   },
 ];
 
@@ -218,6 +219,15 @@ export default function ProfilePage() {
   const [activeTheme, setActiveTheme] = useState<string>('');
   const [activeTab, setActiveTab] = useState<Tab>('appearance');
   const [credits,   setCredits]   = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+  const pickerSheet = (node: ReactNode) => (isMobile ? createPortal(node, document.body) : node);
   const [showBannerPicker, setShowBannerPicker] = useState(false);
   const [showTexturePicker, setShowTexturePicker] = useState(false);
   const [bannerTexture, setBannerTexture] = useState('none');
@@ -231,8 +241,14 @@ export default function ProfilePage() {
   const [pathTotals, setPathTotals] = useState<Record<string, number>>({});
 
   useEffect(() => {
+    const loadCredits = () => { getCredits().then(setCredits).catch(() => {}); };
+    loadCredits();
+    window.addEventListener(CREDITS_CHANGED_EVENT, loadCredits);
+    return () => window.removeEventListener(CREDITS_CHANGED_EVENT, loadCredits);
+  }, []);
+
+  useEffect(() => {
     try { const r = localStorage.getItem('nexus_completed'); if (r) setCompleted(JSON.parse(r)); } catch {}
-    setCredits(getLocalCredits());
     setActiveTheme(localStorage.getItem('theme') ?? '');
     setBannerTexture(localStorage.getItem('bannerTexture') ?? 'none');
     setLocalCard(localStorage.getItem('bannerCard') ?? 'night');
@@ -410,7 +426,7 @@ export default function ProfilePage() {
   });
   const pathsStarted = pathStats.filter(p => p.done > 0).length;
   const matrixNodes = [
-    { id: 'core', label: 'Learning core', detail: `LEVEL ${level} · ${completed.length} OF ${TOTAL} LESSONS · ${pathsStarted} OF ${PATHS.length} PATHS STARTED`, x: MATRIX_CENTER.x, y: MATRIX_CENTER.y, color: '#818cf8' },
+    { id: 'core', label: 'Learning core', detail: `LEVEL ${level} · ${completed.length} OF ${TOTAL} LESSONS · ${pathsStarted} OF ${PATHS.length} PATHS STARTED`, x: MATRIX_CENTER.x, y: MATRIX_CENTER.y, color: 'var(--accent)' },
     ...pathStats.map(p => ({
       id: p.id,
       label: `${p.label} path`,
@@ -492,7 +508,7 @@ export default function ProfilePage() {
                 Texture
               </button>
             </div>
-            {showBannerPicker && (
+            {showBannerPicker && pickerSheet(
               <div className={styles.bannerSwatchRow}>
                 {CALLING_CARDS.slice(bannerPack * CARD_PACK_SIZE, (bannerPack + 1) * CARD_PACK_SIZE).map(c => (
                   <button
@@ -525,7 +541,7 @@ export default function ProfilePage() {
                 </div>
               </div>
             )}
-            {showTexturePicker && (
+            {showTexturePicker && pickerSheet(
               <div className={styles.bannerSwatchRow}>
                 {BANNER_TEXTURES.map(t => (
                   <button
@@ -790,7 +806,7 @@ export default function ProfilePage() {
                       <g key={`node-${p.id}`}>
                         <circle cx={p.x} cy={p.y} r="7" fill="#0b1220" stroke={p.done > 0 ? p.color : 'rgba(148,163,184,0.35)'} strokeWidth="1.2" />
                         <circle cx={p.x} cy={p.y} r={2 + 3.5 * p.pct} fill={p.done > 0 ? p.color : 'rgba(148,163,184,0.35)'} filter={p.done > 0 ? 'url(#pf_glow)' : undefined} />
-                        <text x={p.x} y={p.y + (p.y < 100 ? -11 : 17)} textAnchor="middle" fontSize="7" fontWeight="700" fill={p.done > 0 ? p.color : '#64748b'}>{p.sub}</text>
+                        <text x={p.x} y={p.y + (p.y < 100 ? -11 : 17)} textAnchor="middle" fontSize="7" fontWeight="700" fill={p.done > 0 ? p.color : 'var(--text-muted)'}>{p.sub}</text>
                       </g>
                     ))}
 
@@ -845,7 +861,7 @@ export default function ProfilePage() {
                     onClick={() => applySkin('')}
                   >
                     <div className={styles.skinPreview} style={{ background: '#080d17', border: '1px solid #1e293b' }}>
-                      <div className={styles.skinDot} style={{ background: '#6366f1' }} />
+                      <div className={styles.skinDot} style={{ background: 'var(--accent)' }} />
                       <div className={styles.skinDot} style={{ background: '#06b6d4', opacity: 0.6 }} />
                     </div>
                     <span className={styles.skinIcon}>◈</span>

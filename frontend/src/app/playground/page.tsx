@@ -3,7 +3,10 @@ import React, { useState, useEffect, useRef } from "react";
 import StatIcon from "@/components/StatIcon";
 import dynamic from "next/dynamic";
 import styles from "./Playground.module.css";
+import HtmlCheatSheet from './HtmlCheatSheet';
+import PlaygroundTour from './PlaygroundTour';
 import StructureGuide from "./StructureGuide";
+import { usePreviewMode, previewBaseStyle, PreviewModeToggle } from "../curriculum/LivePreview";
 
 const PlaygroundEditor = dynamic(() => import('./PlaygroundEditor'), { ssr: false });
 
@@ -30,7 +33,10 @@ export default function PlaygroundPage() {
   const [showStructure, setShowStructure] = useState(false);
   const [showPyStructure, setShowPyStructure] = useState(false);
   const [draftLoaded, setDraftLoaded] = useState(false);
-  const [savedAt, setSavedAt] = useState<number | null>(null);
+  const [showCheatSheet, setShowCheatSheet] = useState(false);
+  const [showAutosaveNote, setShowAutosaveNote] = useState(false);
+  const [introState, setIntroState] = useState<'hidden' | 'ask'>('hidden');
+  const [tourOn, setTourOn] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [fade, setFade] = useState(true);
   const [tipIndex, setTipIndex] = useState(0);
@@ -68,8 +74,29 @@ export default function PlaygroundPage() {
       localStorage.removeItem("playgroundPyDraft");
       localStorage.removeItem("playgroundLastMode");
     } catch {}
+    try {
+      if (!localStorage.getItem("playgroundIntroSeen")) setIntroState('ask');
+    } catch {}
     setDraftLoaded(true);
   }, []);
+
+  const closeIntro = () => {
+    try { localStorage.setItem("playgroundIntroSeen", "1"); } catch {}
+    setIntroState('hidden');
+    setTourOn(false);
+  };
+
+  const startTour = () => {
+    setIntroState('hidden');
+    setTourOn(true);
+  };
+
+  // The autosave note is a one-time heads-up that disappears on its own
+  useEffect(() => {
+    if (!showAutosaveNote) return;
+    const t = setTimeout(() => setShowAutosaveNote(false), 6000);
+    return () => clearTimeout(t);
+  }, [showAutosaveNote]);
 
   // ── Autosave: drafts always, and the saved project too once it has a file name ──
   useEffect(() => {
@@ -78,7 +105,6 @@ export default function PlaygroundPage() {
       try {
         if (mode === "web" && webFolder) handleSaveProject(true);
         if (mode === "python" && pyFolder) handleSavePyProject(true);
-        setSavedAt(Date.now());
       } catch {}
     }, 800);
     return () => clearTimeout(t);
@@ -127,8 +153,10 @@ export default function PlaygroundPage() {
     }
   };
 
+  const preview = usePreviewMode();
+
   const buildPreview = () => {
-    const css = `<style>${cssCode.replace(/<\/style>/gi, '<\\/style>')}</style>`;
+    const css = `${previewBaseStyle(preview.mode)}<style>${cssCode.replace(/<\/style>/gi, '<\\/style>')}</style>`;
     const js = `<script>${jsCode.replace(/<\/script>/gi, '<\\/script>')}<\/script>`;
     let doc = htmlCode;
     // Keep <!DOCTYPE> first so the preview renders in standards mode, not quirks mode
@@ -146,7 +174,7 @@ export default function PlaygroundPage() {
     const t = setTimeout(() => setOutput(buildPreview()), 250);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, htmlCode, cssCode, jsCode]);
+  }, [mode, htmlCode, cssCode, jsCode, preview.mode]);
 
   const handleTabClick = (tab: "html" | "css" | "js" | "browser") => {
     if (tab === "browser") handleRun();
@@ -190,6 +218,8 @@ export default function PlaygroundPage() {
   };
 
   const handleDeletePyProject = (idx: number) => {
+    const p = pyProjects[idx];
+    if (!p || !window.confirm(`Delete "${p.folder ?? p.name}"? This permanently removes the project and can't be undone.`)) return;
     const updated = pyProjects.filter((_, i) => i !== idx);
     setPyProjects(updated);
     localStorage.setItem("playgroundPyProjects", JSON.stringify(updated));
@@ -211,6 +241,8 @@ export default function PlaygroundPage() {
   };
 
   const handleDeleteProject = (idx: number) => {
+    const p = projects[idx];
+    if (!p || !window.confirm(`Delete "${p.folder ?? (p.htmlName || p.cssName || p.jsName || 'this project')}"? This permanently removes the project and can't be undone.`)) return;
     const updated = projects.filter((_, i) => i !== idx);
     setProjects(updated);
     localStorage.setItem("playgroundProjects", JSON.stringify(updated));
@@ -240,6 +272,7 @@ export default function PlaygroundPage() {
     setFolderInput('');
     setNamingValue('');
     setNamingMode(true);
+    setShowAutosaveNote(true);
   };
 
   const folderForm = (
@@ -248,12 +281,13 @@ export default function PlaygroundPage() {
       <input
         type="text"
         autoFocus
+        data-tour="folderName"
         placeholder="my-project"
         value={folderInput}
         onChange={e => setFolderInput(e.target.value)}
         className={styles.fileNameInput}
       />
-      <button type="submit" className={styles.createBtn}>Create folder</button>
+      <button type="submit" className={styles.createBtn} data-tour="folderBtn">Create folder</button>
     </form>
   );
 
@@ -346,20 +380,53 @@ export default function PlaygroundPage() {
 
   const displayedTip = activeTips[tipIndex % activeTips.length];
 
+  // The current tour step follows what the user has done so far
+  const hasFile = mode === 'python' ? !!pyFileName : !!currentTabFileName;
+  const folderReady = mode === 'python' ? !!pyFolder : !!webFolder;
+  const tourEl = !tourOn ? null : (() => {
+    const skip = closeIntro;
+    if (mode === null) return <PlaygroundTour key="pick" target="pick" title="1. Pick a project type" text="Click HTML for web pages with a live preview, or Python to run code in your browser." onSkip={skip} />;
+    if (!folderReady) {
+      return folderInput.trim()
+        ? <PlaygroundTour key="folderBtn" target="folderBtn" title="3. Create the folder" text="Now click Create folder." onSkip={skip} />
+        : <PlaygroundTour key="folderName" target="folderName" title="2. Name your folder" text="Type a name here, for example Nexus-Project." onSkip={skip} />;
+    }
+    if (!hasFile) {
+      return namingValue.trim()
+        ? <PlaygroundTour key="fileBtn" target="fileBtn" title="5. Create the file" text="Click Create to add the file." onSkip={skip} />
+        : <PlaygroundTour key="fileName" target="fileName" title="4. Name your first file" text={mode === 'python' ? 'Type a file name, for example main.' : 'Type a file name, for example index.'} onSkip={skip} />;
+    }
+    return <PlaygroundTour key="editor" target="editor" title="6. Start coding!" text="Write your code here. Everything is autosaved now, and you can reopen past projects from Files." onSkip={skip} onDone={closeIntro} />;
+  })();
+
   // ── Mode picker ──
   if (mode === null) {
     return (
       <main className={styles.pickerMain}>
+        {tourEl}
         <div className={styles.orb1} />
         <div className={styles.orb2} />
         <div className={styles.dotGrid} />
+        {introState !== 'hidden' && (
+          <div className={styles.introBackdrop} role="dialog" aria-modal="true" aria-label="Playground setup guide">
+            <div className={styles.introCard}>
+              <span className={styles.introKicker}>FIRST TIME HERE</span>
+              <h2 className={styles.introTitle}>Want a quick walkthrough?</h2>
+              <p className={styles.introText}>We&apos;ll point you to exactly where to click to set up your first playground project. You can skip it.</p>
+              <div className={styles.introActions}>
+                <button className={styles.introPrimary} onClick={startTour}>Show me how</button>
+                <button className={styles.introGhost} onClick={closeIntro}>Skip</button>
+              </div>
+            </div>
+          </div>
+        )}
         <div className={styles.pickerContainer}>
           <div className={styles.pickerHeader}>
-            <span className={styles.pickerBadge}>PLAYGROUND</span>
-            <h1 className={styles.pickerTitle}>What are you building?</h1>
+            <span className={styles.pickerBadge}><span className={styles.pickerDot} />PLAYGROUND</span>
+            <h1 className={styles.pickerTitle}>What are you <span>building?</span></h1>
             <p className={styles.pickerSubtitle}>Choose a project type to get started.</p>
           </div>
-          <div className={styles.pickerGrid}>
+          <div className={styles.pickerGrid} data-tour="pick">
             <button className={`${styles.pickerCard} ${styles.pickerCardWeb}`} onClick={() => setMode("web")}>
               <div className={styles.pickerCardBody}>
                 <span className={`${styles.pickerMicroLabel} ${styles.pickerMicroLabelWeb}`}>Web / Browser</span>
@@ -387,6 +454,7 @@ export default function PlaygroundPage() {
   if (mode === "python") {
     return (
       <main className={styles.main}>
+        {tourEl}
         <div className={`${styles.tipsBox} ${fade ? styles.fadeIn : styles.fadeOut}`}>
           <strong style={{ color: TIP_COLORS[displayedTip.type] }}>Tip</strong>{displayedTip.text}
         </div>
@@ -403,8 +471,9 @@ export default function PlaygroundPage() {
                 value={namingValue}
                 onChange={e => setNamingValue(e.target.value)}
                 className={styles.fileNameInput}
+                data-tour="fileName"
               />
-              <button type="submit" className={styles.createBtn}>Create</button>
+              <button type="submit" className={styles.createBtn} data-tour="fileBtn">Create</button>
               <button type="button" className={styles.cancelNaming} onClick={() => { setNamingMode(false); setNamingValue(''); }}>✕</button>
             </form>
           ) : pyFileName ? (
@@ -415,8 +484,8 @@ export default function PlaygroundPage() {
             </div>
           ) : null}
           <div className={styles.topBarActions}>
-                        <span className={styles.autoSaved}>{savedAt ? "Autosaved ✓" : ""}</span>
-            <button onClick={() => setShowPyStructure(v => !v)} className={styles.toggleButton}>Cheat Sheet</button>
+                        {pyFolder && <span className={styles.autoSaved}><i className={styles.autoDot} />Autosaving</span>}
+            <button onClick={() => setShowPyStructure(v => !v)} className={styles.toggleButton}>Structures</button>
             <button onClick={() => setShowPyProjects(v => !v)} className={styles.toggleButton}>Files</button>
             <button
               onClick={handleRunPython}
@@ -479,7 +548,7 @@ export default function PlaygroundPage() {
 
         {!pyFolder ? folderEmpty : (
         <div className={styles.pyLayout}>
-          <div className={styles.pyEditorPane}>
+          <div className={styles.pyEditorPane} data-tour="editor">
             <PlaygroundEditor
               value={pyCode}
               language="python"
@@ -500,6 +569,8 @@ export default function PlaygroundPage() {
   // ── Web editor ──
   return (
     <main className={styles.main}>
+      {tourEl}
+      {showCheatSheet && <HtmlCheatSheet onClose={() => setShowCheatSheet(false)} />}
       {/* ── Top bar ── */}
       <div className={styles.topBar}>
         <button onClick={() => setMode(null)} className={styles.backBtn} aria-label="Back">←</button>
@@ -516,8 +587,9 @@ export default function PlaygroundPage() {
               value={namingValue}
               onChange={e => setNamingValue(e.target.value)}
               className={styles.fileNameInput}
+              data-tour="fileName"
             />
-            <button type="submit" className={styles.createBtn}>Create</button>
+            <button type="submit" className={styles.createBtn} data-tour="fileBtn">Create</button>
             <button type="button" className={styles.cancelNaming} onClick={() => { setNamingMode(false); setNamingValue(''); }}>✕</button>
           </form>
         ) : currentTabFileName ? (
@@ -530,8 +602,9 @@ export default function PlaygroundPage() {
           </div>
         ) : null}
         <div className={styles.topBarActions}>
-                    <span className={styles.autoSaved}>{savedAt ? "Autosaved ✓" : ""}</span>
-          <button onClick={() => setShowStructure(v => !v)} className={styles.toggleButton}>Cheat Sheet</button>
+                    {webFolder && <span className={styles.autoSaved}><i className={styles.autoDot} />Autosaving</span>}
+          <button onClick={() => setShowCheatSheet(true)} className={styles.toggleButton}>Cheat Sheet</button>
+          <button onClick={() => setShowStructure(v => !v)} className={styles.toggleButton}>Structures</button>
           <button onClick={() => setShowProjects(!showProjects)} className={styles.toggleButton}>Files</button>
         </div>
       </div>
@@ -546,7 +619,7 @@ export default function PlaygroundPage() {
       </div>
 
       {/* ── Editor / Preview ── */}
-      <div className={styles.editorContainer}>
+      <div className={styles.editorContainer} data-tour="editor">
         {activeTab === "html" && (
           <PlaygroundEditor value={htmlCode} language="html" onChange={value => setHtmlCode(value)} className={styles.codeEditor} />
         )}
@@ -557,7 +630,19 @@ export default function PlaygroundPage() {
           <PlaygroundEditor value={jsCode} language="js" onChange={value => setJsCode(value)} className={styles.codeEditor} />
         )}
         {activeTab === "browser" && (
-          <iframe title="output" srcDoc={output} className={styles.browserFrame} />
+          <div style={{ position: "relative", flex: 1, display: "flex", minHeight: 0 }}>
+            <PreviewModeToggle mode={preview.mode} onToggle={preview.toggle} className={styles.previewModeBtn} />
+            <iframe
+              title="output"
+              srcDoc={output}
+              className={styles.browserFrame}
+              style={{
+                background: preview.mode === "dark" ? "#0b1220" : "#e9e6df",
+                colorScheme: preview.mode,
+                filter: preview.mode === "light" ? "brightness(0.85) contrast(0.95)" : undefined
+              }}
+            />
+          </div>
         )}
       </div>
       </>)}

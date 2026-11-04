@@ -6,6 +6,7 @@
   --border:       #1e293b;
   --text-primary: #e2e8f0;
   --text-muted:   #64748b;
+  --text-secondary: #94a3b8;
   --accent:       #6366f1;
   --accent-2:     #06b6d4;
   /* orb colors */
@@ -20,7 +21,7 @@
   --surface-2:    #162e58;
   --border:       #1f3f72;
   --text-primary: #e8f0fc;
-  --text-muted:   #5d7fa4;
+  --text-muted:   #5d7fa4; --text-secondary: #9db8d8;
   --accent:       #60a5fa;
   --accent-2:     #a78bfa;
   --orb1: rgba(96,165,250,0.24);
@@ -28,43 +29,151 @@
 }
 [data-theme="ember"] {
   --bg-primary: #0d0705; --surface: #100a06; --surface-2: #1a0e08;
-  --border: #2d1608; --text-primary: #fde8d8; --text-muted: #7c5143;
+  --border: #2d1608; --text-primary: #fde8d8; --text-muted: #7c5143; --text-secondary: #c9a08a;
   --accent: #ea580c; --accent-2: #fbbf24;
   --orb1: rgba(234,88,12,0.18); --orb2: rgba(251,191,36,0.13);
 }
 [data-theme="glacier"] {
   --bg-primary: #05090d; --surface: #070c12; --surface-2: #0c1420;
-  --border: #0d2236; --text-primary: #e0f2fe; --text-muted: #4a7a9b;
+  --border: #0d2236; --text-primary: #e0f2fe; --text-muted: #4a7a9b; --text-secondary: #8fb8d4;
   --accent: #38bdf8; --accent-2: #818cf8;
   --orb1: rgba(56,189,248,0.18); --orb2: rgba(129,140,248,0.13);
 }
 [data-theme="solar"] {
   --bg-primary: #0d0a03; --surface: #110e04; --surface-2: #1c1607;
-  --border: #2e2206; --text-primary: #fef9e7; --text-muted: #806e2a;
+  --border: #2e2206; --text-primary: #fef9e7; --text-muted: #806e2a; --text-secondary: #c9b46a;
   --accent: #f59e0b; --accent-2: #fde68a;
   --orb1: rgba(245,158,11,0.18); --orb2: rgba(253,230,138,0.10);
 }
 [data-theme="aurora"] {
   --bg-primary: #07050d; --surface: #0b0812; --surface-2: #130e1e;
-  --border: #22103a; --text-primary: #f5e7ff; --text-muted: #7c4fa0;
+  --border: #22103a; --text-primary: #f5e7ff; --text-muted: #7c4fa0; --text-secondary: #b58fd6;
   --accent: #a855f7; --accent-2: #ec4899;
   --orb1: rgba(168,85,247,0.18); --orb2: rgba(236,72,153,0.13);
 }
 [data-theme="cyber-neon"] {
-  --bg-primary: #000a08; --surface: #030f0c; --surface-2: #071a14;
-  --border: #0a2d24; --text-primary: #d1fdf3; --text-muted: #2e7d6a;
-  --accent: #10b981; --accent-2: #00ff88;
-  --orb1: rgba(16,185,129,0.18); --orb2: rgba(0,255,136,0.10);
+  --bg-primary: #03060f; --surface: #070d1a; --surface-2: #0c1628;
+  --border: #12395a; --text-primary: #e0f7ff; --text-muted: #3f7a99; --text-secondary: #8fd3ea;
+  --accent: #00e5ff; --accent-2: #ff2a6d;
+  --orb1: rgba(0,229,255,0.20); --orb2: rgba(255,42,109,0.14);
 }
+/* Midnight: a single static lamp in a dark, foggy street */
+[data-theme="minimal-dark"] .nxOrb1,
+[data-theme="minimal-dark"] .nxOrb2 {
+  display: none;
+}
+[data-theme="minimal-dark"] .nxDotGrid {
+  background-image: none;
+}
+[data-theme="minimal-dark"] .nxDotGrid::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: url("/street-lamp.svg?v=15") center / cover no-repeat;
+}
+[data-theme="minimal-dark"] .nxDotGrid::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 62% at 48% 60%,
+      transparent 0%, transparent 52%,
+      rgba(0,0,0,.07) 60%, rgba(0,0,0,.16) 68%, rgba(0,0,0,.30) 76%,
+      rgba(0,0,0,.48) 84%, rgba(0,0,0,.70) 92%, rgba(0,0,0,.90) 100%),
+    radial-gradient(circle farthest-side at 46% 40%,
+      transparent 0%, transparent 52%,
+      rgba(0,0,0,.10) 60%, rgba(0,0,0,.24) 68%, rgba(0,0,0,.42) 76%,
+      rgba(0,0,0,.62) 84%, rgba(0,0,0,.82) 92%, #000 100%),
+    radial-gradient(circle farthest-corner at 46% 36%,
+      transparent 0%, transparent 14%,
+      rgba(1,2,4,.06) 22%, rgba(1,2,4,.14) 30%, rgba(1,2,4,.26) 38%,
+      rgba(1,2,4,.40) 46%, rgba(1,2,4,.55) 54%, rgba(1,2,4,.70) 62%,
+      rgba(1,2,4,.83) 71%, rgba(1,2,4,.93) 82%, #010204 94%),
+    linear-gradient(to bottom, rgba(1,2,4,.5), transparent 20%, transparent 74%, rgba(1,2,4,.55));
+}
+.nxCursorHaze { display: none; }
+[data-theme="minimal-dark"] .nxCursorHaze {
+  display: block; position: fixed; left: 0; top: 0; width: 320px; height: 320px;
+  z-index: 0; pointer-events: none; opacity: 0; will-change: transform;
+  background: radial-gradient(circle closest-side,
+    rgba(225,235,248,.20) 0%, rgba(190,205,225,.13) 25%,
+    rgba(140,158,185,.07) 50%, rgba(90,105,130,.03) 75%, transparent 100%);
+}
+
+/* Cyber Neon: close-up rainy cyberpunk street — hazy towers, neon signs, colored light haze, falling rain */
+[data-theme="cyber-neon"] .nxDotGrid::before,
+[data-theme="cyber-neon"] .nxDotGrid::after {
+  content: ""; position: absolute; inset: 0; background-repeat: no-repeat; background-position: center bottom; background-size: cover;
+}
+[data-theme="cyber-neon"] .nxDotGrid::before { background-image: url("/city-far.svg"); opacity: 0.7; }
+[data-theme="cyber-neon"] .nxDotGrid::after  { background-image: url("/city-mid.svg"); opacity: 0.85; }
+.nxCityFront { display: none; }
+[data-theme="cyber-neon"] .nxCityFront {
+  display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+  background:
+    url("/city-near.svg") center bottom / cover no-repeat,
+    linear-gradient(to top, rgba(255,42,109,0.18), rgba(180,77,255,0.08) 40%, transparent 70%);
+  opacity: 0.8;
+}
+[data-theme="cyber-neon"] .nxCityFront::before,
+[data-theme="cyber-neon"] .nxCityFront::after {
+  content: ""; position: absolute; left: -10%; right: -10%; bottom: 0; pointer-events: none; will-change: transform;
+}
+/* Soft neon-tinted fog; gradients are already feathered, so only transform animates (GPU-cheap) */
+[data-theme="cyber-neon"] .nxCityFront::before {
+  height: 55%;
+  background:
+    radial-gradient(ellipse 30% 40% at 20% 80%, rgba(255,42,109,0.30), transparent 100%),
+    radial-gradient(ellipse 32% 45% at 60% 70%, rgba(0,229,255,0.24), transparent 100%),
+    radial-gradient(ellipse 28% 40% at 90% 85%, rgba(180,77,255,0.28), transparent 100%);
+  animation: nxFog 40s ease-in-out infinite alternate;
+}
+[data-theme="cyber-neon"] .nxCityFront::after {
+  height: 35%;
+  background:
+    radial-gradient(ellipse 35% 50% at 30% 90%, rgba(207,217,255,0.20), transparent 100%),
+    radial-gradient(ellipse 30% 50% at 75% 80%, rgba(252,238,10,0.12), transparent 100%);
+  animation: nxFog 28s ease-in-out infinite alternate-reverse;
+}
+@keyframes nxFog { from { transform: translate3d(-4%, 0, 0); } to { transform: translate3d(4%, 0, 0); } }
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="cyber-neon"] .nxCityFront::before, [data-theme="cyber-neon"] .nxCityFront::after { animation: none; }
+}
+/* Distant flying cars: tiny, transform-only animation so they stay cheap */
+.nxCars { display: none; }
+[data-theme="cyber-neon"] .nxCars { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+[data-theme="cyber-neon"] .nxCar {
+  position: absolute; left: 0; width: 22px; height: 5px; border-radius: 3px; opacity: 0; will-change: transform;
+  background:
+    radial-gradient(circle at 12% 50%, var(--car-tail) 0 2px, transparent 3px),
+    radial-gradient(circle at 92% 50%, #fff6c8 0 1.5px, transparent 2.5px),
+    linear-gradient(#0b1228, #0b1228);
+  animation: nxCarFly var(--car-dur) linear infinite;
+  animation-delay: var(--car-delay);
+}
+[data-theme="cyber-neon"] .nxCar1 { top: 22%; --car-tail: #ff2a6d; --car-dur: 38s; --car-delay: -6s; }
+[data-theme="cyber-neon"] .nxCar2 { top: 34%; --car-tail: #00e5ff; --car-dur: 52s; --car-delay: -30s; width: 16px; height: 4px; animation-direction: reverse;
+  background: radial-gradient(circle at 88% 50%, var(--car-tail) 0 2px, transparent 3px), radial-gradient(circle at 8% 50%, #fff6c8 0 1.5px, transparent 2.5px), linear-gradient(#0b1228, #0b1228); }
+[data-theme="cyber-neon"] .nxCar3 { top: 15%; --car-tail: #fcee0a; --car-dur: 65s; --car-delay: -45s; width: 13px; height: 3px; }
+@keyframes nxCarFly {
+  0%   { transform: translate3d(-10vw, 0, 0); opacity: 0; }
+  8%   { opacity: 0.75; }
+  50%  { transform: translate3d(50vw, -14px, 0); }
+  92%  { opacity: 0.75; }
+  100% { transform: translate3d(110vw, 6px, 0); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { [data-theme="cyber-neon"] .nxCar { animation: none; opacity: 0; } }
+
+[data-theme="cyber-neon"] h1, [data-theme="cyber-neon"] h2 {
+  text-shadow: 0 0 10px rgba(0,229,255,0.55), 2px 0 0 rgba(255,42,109,0.45), -2px 0 0 rgba(252,238,10,0.18);
+}
+[data-theme="cyber-neon"] a:hover { color: #fcee0a; }
+
 [data-theme="matrix-green"] {
   --bg-primary: #000500; --surface: #020a02; --surface-2: #041404;
-  --border: #0a2a0a; --text-primary: #d4f7d4; --text-muted: #2e6e2e;
+  --border: #0a2a0a; --text-primary: #d4f7d4; --text-muted: #2e6e2e; --text-secondary: #6fc46f;
   --accent: #22c55e; --accent-2: #4ade80;
   --orb1: rgba(34,197,94,0.18); --orb2: rgba(74,222,128,0.11);
 }
 [data-theme="minimal-dark"] {
   --bg-primary: #0a0a0a; --surface: #111; --surface-2: #1a1a1a;
-  --border: #262626; --text-primary: #e2e8f0; --text-muted: #64748b;
+  --border: #262626; --text-primary: #e2e8f0; --text-muted: #64748b; --text-secondary: #94a3b8;
   --accent: #94a3b8; --accent-2: #e2e8f0;
   --orb1: rgba(148,163,184,0.12); --orb2: rgba(226,232,240,0.07);
 }
@@ -73,8 +182,8 @@
 /* Mobile: fixed top header (52px) + fixed bottom tab bar (64px)   */
 /* Desktop: fixed top header (52px) + sidebar is an overlay        */
 .appContent {
-  padding-top: 52px;
-  padding-bottom: 64px; /* space for mobile bottom tab bar */
+  padding-top: calc(52px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(82px + max(8px, calc(env(safe-area-inset-bottom, 0px) - 20px))); /* space for floating mobile tab bar */
 }
 
 @media (min-width: 768px) {
@@ -86,14 +195,12 @@
 /* ── Shared ambient background (used by PageShell on every page) ── */
 .nxOrb1 {
   position: fixed; top: -180px; left: -120px; width: 600px; height: 600px;
-  max-width: 100vw; /* never extend past right viewport edge */
-  background: radial-gradient(circle, var(--orb1) 0%, transparent 68%);
+  background: radial-gradient(closest-side, var(--orb1) 0%, transparent 100%);
   pointer-events: none; z-index: 0; animation: nxOrbFloat 9s ease-in-out infinite;
 }
 .nxOrb2 {
   position: fixed; bottom: -200px; right: 0; width: 520px; height: 520px;
-  max-width: 100vw;
-  background: radial-gradient(circle, var(--orb2) 0%, transparent 68%);
+  background: radial-gradient(closest-side, var(--orb2) 0%, transparent 100%);
   pointer-events: none; z-index: 0; animation: nxOrbFloat 12s ease-in-out infinite reverse;
 }
 @keyframes nxOrbFloat {
@@ -108,6 +215,7 @@
 
 html {
   height: 100%;
+  background: var(--bg-primary);
   color-scheme: dark;
   overflow-x: clip;
 }
@@ -173,4 +281,13 @@ body {
 
 .monaco-editor .suggest-widget .monaco-list-row span {
   color: #0b0101 !important; /* suggestion text color */
+}
+
+/* iOS Safari zooms the page when a focused editor is under 16px; keep code editors at 16px on phones */
+@media (max-width: 767px) {
+  .cm-editor,
+  .cm-editor .cm-content,
+  .cm-editor .cm-gutters {
+    font-size: 16px !important;
+  }
 }

@@ -1,4 +1,5 @@
 "use client";
+import ViewportDebug from '@/components/ViewportDebug';
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import StatIcon from "@/components/StatIcon";
 import LivePreview, { usePullPreview, usePreviewMode, previewBaseStyle, PreviewModeToggle } from "./LivePreview";
@@ -14,9 +15,11 @@ import { useRouter } from "next/navigation";
 import styles from "./Curriculum.module.css";
 import RewardPopup from "../../components/RewardPopup";
 import MobileLessonView from "../../components/MobileLessonView";
+import MobileKeyboard from "../../components/MobileKeyboard";
 
 // Module-level guard: prevents Pyodide from being loaded twice in StrictMode
 let _pyodideInjected = false;
+import EmblemAvatar from "@/components/EmblemAvatar";
 import { submitXp, getHearts, deductHeart, getProfile, addLocalCredits, addLocalCompletedLesson, LOCAL_CREDIT_RATES, lessonCredits } from "../../lib/api";
 
 // ---------------------------------------------
@@ -374,9 +377,13 @@ export default function CurriculumPage() {
   const [showPaywall, setShowPaywall] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [callingCard, setCallingCard] = useState<string>('indigo');
+  const [avatar, setAvatar] = useState<string>('');
 
-  // Mobile pane switcher
-  const [mobilePane, setMobilePane] = useState<'instructions' | 'editor'>('instructions');
+  // Mobile split view: lesson sheet above the editor, collapsible
+  const [lessonOpen, setLessonOpen] = useState(true);
+  const [keyboardInset, setKeyboardInset] = useState(0);
+  const [viewportTop, setViewportTop] = useState(0);
+  const editorViewRef = useRef<EditorView | null>(null);
 
   // Mobile device detection
   const [isMobile, setIsMobile] = useState(false);
@@ -386,6 +393,81 @@ export default function CurriculumPage() {
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  // inputmode=none suppresses the OS keyboard; the in-app keyboard drives the editor instead
+  const mobileExt = isMobile ? [EditorView.contentAttributes.of({ inputmode: 'none' })] : [];
+
+  // Lock page scroll on phones and fit the page to the visible area above the keyboard
+  useEffect(() => {
+    if (!isMobile) { setKeyboardInset(0); return; }
+    const html = document.documentElement;
+    const body = document.body;
+    const prev = { h: html.style.overflow, b: body.style.overflow, p: body.style.position, w: body.style.width };
+    if (selectedTrack) body.setAttribute('data-lesson-immersive', '');
+    html.style.overflow = 'hidden';
+    // any strip iOS leaves unlaid-out below the lesson blends into the keyboard
+    const prevBg = html.style.backgroundColor;
+    html.style.backgroundColor = '#0d1424';
+    body.style.overflow = 'hidden';
+    body.style.position = 'fixed';
+    body.style.width = '100%';
+
+    const vv = window.visualViewport;
+    // iOS standalone can report a stale height right after load; re-measure a few times
+    const setAppHeight = () => {
+      const h = Math.max(window.innerHeight, Math.round(vv?.height ?? 0));
+      html.style.setProperty('--app-h', `${h}px`);
+    };
+    // iOS standalone draws a viewport short by the notch until the first touch;
+    // re-applying the viewport meta nudges it to re-layout right away
+    const meta = document.querySelector('meta[name="viewport"]');
+    const nudge = () => {
+      if (!meta) return;
+      const c = meta.getAttribute('content') || '';
+      meta.setAttribute('content', c + ', minimum-scale=1.0001');
+      requestAnimationFrame(() => { meta.setAttribute('content', c); window.scrollTo(0, 0); setAppHeight(); });
+    };
+    nudge();
+    setAppHeight();
+    const timers = [50, 150, 400, 900].map(ms => window.setTimeout(ms === 150 ? nudge : setAppHeight, ms));
+    const raf = requestAnimationFrame(setAppHeight);
+    window.addEventListener('resize', setAppHeight);
+    window.addEventListener('orientationchange', setAppHeight);
+    window.addEventListener('pageshow', setAppHeight);
+    window.addEventListener('touchstart', setAppHeight, { passive: true, once: true });
+    const update = () => {
+      setAppHeight();
+      if (!vv) return;
+      const open = window.innerHeight - vv.height > 80;
+      setKeyboardInset(open ? Math.round(vv.height) : 0);
+      setViewportTop(open ? Math.round(vv.offsetTop) : 0);
+      if (open && window.scrollY !== 0) window.scrollTo(0, 0);
+    };
+    update();
+    vv?.addEventListener('resize', update);
+    vv?.addEventListener('scroll', update);
+    return () => {
+      vv?.removeEventListener('resize', update);
+      vv?.removeEventListener('scroll', update);
+      timers.forEach(clearTimeout);
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', setAppHeight);
+      window.removeEventListener('orientationchange', setAppHeight);
+      window.removeEventListener('pageshow', setAppHeight);
+      window.removeEventListener('touchstart', setAppHeight);
+      html.style.removeProperty('--app-h');
+      html.style.backgroundColor = prevBg;
+      body.removeAttribute('data-lesson-immersive');
+      html.style.overflow = prev.h;
+      body.style.overflow = prev.b;
+      body.style.position = prev.p;
+      body.style.width = prev.w;
+    };
+  }, [isMobile, selectedTrack]);
+
+  // Show the lesson again whenever a new lesson starts
+  useEffect(() => { setLessonOpen(true); }, [category, sectionIndex]);
+  useEffect(() => { router.prefetch('/roadmap'); }, [router]);
 
   // Level list collapse toggle
   const [levelListCollapsed, setLevelListCollapsed] = useState(true);
@@ -491,7 +573,7 @@ export default function CurriculumPage() {
       })
       .catch(() => {});
     getProfile()
-      .then(p => setCallingCard(p.callingCard ?? 'indigo'))
+      .then(p => { setCallingCard(p.callingCard ?? 'indigo'); setAvatar(p.avatar ?? ''); })
       .catch(() => {});
   }, []);
 
@@ -870,6 +952,10 @@ export default function CurriculumPage() {
   // ---------------------------------------------
   const lessons = curriculum[category];
   const currentLesson = lessons[sectionIndex];
+  const mobileTask = (() => {
+    const line = (currentLesson?.lesson.instructions || '').split('\n').find((l: string) => l.trim().startsWith('👉'));
+    return line ? line.trim().replace(/^👉\s*(Your mission:\s*)?/i, '') : 'Write your code, then tap Check.';
+  })();
   const activeSqlTable = SQL_DATA_TABLES.find(table => table.id === activeSqlTableId) ?? SQL_DATA_TABLES[0];
 
   // ---------------------------------------------
@@ -904,7 +990,11 @@ export default function CurriculumPage() {
   // Main Render
   // ---------------------------------------------
   return (
-    <main key="lesson" className={styles.main}>
+    <main
+      key="lesson"
+      className={styles.main}
+      style={isMobile && keyboardInset > 0 ? { top: viewportTop, bottom: 'auto', height: keyboardInset, zIndex: 200 } : undefined}
+    >
       {/* ── Paywall overlay (hearts = 0) ── */}
       {showPaywall && (
         <div className={styles.paywallOverlay}>
@@ -963,22 +1053,50 @@ export default function CurriculumPage() {
         ref={splitContainerRef}
       >
 
-        {/* ── Mobile pane switcher (hidden on desktop) ── */}
+        {/* ── Mobile lesson handle: toggles the lesson sheet above the editor (hidden on desktop) ── */}
         <div className={styles.mobilePaneBar}>
+          <button type="button" className={styles.mobileBackBtn} onClick={() => router.push('/roadmap')} onPointerEnter={() => router.prefetch('/roadmap')} aria-label="Back to Nexus Path">←</button>
           <button
             type="button"
-            className={`${styles.mobilePaneBtn} ${mobilePane === 'instructions' ? styles.mobilePaneBtnActive : ''}`}
-            onClick={() => setMobilePane('instructions')}
+            className={styles.mobileLessonHandle}
+            onClick={() => setLessonOpen(v => !v)}
+            aria-expanded={lessonOpen}
           >
-            📖 Instructions
+            <span className={styles.mobileLessonMeta}>
+              {lessonOpen ? 'Lesson ' : ''}{sectionIndex + 1}/{lessons.length}
+              {feedback === 'correct' && <span className={styles.mobileLessonDone}> ✓</span>}
+            </span>
+            {lessonOpen && <span className={styles.mobileLessonTitle}>{currentLesson.lesson.title}</span>}
+            <span className={styles.mobileLessonChevron}>{lessonOpen ? '▲' : '▼'}</span>
           </button>
-          <button
-            type="button"
-            className={`${styles.mobilePaneBtn} ${mobilePane === 'editor' ? styles.mobilePaneBtnActive : ''}`}
-            onClick={() => setMobilePane('editor')}
-          >
-            💻 Editor (Playground)
-          </button>
+          <div className={styles.mobileTopActions}>
+            {currentLesson.language !== 'python' && feedback !== 'correct' && (
+              <button type="button" onClick={handleCheckAnswer} className={styles.checkButtonInline}>
+                ✓ Check
+              </button>
+            )}
+            {feedback === 'correct' && !hasSubmitted && (
+              <button
+                type="button"
+                className={styles.submitButtonInline}
+                onClick={() => {
+                  setHasSubmitted(true);
+                  const firstTry = !hasAttemptedRef.current;
+                  completeLesson(currentLesson.key, sectionIndex, lessons.length, firstTry);
+                }}
+              >
+                Submit ✓
+              </button>
+            )}
+            {hasSubmitted && sectionIndex < lessons.length - 1 && (
+              <button type="button" className={styles.nextButtonInline} onClick={() => setSectionIndex(sectionIndex + 1)}>
+                Next →
+              </button>
+            )}
+            <button type="button" onClick={() => setShowHint(v => !v)} className={styles.hintButtonInline}>
+              Hint
+            </button>
+          </div>
           {/* Emblem + energy — visible on mobile only (CSS hides on desktop) */}
           {mounted && (
             <div className={styles.mobileUserHud}>
@@ -986,10 +1104,12 @@ export default function CurriculumPage() {
                 const cardGradient = getCallingCardGradient(callingCard);
                 return cardGradient ? (
                   <span
-                    className={styles.emblem}
-                    style={{ background: cardGradient }}
-                    title="Your emblem"
-                  />
+                      className={styles.emblem}
+                      style={{ background: cardGradient }}
+                      title="Your emblem"
+                    >
+                      {avatar && <EmblemAvatar value={avatar} className={styles.emblemInner} />}
+                    </span>
                 ) : null;
               })()}
               {isPro && localStorage.getItem('token') ? (
@@ -1003,7 +1123,7 @@ export default function CurriculumPage() {
 
         {/* ------------------ Left Pane: Lessons ------------------ */}
         <section
-          className={`${styles.leftPane} ${mobilePane === 'editor' ? styles.mobileHidden : ''}`}
+          className={`${styles.leftPane} ${isMobile && !lessonOpen ? styles.mobileHidden : ''} ${styles.mobileLessonSheet}`}
           ref={leftPaneRef}
           style={!isMobile ? { flexBasis: `${leftPaneWidth}px` } : undefined}
         >
@@ -1072,7 +1192,9 @@ export default function CurriculumPage() {
                       className={styles.emblem}
                       style={{ background: cardGradient }}
                       title="Your emblem"
-                    />
+                    >
+                      {avatar && <EmblemAvatar value={avatar} className={styles.emblemInner} />}
+                    </span>
                   ) : null;
                 })()}
                 {isPro && localStorage.getItem('token') ? (
@@ -1266,6 +1388,12 @@ export default function CurriculumPage() {
           )}
         </section>
 
+        {isMobile && lessonOpen && (
+          <button type="button" className={styles.mobileStartCoding} onClick={() => setLessonOpen(false)}>
+            Start coding ›
+          </button>
+        )}
+
         {/* ------------------ Divider (Draggable) ------------------ */}
         <div
           className={`${styles.divider} ${isMobile ? styles.mobileHidden : ''}`}
@@ -1281,7 +1409,29 @@ export default function CurriculumPage() {
         </div>
 
         {/* ------------------ Right Pane: Editor ------------------ */}
-        <section className={`${styles.rightPane} ${mobilePane === 'instructions' ? styles.mobileHidden : ''}`}>
+        <section
+          className={`${styles.rightPane} ${isMobile && lessonOpen ? styles.mobileHidden : ''}`}
+        >
+          {isMobile && (
+            <button type="button" className={styles.mobileTaskStrip} onClick={() => setLessonOpen(true)}>
+              <span className={styles.mobileTaskBadge}>Task</span>
+              <span className={styles.mobileTaskText}>{mobileTask}</span>
+              <span className={styles.mobileTaskMore}>Lesson</span>
+            </button>
+          )}
+          {isMobile && !lessonOpen && (() => {
+            const hintText = showHint ? [currentLesson.lesson.hint, currentLesson.lesson.sampleOutput && `Sample output: ${currentLesson.lesson.sampleOutput}`].filter(Boolean).join('\n') : '';
+            const fb = currentLesson.language === 'python' ? null : feedback;
+            if (!hintText && !fb) return null;
+            return (
+              <div className={styles.mobileStatus} role="status">
+                {fb === 'wrong' && <div className={styles.mobileStatusWrong}>✗ Not quite. Check the task, then try again or tap Hint.</div>}
+                {fb === 'correct' && <div className={styles.mobileStatusOk}>✓ Correct! Tap Submit above.</div>}
+                {hintText && <div className={styles.mobileStatusHint}><strong>Hint:</strong> {hintText}</div>}
+                {hintText && <button type="button" className={styles.mobileStatusClose} onClick={() => setShowHint(false)} aria-label="Dismiss hint">×</button>}
+              </div>
+            );
+          })()}
           {/* Editor Tabs */}
           <div className={styles.editorTabs}>
             {tracks.find(t => t.id === selectedTrack)?.langs.includes("html") && (
@@ -1337,7 +1487,8 @@ export default function CurriculumPage() {
                 height="100%"
                 className={styles.codeEditor}
                 theme={nexusTheme}
-                extensions={[html(), EditorView.lineWrapping]}
+                extensions={[html(), EditorView.lineWrapping, ...mobileExt]}
+                onCreateEditor={v => { editorViewRef.current = v; }}
                 onChange={value => setHtmlCode(value)}
               />
             )}
@@ -1348,7 +1499,8 @@ export default function CurriculumPage() {
                 height="100%"
                 className={styles.codeEditor}
                 theme={nexusTheme}
-                extensions={[css(), EditorView.lineWrapping]}
+                extensions={[css(), EditorView.lineWrapping, ...mobileExt]}
+                onCreateEditor={v => { editorViewRef.current = v; }}
                 onChange={value => setCssCode(value)}
               />
             )}
@@ -1359,7 +1511,8 @@ export default function CurriculumPage() {
                 height="100%"
                 className={styles.codeEditor}
                 theme={nexusTheme}
-                extensions={[EditorView.lineWrapping]}
+                extensions={[EditorView.lineWrapping, ...mobileExt]}
+                onCreateEditor={v => { editorViewRef.current = v; }}
                 onChange={value => setJsCode(value)}
               />
             )}
@@ -1381,7 +1534,8 @@ export default function CurriculumPage() {
                     height="100%"
                     className={styles.codeEditor}
                     theme={nexusTheme}
-                    extensions={[python(), EditorView.lineWrapping]}
+                    extensions={[python(), EditorView.lineWrapping, ...mobileExt]}
+                    onCreateEditor={v => { editorViewRef.current = v; }}
                     onChange={value => setPyCode(value)}
                   />
                 </div>
@@ -1404,7 +1558,8 @@ export default function CurriculumPage() {
                 height="100%"
                 className={styles.codeEditor}
                 theme={nexusTheme}
-                extensions={[sqlLang(), EditorView.lineWrapping]}
+                extensions={[sqlLang(), EditorView.lineWrapping, ...mobileExt]}
+                onCreateEditor={v => { editorViewRef.current = v; }}
                 onChange={value => setSqlCode(value)}
               />
             )}
@@ -1415,7 +1570,8 @@ export default function CurriculumPage() {
                 height="100%"
                 className={styles.codeEditor}
                 theme={nexusTheme}
-                extensions={[javascript({ typescript: true }), EditorView.lineWrapping]}
+                extensions={[javascript({ typescript: true }), EditorView.lineWrapping, ...mobileExt]}
+                onCreateEditor={v => { editorViewRef.current = v; }}
                 onChange={value => setTsCode(value)}
               />
             )}
@@ -1449,8 +1605,13 @@ export default function CurriculumPage() {
               <div>{currentLesson.lesson.sampleOutput}</div>
             </div>
           )}
+          {/* Mobile action bar: desktop shows these buttons in the lesson pane */}
+          {isMobile && activeTab !== 'browser' && (
+            <MobileKeyboard getView={() => editorViewRef.current} />
+          )}
         </section>
       </div>
+      <ViewportDebug />
       {pull.open && tracks.find(t => t.id === selectedTrack)?.langs.includes("html") && (
         <LivePreview html={htmlCode} css={cssCode} js={jsCode} grab={pull.grab} mode={preview.mode} onToggleMode={preview.toggle} onClose={pull.close} />
       )}

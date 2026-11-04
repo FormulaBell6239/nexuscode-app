@@ -5,7 +5,7 @@ import StatIcon from "@/components/StatIcon";
 import Link from 'next/link';
 import styles from './Games.module.css';
 import PageShell from '@/components/PageShell';
-import { getProfile, getOwnedItems, api } from '@/lib/api';
+import { getCredits, getOwnedItems, api } from '@/lib/api';
 
 const GENRES = [
   {
@@ -89,8 +89,8 @@ export default function Games() {
 
   useEffect(() => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    getProfile()
-      .then(p => setUserCredits(p.credits))
+    getCredits()
+      .then(setUserCredits)
       .catch(() => setUserCredits(0));
 
     Promise.all([
@@ -129,6 +129,7 @@ export default function Games() {
 
   return (
     <main className={styles.main}>
+      <div className={styles.ambient} />
       <PageShell />
 
       {toast && (
@@ -138,14 +139,19 @@ export default function Games() {
       )}
 
       <header className={styles.header}>
-        <div className={styles.badge}>Games &amp; Challenges</div>
-        <h1 className={styles.title}>
-          <span className={styles.titleGradient}>Play. Learn. Level Up.</span>
-        </h1>
-        <p className={styles.subtitle}>
-          Choose a genre and jump into a challenge. Earn points, climb the leaderboard, and unlock
-          new games as you progress.
-        </p>
+        <div>
+          <div className={styles.eyebrow}>
+            <span className={styles.statusDot} />
+            GAMES &amp; CHALLENGES
+          </div>
+          <h1>
+            Play. Learn.<span>Level Up.</span>
+          </h1>
+          <p className={styles.subtitle}>
+            Choose a genre and jump into a challenge. Earn points, climb the leaderboard, and unlock
+            new games as you progress.
+          </p>
+        </div>
         <div className={styles.creditsBanner}>
           <span className={styles.creditsIcon}>⬡</span>
           <span className={styles.creditsAmount}>

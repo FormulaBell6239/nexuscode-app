@@ -2,6 +2,8 @@ import { CompletionContext, CompletionResult, Completion } from '@codemirror/aut
 import { htmlLanguage } from '@codemirror/lang-html';
 import { cssLanguage } from '@codemirror/lang-css';
 import { Extension } from '@codemirror/state';
+import { javascriptLanguage } from '@codemirror/lang-javascript';
+import { pythonLanguage } from '@codemirror/lang-python';
 
 // ── HTML snippets ─────────────────────────────────────────────────────────────
 const HTML_SNIPPETS: Completion[] = [
@@ -202,4 +204,51 @@ export function jsSnippetSource(context: CompletionContext): CompletionResult | 
   const options = JS_SNIPPETS.filter(c => c.label.toLowerCase().startsWith(lower));
   if (!options.length) return null;
   return { from, options };
+}
+
+/** Attaches JS snippet completions alongside the built-in JavaScript ones. */
+export function jsSnippetCompletions(): Extension {
+  return javascriptLanguage.data.of({ autocomplete: jsSnippetSource });
+}
+
+// ── Python snippets ───────────────────────────────────────────────────────────
+
+const PY_SNIPPETS: Completion[] = [
+  { label: 'print()',        type: 'function', boost: 22, apply: 'print()' },
+  { label: 'input()',        type: 'function', boost: 14, apply: 'input("")' },
+  { label: 'def',            type: 'keyword',  boost: 20, detail: 'function', apply: 'def name():\n    ' },
+  { label: 'class',          type: 'keyword',  boost: 16, detail: 'class', apply: 'class Name:\n    def __init__(self):\n        ' },
+  { label: 'if',             type: 'keyword',  boost: 18, apply: 'if condition:\n    ' },
+  { label: 'if/else',        type: 'keyword',  boost: 15, apply: 'if condition:\n    \nelse:\n    ' },
+  { label: 'elif',           type: 'keyword',  boost: 12, apply: 'elif condition:\n    ' },
+  { label: 'for in range',   type: 'keyword',  boost: 17, apply: 'for i in range(10):\n    ' },
+  { label: 'for in',         type: 'keyword',  boost: 16, apply: 'for item in items:\n    ' },
+  { label: 'while',          type: 'keyword',  boost: 13, apply: 'while condition:\n    ' },
+  { label: 'try/except',     type: 'keyword',  boost: 12, apply: 'try:\n    \nexcept Exception as e:\n    print(e)' },
+  { label: 'with open',      type: 'keyword',  boost: 11, apply: 'with open("file.txt", "r") as f:\n    data = f.read()' },
+  { label: 'import',         type: 'keyword',  boost: 10, apply: 'import ' },
+  { label: 'from import',    type: 'keyword',  boost: 9,  apply: 'from module import name' },
+  { label: 'main guard',     type: 'keyword',  boost: 11, detail: 'if __name__ == "__main__"', apply: 'if __name__ == "__main__":\n    main()' },
+  { label: 'list comprehension', type: 'function', boost: 8, apply: '[x for x in items]' },
+  { label: 'f-string',       type: 'function', boost: 8,  apply: 'f"{}"' },
+  { label: 'len()',          type: 'function', boost: 9,  apply: 'len()' },
+  { label: 'range()',        type: 'function', boost: 9,  apply: 'range()' },
+  { label: 'lambda',         type: 'keyword',  boost: 6,  apply: 'lambda x: x' },
+];
+
+export function pySnippetSource(context: CompletionContext): CompletionResult | null {
+  const word = context.matchBefore(/[\w_]+$/);
+  if (!word && !context.explicit) return null;
+  const typed = word?.text ?? '';
+  const from = word?.from ?? context.pos;
+  const lower = typed.toLowerCase();
+  if (!lower && !context.explicit) return null;
+  const options = PY_SNIPPETS.filter(c => c.label.toLowerCase().startsWith(lower));
+  if (!options.length) return null;
+  return { from, options };
+}
+
+/** Attaches Python snippet completions alongside the built-in Python ones. */
+export function pySnippetCompletions(): Extension {
+  return pythonLanguage.data.of({ autocomplete: pySnippetSource });
 }

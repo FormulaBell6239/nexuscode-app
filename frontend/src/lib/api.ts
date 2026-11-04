@@ -33,6 +33,7 @@ export const api = {
     apiFetch<T>(path, { method: 'PUT', body: JSON.stringify(body) }),
   patch: <T>(path: string, body?: unknown) =>
     apiFetch<T>(path, { method: 'PATCH', body: JSON.stringify(body) }),
+  delete: <T>(path: string) => apiFetch<T>(path, { method: 'DELETE' }),
 };
 
 // ── Typed helpers ──────────────────────────────────────────────────────────
@@ -72,8 +73,21 @@ export interface XpResponse {
 
 export const getProfile = () => api.get<ProfileResponse>('/api/profile');
 
+export const CREDITS_CHANGED_EVENT = 'nexus-credits-changed';
+export const notifyCreditsChanged = () => {
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event(CREDITS_CHANGED_EVENT));
+};
+
 export const submitXp = (amount: number, lessonKey?: string, firstTry?: boolean, gameRound?: boolean, lessonIndex?: number, lessonTotal?: number) =>
-  api.post<XpResponse>('/api/profile/xp', { amount, lessonKey, firstTry, gameRound, lessonIndex, lessonTotal });
+  api.post<XpResponse>('/api/profile/xp', { amount, lessonKey, firstTry, gameRound, lessonIndex, lessonTotal })
+    .then(res => { notifyCreditsChanged(); return res; });
+
+/** Single source of truth for the credit balance: server when logged in, local storage when offline. */
+export async function getCredits(): Promise<number> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  if (!token) return getLocalCredits();
+  return (await getProfile()).credits;
+}
 
 export interface HeartsResponse {
   hearts: number;
@@ -141,6 +155,7 @@ export function getLocalCredits(): number {
 export function addLocalCredits(amount: number): number {
   const next = getLocalCredits() + amount;
   localStorage.setItem(LOCAL_CREDITS_KEY, String(next));
+  notifyCreditsChanged();
   return next;
 }
 
@@ -148,6 +163,7 @@ export function spendLocalCredits(amount: number): boolean {
   const current = getLocalCredits();
   if (current < amount) return false;
   localStorage.setItem(LOCAL_CREDITS_KEY, String(current - amount));
+  notifyCreditsChanged();
   return true;
 }
 

@@ -10,7 +10,7 @@
   border-radius: 14px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(0, 0, 0, 0.4);
   overflow: hidden;
-  color: #cbd5e1;
+  color: var(--text-secondary);
   animation: popIn 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
   transition: left 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
     width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), height 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s;
@@ -18,7 +18,7 @@
 
 .interacting {
   transition: box-shadow 0.2s;
-  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(99, 102, 241, 0.55);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.7), 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 
 @keyframes popIn {
@@ -50,7 +50,7 @@
 .title {
   flex: 1;
   font-weight: 700;
-  color: #e2e8f0;
+  color: var(--text-primary);
   font-size: 0.76rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -64,7 +64,7 @@
   background: rgba(255, 255, 255, 0.05);
   border: none;
   border-radius: 7px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-size: 0.72rem;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
@@ -99,14 +99,14 @@
   border: none;
   border-radius: 7px;
   background: transparent;
-  color: #94a3b8;
+  color: var(--text-secondary);
   font-size: 0.75rem;
   cursor: pointer;
   text-align: left;
 }
 
-.menuItem:hover { background: rgba(99, 102, 241, 0.18); color: #e2e8f0; }
-.menuItem svg { color: #818cf8; flex-shrink: 0; }
+.menuItem:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--text-primary); }
+.menuItem svg { color: color-mix(in srgb, var(--accent) 70%, white); flex-shrink: 0; }
 
 .body {
   position: relative;

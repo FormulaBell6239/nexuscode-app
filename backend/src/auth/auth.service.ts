@@ -22,16 +22,32 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(username: string, email: string, password: string) {
-    const existing = await this.userRepo.findOne({
-      where: [{ email }, { username }],
-    });
+  private async uniqueUsername(base: string): Promise<string> {
+    const clean = base.replace(/[^A-Za-z0-9_.-]/g, '').slice(0, 24) || 'coder';
+    let candidate = clean.length >= 3 ? clean : `${clean}user`;
+    while (await this.userRepo.findOne({ where: { username: candidate } })) {
+      candidate = `${clean}${Math.floor(1000 + Math.random() * 9000)}`;
+    }
+    return candidate;
+  }
+
+  async register(username: string | undefined, email: string | undefined, password: string) {
+    const conditions: { email?: string; username?: string }[] = [];
+    if (email) conditions.push({ email });
+    if (username) conditions.push({ username });
+    const existing = await this.userRepo.findOne({ where: conditions });
     if (existing) {
-      throw new ConflictException('Username or email already in use');
+      throw new ConflictException(
+        username && email ? 'Username or email already in use'
+          : username ? 'Username already in use' : 'Email already in use',
+      );
     }
 
+    // Email-only signups get a generated handle (shown on leaderboards); it can be changed later
+    const finalUsername = username ?? (await this.uniqueUsername(email!.split('@')[0]));
+
     const hashed = await bcrypt.hash(password, SALT_ROUNDS);
-    const user = this.userRepo.create({ username, email, password: hashed });
+    const user = this.userRepo.create({ username: finalUsername, email: email ?? null, password: hashed });
     const saved = await this.userRepo.save(user);
 
     // Create progress record with energy initialised
@@ -48,7 +64,11 @@ export class AuthService {
 
   async login(identifier: string, password: string) {
     const user = await this.userRepo.findOne({
-      where: [{ email: identifier }, { username: identifier }],
+      where: [
+        { email: identifier.trim() },
+        { email: identifier.trim().toLowerCase() },
+        { username: identifier.trim() },
+      ],
     });
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');

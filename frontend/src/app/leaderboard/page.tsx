@@ -21,7 +21,7 @@ interface LeaderboardEntry {
 
 const PODIUM_META = [
   { label: '1st', color: '#f59e0b', glow: 'rgba(245,158,11,0.35)', border: 'rgba(245,158,11,0.50)', height: 88 },
-  { label: '2nd', color: '#94a3b8', glow: 'rgba(148,163,184,0.25)', border: 'rgba(148,163,184,0.40)', height: 64 },
+  { label: '2nd', color: 'var(--text-secondary)', glow: 'rgba(148,163,184,0.25)', border: 'rgba(148,163,184,0.40)', height: 64 },
   { label: '3rd', color: '#b45309', glow: 'rgba(180,83,9,0.25)',   border: 'rgba(180,83,9,0.40)',   height: 48 },
 ];
 
@@ -46,11 +46,12 @@ export default function Leaderboard() {
   return (
     <main className={styles.main}>
       <PageShell />
+      <div className={styles.ambient} aria-hidden="true" />
       <div className={styles.container}>
         <header className={styles.header}>
-          <div className={styles.eyebrow}>◈ RANKINGS</div>
-          <h1 className={styles.title}><span className={styles.titleGradient}>Leaderboard</span></h1>
-          <p className={styles.subtitle}>See who&apos;s crushing their coding streaks!</p>
+          <div className={styles.eyebrow}><span className={styles.dot} /> RANKINGS</div>
+          <h1 className={styles.title}>Leader<span>board</span></h1>
+          <p className={styles.subtitle}>See who&apos;s crushing their coding streaks.</p>
         </header>
 
         {loading && <p className={styles.msg}>Loading…</p>}

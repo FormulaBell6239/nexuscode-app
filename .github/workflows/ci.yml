@@ -58,6 +58,10 @@ jobs:
         working-directory: backend
         run: npm ci --no-audit --no-fund
 
+      - name: Backend unit tests
+        working-directory: backend
+        run: npm test
+
       - name: Install frontend dependencies
         working-directory: frontend
         run: npm install --no-audit --no-fund

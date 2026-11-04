@@ -3,12 +3,13 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0 1.25rem;
+  padding: env(safe-area-inset-top, 0px) 1.25rem 0;
+  box-sizing: content-box;
   height: 52px;
   background: rgba(8, 13, 23, 0.97);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid #0d1424;
+  border-bottom: 1px solid var(--surface-2);
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 60;
@@ -27,9 +28,9 @@
   gap: 5px;
   font-size: 0.72rem;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--text-secondary);
   background: rgba(255,255,255,0.04);
-  border: 1px solid #1e293b;
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: 3px 9px;
   white-space: nowrap;
@@ -37,7 +38,7 @@
 }
 
 .statMax {
-  color: #334155;
+  color: var(--border);
   font-weight: 500;
 }
 
@@ -50,14 +51,14 @@
 
 .logoutButton {
   background: transparent;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  color: #94a3b8;
+  color: var(--text-secondary);
   cursor: pointer;
   font-size: 0.75rem;
   padding: 5px 9px;
 }
-.logoutButton:hover { border-color: #64748b; color: #e2e8f0; }
+.logoutButton:hover { border-color: var(--text-muted); color: var(--text-primary); }
 
 /* ── Hamburger toggle — desktop only ────────────────── */
 .toggle {
@@ -69,13 +70,13 @@
   height: 36px;
   padding: 0 6px;
   background: transparent;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--border);
   border-radius: 8px;
   cursor: pointer;
   flex-shrink: 0;
   transition: border-color 0.2s, background 0.2s;
 }
-.toggle:hover { background: rgba(99,102,241,0.08); border-color: #6366f1; }
+.toggle:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); border-color: var(--accent); }
 
 .bar {
   display: block;
@@ -86,7 +87,7 @@
   transform-origin: center;
   transition: transform 0.22s ease, opacity 0.22s ease, background 0.2s;
 }
-.toggle:hover .bar { background: #818cf8; }
+.toggle:hover .bar { background: color-mix(in srgb, var(--accent) 70%, white); }
 
 /* Animate to X when open */
 .barTop  { transform: translateY(6.5px) rotate(45deg); }
@@ -103,58 +104,73 @@
 .mobileGroupBar {
   display: flex;
   align-items: stretch;
+  gap: 2px;
   position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: 64px;
-  background: rgba(8, 13, 23, 0.98);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid #0d1424;
+  left: 8px; right: 8px;
+  bottom: max(8px, calc(env(safe-area-inset-bottom, 0px) - 20px));
+  height: 66px;
+  padding: 5px;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding: 0 6px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  background: linear-gradient(135deg, rgba(120, 150, 210, 0.16), rgba(20, 28, 50, 0.45));
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid rgba(160, 190, 240, 0.22);
+  border-radius: 22px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   z-index: 60;
-  padding-bottom: env(safe-area-inset-bottom);
 }
+.mobileGroupBar::-webkit-scrollbar { display: none; }
 
 @media (min-width: 768px) {
   .mobileGroupBar { display: none; }
 }
 
 .mobileGroupBtn {
-  flex: 1;
+  flex: 0 0 calc((100vw - 16px - 10px - 8px) / 5);
+  scroll-snap-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 4px;
   background: transparent;
   border: none;
-  color: #334155;
+  border-radius: 17px;
+  color: #9db2d0;
   cursor: pointer;
-  padding: 0 2px;
-  transition: color 0.15s;
+  padding: 0 4px;
+  transition: color 0.15s, background 0.2s, box-shadow 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
-.mobileGroupBtn:hover   { color: #64748b; }
-.mobileGroupBtnActive   { color: #818cf8; }
-.mobileGroupBtnOpen     { color: #818cf8; }
+.mobileGroupBtn:hover   { color: var(--text-muted); }
+.mobileGroupBtnActive   { color: #36e4ff; background: rgba(54, 228, 255, 0.12); box-shadow: inset 0 0 0 1px rgba(54, 228, 255, 0.28), 0 0 16px rgba(54, 228, 255, 0.14); }
+.mobileGroupBtnOpen     { color: #36e4ff; background: rgba(54, 228, 255, 0.12); }
 
 .mobileGroupIcon {
-  font-size: 1.1rem;
+  font-size: 1.45rem;
   line-height: 1;
 }
 
 .mobileGroupLabel {
-  font-size: 0.55rem;
+  font-size: 0.62rem;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0;
   font-weight: 700;
-  letter-spacing: 0.05em;
   font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
   text-transform: lowercase;
-  display: flex;
-  align-items: center;
-  gap: 2px;
 }
 
 .mobileGroupChevron {
-  display: inline-block;
+  display: none;
   transform: rotate(0deg);
   transition: transform 0.2s ease;
   font-size: 0.85rem;
@@ -175,7 +191,7 @@
 .mobilePanelBackdrop {
   position: fixed;
   inset: 0;
-  bottom: 64px;
+  bottom: calc(82px + max(8px, calc(env(safe-area-inset-bottom, 0px) - 20px)));
   background: rgba(0, 0, 0, 0.45);
   z-index: 57;
   opacity: 0;
@@ -196,11 +212,11 @@
 .mobilePanel {
   position: fixed;
   left: 0; right: 0;
-  bottom: 64px;
+  bottom: calc(82px + max(8px, calc(env(safe-area-inset-bottom, 0px) - 20px)));
   background: rgba(8, 13, 23, 0.98);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid var(--border);
   z-index: 58;
   padding: 0.55rem 0.85rem 0.45rem;
   opacity: 0;
@@ -225,7 +241,7 @@
   align-items: center;
   gap: 5px;
   padding: 0.1rem 0.25rem 0.45rem;
-  border-bottom: 1px solid #0d1424;
+  border-bottom: 1px solid var(--surface-2);
   margin-bottom: 0.3rem;
 }
 
@@ -234,7 +250,7 @@
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #475569;
+  color: var(--text-muted);
   text-transform: lowercase;
 }
 
@@ -290,10 +306,10 @@
 .sidebar {
   display: none;
   position: fixed;
-  top: 52px; left: 0; bottom: 0;
+  top: calc(52px + env(safe-area-inset-top, 0px)); left: 0; bottom: 0;
   width: 240px;
-  background: #080d17;
-  border-right: 1px solid #0d1424;
+  background: var(--surface);
+  border-right: 1px solid var(--surface-2);
   z-index: 80;
   flex-direction: column;
   transform: translateX(-100%);
@@ -317,15 +333,15 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.85rem 1rem;
-  border-bottom: 1px solid #0d1424;
-  background: #0a0f1c;
+  border-bottom: 1px solid var(--surface-2);
+  background: var(--surface);
   flex-shrink: 0;
 }
 
 .sidebarLogo {
   font-size: 0.95rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #e0e7ff 0%, #818cf8 55%, #06b6d4 100%);
+  background: linear-gradient(135deg, var(--text-primary) 0%, color-mix(in srgb, var(--accent) 70%, white) 55%, var(--accent-2) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -340,15 +356,15 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 1px solid #1e293b;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  color: #475569;
+  color: var(--text-muted);
   font-size: 1.1rem;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
   line-height: 1;
 }
-.sidebarClose:hover { background: rgba(99,102,241,0.1); color: #e2e8f0; }
+.sidebarClose:hover { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--text-primary); }
 
 .sidebarNav {
   flex: 1;
@@ -375,14 +391,21 @@
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #334155;
+  color: var(--accent);
   text-transform: lowercase;
   user-select: none;
+  background: none;
+  border: 0;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
 }
+.dirFolder:hover { filter: brightness(1.2); }
+.dirItems[hidden] { display: none; }
 
 .dirCaret {
   font-size: 0.58rem;
-  color: #6366f1;
+  color: var(--accent);
   opacity: 0.8;
 }
 
@@ -404,7 +427,7 @@
   gap: 0.5rem;
   padding: 0.45rem 0.75rem 0.45rem 0.6rem;
   border-radius: 6px;
-  color: #64748b;
+  color: var(--text-muted);
   font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
   font-size: 0.8rem;
   font-weight: 500;
@@ -414,18 +437,18 @@
 }
 
 .dirItem:hover {
-  background: rgba(99, 102, 241, 0.08);
-  color: #cbd5e1;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  color: var(--text-secondary);
 }
 
 .dirItemActive {
-  color: #a5b4fc;
-  background: rgba(99, 102, 241, 0.13);
+  color: color-mix(in srgb, var(--accent) 70%, white);
+  background: color-mix(in srgb, var(--accent) 13%, transparent);
   font-weight: 600;
 }
 
 .dirItemActive .dirLine {
-  background: linear-gradient(to bottom, #6366f1, #06b6d4);
+  background: linear-gradient(to bottom, var(--accent), var(--accent-2));
 }
 
 /* Horizontal connector ─ */
@@ -453,23 +476,44 @@
 
 /* ── Upgrade CTA item ── */
 .dirItemUpgrade {
-  color: #818cf8;
-  background: rgba(99, 102, 241, 0.07);
+  color: color-mix(in srgb, var(--accent) 70%, white);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
   border-radius: 6px;
 }
 
 .dirItemUpgrade:hover {
-  background: rgba(99, 102, 241, 0.14);
-  color: #a5b4fc;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: color-mix(in srgb, var(--accent) 70%, white);
 }
 
 .dirItemUpgrade .sidebarIcon {
   opacity: 1;
-  color: #6366f1;
+  color: var(--accent);
 }
 
 .sidebarFooter {
   padding: 0.75rem 1rem;
-  border-top: 1px solid #111827;
+  border-top: 1px solid var(--surface-2);
   flex-shrink: 0;
 }
+
+/* Sign out lives in Settings on phones */
+@media (max-width: 767px) {
+  .logoutButton { display: none; }
+}
+
+/* Lessons on phones use the full screen: hide global header and tab bar */
+@media (max-width: 767px) {
+  :global(body[data-lesson-immersive]) .topHeader,
+  :global(body[data-lesson-immersive]) .mobileGroupBar,
+  :global(body[data-lesson-immersive]) .mobilePanel,
+  :global(body[data-lesson-immersive]) .mobilePanelBackdrop {
+    display: none;
+  }
+}
+
+/* Directory-style chevron toggle */
+.toggle { align-items: center; justify-content: center; padding: 0; color: #8795ad; gap: 0; }
+.toggle:hover { color: #36e4ff; border-color: rgba(54,228,255,.5); background: rgba(54,228,255,.08); }
+.chevron { transition: transform 0.22s ease; }
+.chevronOpen { transform: rotate(90deg); }

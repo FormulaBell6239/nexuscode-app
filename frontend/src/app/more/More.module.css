@@ -7,7 +7,7 @@
 .title {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #e2e8f0;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
 }
 
@@ -23,15 +23,15 @@
   gap: 1rem;
   padding: 1rem 1.1rem;
   border-radius: 12px;
-  background: #0d1424;
-  border: 1px solid #1e293b;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
   text-decoration: none;
   transition: background 0.15s, border-color 0.15s;
 }
 
 .row:hover {
-  background: rgba(99, 102, 241, 0.07);
-  border-color: rgba(99, 102, 241, 0.3);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .icon {
@@ -51,15 +51,15 @@
 .label {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #e2e8f0;
+  color: var(--text-primary);
 }
 
 .desc {
   font-size: 0.78rem;
-  color: #64748b;
+  color: var(--text-muted);
 }
 
 .arrow {
   font-size: 1.3rem;
-  color: #334155;
+  color: var(--border);
 }

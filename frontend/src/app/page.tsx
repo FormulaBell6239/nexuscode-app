@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './page.module.css';
+import Dashboard from './Dashboard';
 
 const FEATURES = [
   { icon: '◈', title: 'Code Challenges', desc: 'Solve real-world problems every day and sharpen practical skills.' },
@@ -23,6 +24,8 @@ export default function Home() {
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
+  const [isGuest, setIsGuest] = useState(false);
+  const [ready, setReady] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,6 +34,8 @@ export default function Home() {
     const hasVisited = localStorage.getItem('nexus_visited');
 
     setIsLoggedIn(!!token);
+    setIsGuest(!!isGuest);
+    setReady(true);
     if (token) {
       const stored = localStorage.getItem('username') || localStorage.getItem('name') || '';
       setUsername(stored);
@@ -64,6 +69,10 @@ export default function Home() {
 
     return () => clearTimeout(timer);
   }, [charIdx, deleting, phraseIdx]);
+
+  // Wait for the client check so signed-in users never flash the landing page.
+  if (!ready) return null;
+  if (isLoggedIn || isGuest) return <Dashboard signedIn={isLoggedIn} />;
 
   return (
     <main className={styles.main}>

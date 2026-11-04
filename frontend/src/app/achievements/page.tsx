@@ -106,7 +106,7 @@ function AchCard({ ach }: { ach: AchievementEntry }) {
 const THEMES: { slug: string; name: string; icon: string; bg: string; accent: string; accent2: string; free?: boolean; how: string; cost?: number }[] = [
   { slug: 'solar-light',  name: 'Solar Light',  icon: '◐',  bg: '#091628', accent: '#60a5fa', accent2: '#a78bfa', free: true, how: 'Included for everyone' },
   { slug: 'minimal-dark', name: 'Midnight',     icon: '🌑', bg: '#0a0a0a', accent: '#94a3b8', accent2: '#e2e8f0', how: 'Buy in the Store', cost: 1000 },
-  { slug: 'cyber-neon',   name: 'Cyber Neon',   icon: '🔮', bg: '#000a08', accent: '#10b981', accent2: '#00ff88', how: 'Buy in the Store', cost: 2500 },
+  { slug: 'cyber-neon',   name: 'Cyber Neon',   icon: '🔮', bg: '#03060f', accent: '#00e5ff', accent2: '#ff2a6d', how: 'Buy in the Store', cost: 2500 },
   { slug: 'matrix-green', name: 'Matrix',       icon: '⌨️', bg: '#000500', accent: '#22c55e', accent2: '#4ade80', how: 'Complete a mid-reward milestone (16–50 ⬡), or buy in the Store', cost: 500 },
   { slug: 'ember',        name: 'Ember',        icon: '🔥', bg: '#0d0705', accent: '#ea580c', accent2: '#fbbf24', how: 'Complete a starter milestone (up to 15 ⬡)' },
   { slug: 'solar',        name: 'Solara',       icon: '☀️', bg: '#0d0a03', accent: '#f59e0b', accent2: '#fde68a', how: 'Complete a high-reward milestone (51+ ⬡)' },
@@ -194,9 +194,9 @@ export default function AchievementsPage() {
       <div className={styles.container}>
         {/* ── Header ── */}
         <header className={styles.header}>
-          <div className={styles.badge}>Achievements</div>
+          <div className={styles.badge}><span className={styles.statusDot} /> ACHIEVEMENTS</div>
           <h1 className={styles.title}>
-            <span className={styles.titleGradient}>Your Nexus Collection</span>
+            Your Nexus<span>Collection</span>
           </h1>
           <p className={styles.subtitle}>
             Earn badges by hitting XP milestones, completing challenges, and building streaks.
@@ -215,7 +215,7 @@ export default function AchievementsPage() {
             </div>
             <div className={styles.statDivider} />
             <div className={styles.stat}>
-              <span className={styles.statVal} style={{ color: '#818cf8' }}>
+              <span className={styles.statVal} style={{ color: 'var(--accent)' }}>
                 {credits === null ? '—' : credits}
               </span>
               <span className={styles.statLbl}>Credits</span>

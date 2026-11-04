@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import styles from './Navbar.module.css';
 import StreakTracker from './StreakTracker';
 import StatIcon from './StatIcon';
-import { api } from '@/lib/api';
+import { api, CREDITS_CHANGED_EVENT } from '@/lib/api';
 import { endSession } from '@/lib/session';
 
 interface ProfileSnap {
@@ -20,13 +20,20 @@ interface ProfileSnap {
 function NavStats() {
   const [stats, setStats] = useState<ProfileSnap | null>(null);
 
+  const pathname = usePathname();
+
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    api.get<ProfileSnap>('/api/profile')
-      .then(d => setStats({ energy: d.energy, maxEnergy: d.maxEnergy, credits: d.credits, level: d.level, xp: d.xp, streak: d.streak }))
-      .catch(() => {});
-  }, []);
+    const load = () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      api.get<ProfileSnap>('/api/profile')
+        .then(d => setStats({ energy: d.energy, maxEnergy: d.maxEnergy, credits: d.credits, level: d.level, xp: d.xp, streak: d.streak }))
+        .catch(() => {});
+    };
+    load();
+    window.addEventListener(CREDITS_CHANGED_EVENT, load);
+    return () => window.removeEventListener(CREDITS_CHANGED_EVENT, load);
+  }, [pathname]);
 
   if (!stats) return null;
 
@@ -47,6 +54,22 @@ type NavGroup = { id: string; icon: string; label: string; items: NavItem[] };
 
 const BOTTOM_GROUPS: NavGroup[] = [
   {
+    id: 'home',
+    icon: '⌂',
+    label: 'dashboard',
+    items: [
+      { href: '/', icon: '⌂', label: 'dashboard' },
+    ],
+  },
+  {
+    id: 'ai',
+    icon: '✧',
+    label: 'nexus-ai',
+    items: [
+      { href: '/ai/', icon: '✧', label: 'nexus-ai' },
+    ],
+  },
+  {
     id: 'learn',
     icon: '◎',
     label: 'learn',
@@ -54,6 +77,14 @@ const BOTTOM_GROUPS: NavGroup[] = [
       { href: '/roadmap',     icon: '⬡', label: 'nexus-path'  },
       { href: '/assignments', icon: '◎', label: 'assignments' },
       { href: '/upgrade',     icon: '✦', label: 'upgrade'     },
+    ],
+  },
+  {
+    id: 'community',
+    icon: '❖',
+    label: 'community',
+    items: [
+      { href: '/community', icon: '❖', label: 'community' },
     ],
   },
   {
@@ -95,11 +126,29 @@ const BOTTOM_GROUPS: NavGroup[] = [
 
 const SIDEBAR_SECTIONS = [
   {
+    label: 'home',
+    items: [
+      { href: '/', icon: '⌂', label: 'dashboard' },
+    ],
+  },
+  {
+    label: 'intelligence',
+    items: [
+      { href: '/ai/', icon: '✧', label: 'nexus-ai' },
+    ],
+  },
+  {
     label: 'learn',
     items: [
       { href: '/roadmap',     icon: '⬡', label: 'nexus-path'  },
       { href: '/assignments', icon: '◎', label: 'assignments'  },
       { href: '/upgrade',     icon: '✦', label: 'upgrade'     },
+    ],
+  },
+  {
+    label: 'community',
+    items: [
+      { href: '/community', icon: '❖', label: 'community' },
     ],
   },
   {
@@ -130,14 +179,21 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === '/';
-  const noSidebar = pathname === '/' || pathname === '/auth' || pathname === '/onboarding';
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState<string[]>([]);
+  const toggleSection = (label: string) =>
+    setCollapsed((cur) => (cur.includes(label) ? cur.filter((l) => l !== label) : [...cur, label]));
   const [loggedIn, setLoggedIn] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
+  // Home is the dashboard for signed-in users and guests, so it gets the menu too.
+  const noSidebar =
+    (pathname === '/' && !loggedIn && !isGuest) || pathname === '/auth' || pathname === '/onboarding';
 
   // Sync login state on every route change
   useEffect(() => {
     setLoggedIn(!!localStorage.getItem('token'));
+    setIsGuest(!!localStorage.getItem('nexus_guest'));
   }, [pathname]);
 
   // Close sidebar and mobile panel whenever the route changes
@@ -153,7 +209,12 @@ export default function Navbar() {
     href === '/' ? pathname === '/' : pathname.startsWith(href);
 
   const isGroupActive = (group: NavGroup) =>
-    group.items.some(item => pathname.startsWith(item.href));
+    group.items.some(item => isActive(item.href));
+  useEffect(() => {
+    document
+      .querySelector<HTMLElement>(`.${styles.mobileGroupBtnActive}`)
+      ?.scrollIntoView({ inline: 'center', block: 'nearest' });
+  }, [pathname]);
   const openGroupData = BOTTOM_GROUPS.find(g => g.id === openGroup) ?? null;
 
   const handleLogout = () => {
@@ -166,7 +227,7 @@ export default function Navbar() {
     <>
       {/* ── Top header ── */}
       <header className={styles.topHeader}>
-        {/* Hamburger — desktop only, hidden on home/auth/onboarding */}
+        {/* Directory chevron — desktop only, hidden on home/auth/onboarding */}
         {!noSidebar && (
           <button
             className={styles.toggle}
@@ -174,9 +235,9 @@ export default function Navbar() {
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
           >
-            <span className={`${styles.bar} ${open ? styles.barTop : ''}`} />
-            <span className={`${styles.bar} ${open ? styles.barMid : ''}`} />
-            <span className={`${styles.bar} ${open ? styles.barBot : ''}`} />
+            <svg className={`${styles.chevron} ${open ? styles.chevronOpen : ''}`} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M5.5 2.5L11 8l-5.5 5.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </button>
         )}
         <div className={styles.headerRight}>
@@ -268,11 +329,16 @@ export default function Navbar() {
             <nav className={styles.sidebarNav}>
               {SIDEBAR_SECTIONS.map((section) => (
                 <div key={section.label} className={styles.dirSection}>
-                  <span className={styles.dirFolder}>
-                    <span className={styles.dirCaret}>▸</span>
+                  <button
+                    type='button'
+                    className={styles.dirFolder}
+                    onClick={() => toggleSection(section.label)}
+                    aria-expanded={!collapsed.includes(section.label)}
+                  >
+                    <span className={styles.dirCaret}>{collapsed.includes(section.label) ? '▸' : '▾'}</span>
                     {section.label}/
-                  </span>
-                  <div className={styles.dirItems}>
+                  </button>
+                  <div className={styles.dirItems} hidden={collapsed.includes(section.label)}>
                     {section.items.map((item) => (
                       <Link
                         key={item.href}

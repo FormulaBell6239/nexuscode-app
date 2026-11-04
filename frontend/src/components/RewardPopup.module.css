@@ -20,7 +20,7 @@
   box-sizing: border-box;
   background: linear-gradient(155deg, #101d2b 0%, #09111d 65%);
   border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
-  color: #e2e8f0;
+  color: var(--text-primary);
   border-radius: 12px;
   box-shadow: 0 24px 80px rgba(0,0,0,0.58), 0 0 48px color-mix(in srgb, var(--accent) 14%, transparent);
   padding: 32px 32px 28px;
@@ -124,7 +124,7 @@
   font-size: 1.75rem;
   font-weight: 800;
   line-height: 1.2;
-  background: linear-gradient(110deg, #f8fafc 0%, var(--accent-bright) 52%, var(--accent) 100%);
+  background: linear-gradient(110deg, var(--text-primary) 0%, var(--accent-bright) 52%, var(--accent) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -153,7 +153,7 @@
   max-width: 32ch;
   margin: 0 auto 24px;
   font-size: 0.92rem;
-  color: #94a3b8;
+  color: var(--text-secondary);
   line-height: 1.6;
 }
 .closeBtn {
@@ -184,7 +184,7 @@
 
 .sql {
   --accent: #2563eb;
-  --accent-bright: #22d3ee;
+  --accent-bright: var(--accent-2);
 }
 
 .typescript {

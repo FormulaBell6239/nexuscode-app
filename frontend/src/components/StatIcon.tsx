@@ -26,8 +26,8 @@ const COLORS: Record<StatIconName, string> = {
   spark: "#fbbf24",
 };
 
-export default function StatIcon({ name, size = 13, muted = false }: { name: StatIconName; size?: number; muted?: boolean }) {
-  const color = muted ? "#64748b" : COLORS[name];
+export default function StatIcon({ name, size = 13, muted = false, color: colorOverride }: { name: StatIconName; size?: number; muted?: boolean; color?: string }) {
+  const color = muted ? "#64748b" : (colorOverride ?? COLORS[name]);
   const common = {
     width: size,
     height: size,

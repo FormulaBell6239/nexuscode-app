@@ -8,8 +8,8 @@ export class User {
     @Column({ unique: true })
     username: string;
 
-    @Column({ unique: true })
-    email: string;
+    @Column({ type: 'varchar', unique: true, nullable: true })
+    email: string | null;
 
     @Column()
     password: string;
@@ -36,6 +36,12 @@ export class User {
 
     @Column({ default: 'default' })
     theme: string; // 'default' | 'cyber-neon' | 'minimal-dark' | 'matrix-green'
+
+    @Column({ default: 'user' })
+    role: string; // 'user' | 'moderator' | 'admin'
+
+    @Column({ type: 'timestamp', nullable: true })
+    communityBannedUntil: Date | null;
 
     @Column({ nullable: true })
     stripeCustomerId: string;

@@ -232,13 +232,13 @@
 .successTitle {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #e2e8f0;
+  color: var(--text-primary);
   margin: 0;
 }
 
 .successSub {
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--text-muted);
   margin: 0;
   line-height: 1.55;
 }

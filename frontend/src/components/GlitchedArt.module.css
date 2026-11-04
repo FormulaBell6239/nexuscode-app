@@ -1,0 +1,45 @@
+.svg { width: 82%; height: 82%; overflow: visible; filter: drop-shadow(0 0 4px rgba(148,163,184,0.7)); }
+.green { filter: drop-shadow(0 0 5px rgba(16,185,129,0.85)); }
+.pink { filter: drop-shadow(0 0 5px rgba(219,39,119,0.85)); }
+.gold { filter: drop-shadow(0 0 5px rgba(245,158,11,0.85)); }
+
+/* Static: TV noise */
+.noiseRow { animation: noiseRow 1.1s steps(1) infinite; }
+@keyframes noiseRow { 0% { opacity: 1; transform: translateX(0); } 20% { opacity: .15; } 35% { opacity: 1; transform: translateX(1.2px); } 55% { opacity: .5; transform: translateX(-1px); } 75% { opacity: 1; transform: translateX(0); } 90% { opacity: .2; } }
+.roll { animation: roll 2.6s linear infinite; }
+@keyframes roll { 0% { transform: translateY(-3px); } 100% { transform: translateY(21px); } }
+
+/* Scanline: CRT beam */
+.beam { animation: beam 2.2s linear infinite; }
+@keyframes beam { 0% { transform: translateY(0); } 100% { transform: translateY(9.4px); } }
+.crt { animation: crt 3.1s steps(1) infinite; }
+@keyframes crt { 0%, 88%, 100% { opacity: 1; } 90% { opacity: .55; } 94% { opacity: .9; } }
+
+/* Corrupt: broken X and jumping blocks */
+.xA { animation: xA 2s steps(1) infinite; }
+.xB { animation: xB 2s steps(1) infinite; }
+@keyframes xA { 0%, 60%, 100% { transform: translate(0,0); } 64% { transform: translate(-2px, 1px); } 70% { transform: translate(1.5px, -1px); } 76% { transform: translate(0,0); } }
+@keyframes xB { 0%, 60%, 100% { transform: translate(0,0); } 66% { transform: translate(2px, -1px); } 72% { transform: translate(-1.5px, 1px); } 78% { transform: translate(0,0); } }
+.blockA { animation: blockA 1.6s steps(1) infinite; }
+.blockB { animation: blockB 1.9s steps(1) infinite; }
+.blockC { animation: blockC 1.3s steps(1) infinite; }
+@keyframes blockA { 0%, 100% { opacity: 0; transform: translate(0,0); } 20% { opacity: 1; } 45% { opacity: 1; transform: translate(-6px, 4px); } 60% { opacity: 0; } }
+@keyframes blockB { 0%, 100% { opacity: 0; } 30% { opacity: 1; transform: translate(0,0); } 55% { opacity: 1; transform: translate(8px, -3px); } 75% { opacity: 0; } }
+@keyframes blockC { 0%, 100% { opacity: 0; } 50% { opacity: 1; transform: translateX(-3px); } 70% { opacity: 1; transform: translateX(3px); } 85% { opacity: 0; } }
+
+/* Null Pointer: spinning ring, flickering slash */
+.ring { transform-origin: 12px 12px; animation: spin 7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.slash { animation: slashFlicker 2.8s steps(1) infinite; }
+.slashRed { transform: translate(-0.9px, 0.3px); animation: slashRed 2.8s steps(1) infinite; }
+.slashBlue { transform: translate(0.9px, -0.3px); animation: slashBlue 2.8s steps(1) infinite; }
+@keyframes slashFlicker { 0%, 100% { opacity: 1; } 62% { opacity: 0; } 66% { opacity: 1; } 70% { opacity: .2; } 74% { opacity: 1; } }
+@keyframes slashRed { 0%, 60%, 100% { transform: translate(-0.9px, 0.3px); } 64% { transform: translate(-2.4px, 0); } 72% { transform: translate(-.4px, .6px); } }
+@keyframes slashBlue { 0%, 60%, 100% { transform: translate(0.9px, -0.3px); } 64% { transform: translate(2.4px, .5px); } 72% { transform: translate(.4px, -.6px); } }
+.addr { animation: addr 2.8s steps(1) infinite; }
+@keyframes addr { 0%, 58%, 100% { opacity: 0; } 62% { opacity: 1; } 76% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .noiseRow, .roll, .beam, .crt, .xA, .xB, .blockA, .blockB, .blockC, .ring, .slash, .slashRed, .slashBlue, .addr { animation: none; }
+  .blockA, .blockB, .blockC { opacity: .8; }
+}

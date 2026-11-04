@@ -17,6 +17,16 @@ import { UserProgress } from './entities/UserProgress';
 import { UserAchievement } from './entities/UserAchievement';
 import { StoreItem } from './entities/StoreItem';
 import { UserPurchase } from './entities/UserPurchase';
+import { AiModule } from './ai/ai.module';
+import { CommunityModule } from './community/community.module';
+import { CommunityPost } from './entities/CommunityPost';
+import { CommunityReply } from './entities/CommunityReply';
+import { CommunityVote } from './entities/CommunityVote';
+import { CommunityNotification } from './entities/CommunityNotification';
+import { CommunityReport } from './entities/CommunityReport';
+
+import { Feedback } from './entities/Feedback';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -33,8 +43,10 @@ import { UserPurchase } from './entities/UserPurchase';
         password: config.get<string>('DB_PASSWORD') || undefined,
         database: config.get<string>('DB_NAME', 'nexuscode'),
         ssl: config.get<string>('DB_SSL') === 'true' ? { rejectUnauthorized: true } : false,
-        entities: [User, Game, Achievement, UserProgress, UserAchievement, StoreItem, UserPurchase],
+        entities: [User, Game, Achievement, UserProgress, UserAchievement, StoreItem, UserPurchase, CommunityPost, CommunityReply, CommunityVote, CommunityReport, CommunityNotification, Feedback],
         synchronize: config.get<string>('NODE_ENV') !== 'production',
+        migrations: [__dirname + '/migrations/*.js'],
+        migrationsRun: config.get<string>('NODE_ENV') === 'production',
         logging: config.get<string>('NODE_ENV') === 'development',
       }),
     }),
@@ -46,6 +58,9 @@ import { UserPurchase } from './entities/UserPurchase';
     StoreModule,
     ContactModule,
     HealthModule,
+    AiModule,
+    CommunityModule,
+    FeedbackModule,
   ],
 })
 export class AppModule {}

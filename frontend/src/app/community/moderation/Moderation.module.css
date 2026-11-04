@@ -1,0 +1,14 @@
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; margin-bottom: .8rem; }
+.count { font-weight: 800; color: #e9f0ff; }
+.status { padding: .2rem .6rem; font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; border-radius: 6px; border: 1px solid rgba(126,154,198,.3); color: #a3b0c9; }
+.hidden { color: #f5c451; border-color: rgba(245,196,81,.4); }
+.removed { color: #ff8a9b; border-color: rgba(255,138,155,.4); }
+.reasons { color: #8795ad; font-size: .9rem; }
+.excerpt { margin: 0 0 .6rem; font-size: 1.05rem; line-height: 1.55; color: #d8e4f9; word-break: break-word; }
+.link { color: #36e4ff; text-decoration: none; }
+.actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: .9rem; }
+.actions button { padding: .6rem 1.1rem; font: inherit; font-size: .9rem; font-weight: 700; border-radius: 9px; cursor: pointer; }
+.actions button:disabled { opacity: .5; cursor: default; }
+.danger { color: #fff; background: #c4364f; border: 1px solid #c4364f; }
+.ghost { color: #a3b0c9; background: transparent; border: 1px solid rgba(126,154,198,.3); }
+.ghost:hover { color: #36e4ff; border-color: rgba(54,228,255,.5); }

@@ -176,6 +176,54 @@ function getAssignmentProgress(assignment: Assignment, completedLessons: Set<str
 }
 
 // ── Page ─────────────────────────────────────────────────────────────
+function TrackSelect({ value, options, onChange }: { value: string; options: readonly string[]; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const close = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('mousedown', close);
+    document.addEventListener('keydown', esc);
+    return () => {
+      document.removeEventListener('mousedown', close);
+      document.removeEventListener('keydown', esc);
+    };
+  }, [open]);
+
+  return (
+    <div className={styles.trackSelect} ref={ref}>
+      <button
+        type="button"
+        className={styles.categorySelect}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen(o => !o)}
+      >
+        {value}
+      </button>
+      {open && (
+        <ul className={styles.trackMenu} role="listbox">
+          {options.map(option => (
+            <li key={option} role="option" aria-selected={option === value}>
+              <button
+                type="button"
+                className={`${styles.trackOption} ${option === value ? styles.trackOptionActive : ''}`}
+                onClick={() => { onChange(option); setOpen(false); }}
+              >
+                {option}
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
 export default function AssignmentsPage() {
   const [plan, setPlan]           = useState<PlanTier>('free');
   const [completed, setCompleted] = useState<Set<string>>(new Set());
@@ -267,12 +315,10 @@ export default function AssignmentsPage() {
 
         {mounted && (
           <div className={styles.assignmentControls}>
-            <label className={styles.categorySelectLabel}>
+            <div className={styles.categorySelectLabel}>
               <span>Track</span>
-              <select value={categoryFilter} onChange={event => setCategoryFilter(event.target.value)} className={styles.categorySelect}>
-                {CATEGORY_OPTIONS.map(option => <option key={option} value={option}>{option}</option>)}
-              </select>
-            </label>
+              <TrackSelect value={categoryFilter} options={CATEGORY_OPTIONS} onChange={setCategoryFilter} />
+            </div>
             <div className={styles.statusTabs} role="tablist" aria-label="Assignment status">
               {(['open', 'completed', 'all'] as const).map(status => (
                 <button

@@ -86,26 +86,26 @@ export default function QuizGame({
               ✦ PERFECT RUN — no mistakes!
             </div>
           )}
-          <div style={{ color: '#94a3b8', marginBottom: '1.75rem' }}>{msg}</div>
+          <div style={{ color: 'var(--text-secondary)', marginBottom: '1.75rem' }}>{msg}</div>
 
           <div style={{ background: '#111827', borderRadius: 14, padding: '1.25rem 1.5rem', marginBottom: '1.75rem', display: 'flex', flexDirection: 'column', gap: '0.85rem', textAlign: 'left' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#64748b' }}>Score</span>
-              <span style={{ fontWeight: 700, color: '#e2e8f0' }}>{reward.finalScore} / {total} &nbsp;({pct}%)</span>
+              <span style={{ color: 'var(--text-muted)' }}>Score</span>
+              <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{reward.finalScore} / {total} &nbsp;({pct}%)</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#64748b' }}>XP Earned</span>
-              <span style={{ fontWeight: 700, color: '#818cf8' }}>+{reward.xp} XP</span>
+              <span style={{ color: 'var(--text-muted)' }}>XP Earned</span>
+              <span style={{ fontWeight: 700, color: 'var(--accent)' }}>+{reward.xp} XP</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: '#64748b' }}>Credits</span>
+              <span style={{ color: 'var(--text-muted)' }}>Credits</span>
               <span style={{ fontWeight: 700, color: reward.credits > 0 ? '#f59e0b' : '#475569' }}>
                 {reward.credits > 0 ? `+${reward.credits} ◈` : '—'}
-                {reward.credits === 0 && <span style={{ fontSize: '0.65rem', color: '#475569', marginLeft: 6 }}>perfect run = +{GAME_CREDITS[difficulty]} ◈</span>}
+                {reward.credits === 0 && <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginLeft: 6 }}>perfect run = +{GAME_CREDITS[difficulty]} ◈</span>}
               </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #1e293b', paddingTop: '0.65rem', marginTop: '0.2rem' }}>
-              <span style={{ color: '#64748b' }}>Total Credits</span>
+              <span style={{ color: 'var(--text-muted)' }}>Total Credits</span>
               <span style={{ fontWeight: 800, color: '#f59e0b' }}>{reward.totalCredits} ◈</span>
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function QuizGame({
             <button onClick={handleRestart} style={{ background: 'linear-gradient(135deg,#6366f1,#06b6d4)', color: '#fff', border: 'none', borderRadius: 10, padding: '0.75rem 2rem', fontSize: '1rem', fontWeight: 700, cursor: 'pointer' }}>
               Play Again
             </button>
-            <Link href="/games" style={{ background: '#1e293b', color: '#94a3b8', borderRadius: 10, padding: '0.75rem 2rem', fontSize: '1rem', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
+            <Link href="/games" style={{ background: '#1e293b', color: 'var(--text-secondary)', borderRadius: 10, padding: '0.75rem 2rem', fontSize: '1rem', fontWeight: 700, textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>
               ← All Games
             </Link>
           </div>
@@ -132,7 +132,7 @@ export default function QuizGame({
       <div style={{ background: '#0d1424', border: '1px solid #1e3a5f', borderRadius: 20, padding: '2rem', boxShadow: '0 8px 40px rgba(6,182,212,0.10)' }}>
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <Link href="/games" style={{ color: '#64748b', textDecoration: 'none', fontSize: '0.875rem' }}>← Games</Link>
+          <Link href="/games" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontSize: '0.875rem' }}>← Games</Link>
           <div style={{ background: '#1e293b', borderRadius: 20, padding: '0.3rem 0.9rem', fontSize: '0.9rem', color: '#f59e0b', fontWeight: 700 }}>
             ★ {score}
           </div>
@@ -146,10 +146,10 @@ export default function QuizGame({
           <span style={{ background: badgeColor + '22', color: badgeColor, borderRadius: 6, padding: '0.2rem 0.65rem', fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.03em' }}>
             {badge}
           </span>
-          <span style={{ color: '#475569', fontSize: '0.875rem' }}>{current + 1} / {total}</span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>{current + 1} / {total}</span>
         </div>
 
-        <div style={{ fontSize: questionFontSize, fontWeight: 700, color: '#e2e8f0', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+        <div style={{ fontSize: questionFontSize, fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1.5rem', lineHeight: 1.5 }}>
           {q.q}
         </div>
 

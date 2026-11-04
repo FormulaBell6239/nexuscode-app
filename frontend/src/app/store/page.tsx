@@ -176,6 +176,8 @@ export default function StorePage() {
   return (
     <main className={styles.main}>
       <PageShell />
+      <div className={styles.ambient} />
+      <div className={styles.ambientAlt} />
 
       {toast && (
         <div className={`${styles.toast} ${toast.type === 'error' ? styles.toastError : ''}`}>
@@ -185,17 +187,22 @@ export default function StorePage() {
 
       <div className={styles.container}>
         <header className={styles.header}>
-          <div className={styles.badge}>Credits Store</div>
-          <h1 className={styles.title}>
-            <span className={styles.titleGradient}>Spend Your Credits</span>
-          </h1>
-          <p className={styles.subtitle}>
-            Unlock games, power up your learning, and personalise your profile.
-          </p>
+          <div className={styles.headerCopy}>
+            <div className={styles.badge}><span className={styles.statusDot} /> CREDITS STORE</div>
+            <h1 className={styles.title}>
+              Spend Your<span>Credits</span>
+            </h1>
+            <p className={styles.subtitle}>
+              Unlock games, power up your learning, and personalise your profile.
+            </p>
+          </div>
           <div className={styles.balancePill}>
-            <span className={styles.balanceIcon}>⬡</span>
-            <span className={styles.balanceAmount}>{loading ? '—' : credits}</span>
-            <span className={styles.balanceLabel}>Credits</span>
+            <span className={styles.balanceLabel}>YOUR BALANCE</span>
+            <div className={styles.balanceRow}>
+              <span className={styles.balanceIcon}>⬡</span>
+              <span className={styles.balanceAmount}>{loading ? '—' : credits}</span>
+              <span className={styles.balanceUnit}>Credits</span>
+            </div>
           </div>
         </header>
 
@@ -270,7 +277,7 @@ export default function StorePage() {
                 return (
                   <div
                     key={item.id}
-                    className={`${styles.card} ${isGameOwned ? styles.cardOwned : ''} ${!canAfford && !isGameOwned ? styles.cardAffordable : ''}`}
+                    className={`${styles.card} ${isGameOwned ? styles.cardOwned : ''} ${styles[`tone_${item.category}`] ?? ''} ${!canAfford && !isGameOwned ? styles.cardAffordable : ''}`}
                   >
                     <div className={styles.cardTop}>
                       <span className={styles.itemIcon}><GameIcon slug={item.gameSlug ?? item.applyValue} fallback={item.icon} size={26} /></span>

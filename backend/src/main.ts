@@ -1,6 +1,9 @@
-import { NestFactory } from '@nestjs/core';
+import * as Sentry from '@sentry/node';
+import { NestFactory, HttpAdapterHost } from '@nestjs/core';
+import { SentryFilter } from './sentry.filter';
 import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
+import { json, urlencoded, NextFunction, Request, Response } from 'express';
 import { AppModule } from './app.module';
 
 function isPositiveInteger(raw: string | undefined): boolean {
@@ -76,7 +79,26 @@ function validateProductionEnv() {
 
 async function bootstrap() {
   validateProductionEnv();
-  const app = await NestFactory.create(AppModule);
+  // Body parsers are registered manually: Nest skips its own default parser once any JSON parser exists.
+  const app = await NestFactory.create(AppModule, { bodyParser: false });
+
+  // Attachments are sent as base64, so the AI route needs a larger body limit than the 100kb default.
+  // Reject unauthenticated requests before buffering the large body.
+  app.use('/api/ai', (req: Request, res: Response, next: NextFunction) => {
+    if (!req.headers.authorization?.startsWith('Bearer ')) {
+      res.status(401).json({ statusCode: 401, message: 'No token provided' });
+      return;
+    }
+    next();
+  });
+  app.use('/api/ai', json({ limit: '30mb' }));
+  app.use(json());
+  app.use(urlencoded({ extended: true }));
+
+  if (process.env.SENTRY_DSN) {
+    Sentry.init({ dsn: process.env.SENTRY_DSN, environment: process.env.NODE_ENV, tracesSampleRate: 0.1 });
+    app.useGlobalFilters(new SentryFilter(app.get(HttpAdapterHost).httpAdapter));
+  }
 
   // Security headers
   app.use(helmet());
