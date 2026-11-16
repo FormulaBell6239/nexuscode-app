@@ -255,6 +255,45 @@
 .msTrack { flex: 1; height: 5px; border-radius: 99px; background: rgba(255,255,255,0.08); overflow: hidden; }
 .msFill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #36e4ff, #8875ff); }
 
+/* Milestone rewards */
+.milestoneGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 14px; }
+.milestoneCard {
+  position: relative; display: flex; flex-direction: column; gap: 14px; min-width: 0;
+  padding: 20px; border: 1px solid var(--c-border); border-radius: 16px;
+  background: linear-gradient(145deg, rgba(20,30,54,0.96), rgba(11,15,27,0.97));
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.milestoneEarned { border-color: rgba(54,228,255,0.35); }
+.milestoneHeader { display: flex; align-items: center; gap: 12px; }
+.milestoneIcon { display: grid; place-items: center; width: 48px; height: 48px; flex-shrink: 0; border-radius: 14px; color: var(--c-text); }
+.milestoneIcon svg { width: 23px; height: 23px; }
+.milestoneHeading { min-width: 0; flex: 1; }
+.milestoneHeading h3 { margin: 4px 0 0; color: var(--c-text); font-size: 1.08rem; line-height: 1.25; overflow-wrap: anywhere; }
+.milestoneTier { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+.milestoneStatus { flex-shrink: 0; color: var(--c-muted); font-size: 0.72rem; font-weight: 700; }
+.milestoneStatusEarned { color: #6ee7b7; }
+.milestoneRequirement { display: flex; flex-direction: column; gap: 5px; }
+.milestoneRequirement > span { color: #92a9be; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+.milestoneDescription { margin: 0; color: #7de8f2; font-size: 0.9rem; font-weight: 600; line-height: 1.5; text-shadow: 0 0 14px rgba(54,228,255,0.18); }
+.milestoneProgress { display: flex; flex-direction: column; gap: 7px; }
+.milestoneProgressLabel { display: flex; justify-content: space-between; gap: 8px; color: var(--c-muted); font-size: 0.76rem; }
+.milestoneProgressLabel strong { color: #d3e2f5; font-variant-numeric: tabular-nums; }
+.milestoneRewards { margin-top: auto; padding: 12px; border: 1px solid rgba(126,154,198,0.16); border-radius: 12px; background: rgba(5,10,20,0.6); }
+.milestoneRewardsLabel { display: block; margin-bottom: 10px; color: #9fb4cf; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.milestoneRewardList { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 145px), 1fr)); gap: 10px; }
+.milestoneReward { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.milestoneReward > span:last-child { display: flex; flex-direction: column; min-width: 0; gap: 2px; }
+.milestoneReward strong { color: #f0f7ff; font-size: 0.86rem; line-height: 1.2; overflow-wrap: anywhere; }
+.milestoneReward small { color: #91a5bd; font-size: 0.72rem; line-height: 1.25; }
+.rewardIcon, .rewardEmblem { display: grid; place-items: center; flex-shrink: 0; width: 36px; height: 36px; border: 1px solid rgba(54,228,255,0.25); border-radius: 10px; color: var(--c-cyan); background: rgba(54,228,255,0.08); font-size: 1.15rem; }
+.rewardEmblem { border-radius: 50%; font-size: 1.35rem; }
+.milestoneDate { color: var(--c-muted); font-size: 0.75rem; }
+@media (max-width: 400px) {
+  .milestoneCard { padding: 16px; }
+  .milestoneHeader { flex-wrap: wrap; }
+  .milestoneStatus { margin-left: 60px; }
+}
+
 /* Toggles */
 .segmented {
   display: flex; gap: 6px; padding: 6px; margin: 0 0 24px; width: fit-content; max-width: 100%; overflow-x: auto;

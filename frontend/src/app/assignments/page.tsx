@@ -62,7 +62,7 @@ const ASSIGNMENTS: Assignment[] = [
     description: 'Master the fundamentals of databases and relational queries.',
     task: 'Complete all 18 SQL lessons and practice each query pattern in the reference database.',
     rarity: 'Uncommon',
-    reward: { type: 'xp', label: '+150 Bonus XP', icon: '⚡', value: 150 },
+    reward: { type: 'xp', label: '+150 Bonus XP', icon: '✦', value: 150 },
     requiredTier: 'free',
     xpBonus: 150,
     creditReward: 40,
@@ -513,6 +513,10 @@ function RewardShowcase({ a, earned = false, compact = false }: { a: Assignment;
   );
 }
 
+function CardWatermark({ a }: { a: Assignment }) {
+  return <span className={styles.cardAccentIcon} aria-hidden="true">{a.reward.icon}</span>;
+}
+
 function AssignmentCard({ a, featured, completedLessons, onComplete }: { a: Assignment; featured: boolean; completedLessons: Set<string>; onComplete: (id: string) => void }) {
   const rc = RARITY_COLOR[a.rarity];
   const progress = getAssignmentProgress(a, completedLessons);
@@ -522,7 +526,7 @@ function AssignmentCard({ a, featured, completedLessons, onComplete }: { a: Assi
       className={`${styles.card} ${featured ? styles.cardFeatured : ''}`}
       style={{ '--rarity': rc, '--rarity-glow': RARITY_GLOW[a.rarity], '--reward': REWARD_COLOR[a.reward.type] } as React.CSSProperties}
     >
-      <span className={styles.cardAccentIcon} aria-hidden="true">{a.reward.icon}</span>
+      <CardWatermark a={a} />
       <div className={styles.cardInner}>
         <div className={styles.cardTop}>
           <span className={styles.rarityBadge} style={{ color: rc, borderColor: `${rc}44`, background: `${rc}14` }}>
@@ -571,6 +575,7 @@ function LockedCard({ a, plan }: { a: Assignment; plan: PlanTier }) {
       className={`${styles.card} ${styles.cardLocked}`}
       style={{ '--rarity': rc, '--rarity-glow': 'transparent' } as React.CSSProperties}
     >
+      <CardWatermark a={a} />
       <div className={styles.cardStripe} style={{ opacity: 0.2 }} />
       <div className={styles.cardInner}>
         <div className={styles.cardTop}>
@@ -609,7 +614,8 @@ function LockedCard({ a, plan }: { a: Assignment; plan: PlanTier }) {
 // ── Completed card ────────────────────────────────────────────────────
 function CompletedCard({ a }: { a: Assignment }) {
   return (
-    <article className={`${styles.card} ${styles.cardCompleted}`}>
+    <article className={`${styles.card} ${styles.cardCompleted}`} style={{ '--rarity': RARITY_COLOR[a.rarity] } as React.CSSProperties}>
+      <CardWatermark a={a} />
       <div className={styles.cardInner}>
         <div className={styles.cardTop}>
           <span className={styles.completedMark}>✓ Completed</span>

@@ -45,5 +45,5 @@
 .send { margin-top: 12px; width: 100%; padding: 10px; border: 0; border-radius: 10px; background: #22d3ee; color: #03121a; font-weight: 700; cursor: pointer; }
 .send:disabled { opacity: 0.45; cursor: not-allowed; }
 @media (max-width: 767px) {
-  .fab { bottom: calc(96px + env(safe-area-inset-bottom)); right: 10px; }
+  .fab { display: none; }
 }

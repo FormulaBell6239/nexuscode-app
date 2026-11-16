@@ -1,7 +1,7 @@
 import { applyEnergyRegen } from '../energy';
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { StoreItem } from '../entities/StoreItem';
 import { UserPurchase } from '../entities/UserPurchase';
 import { UserProgress } from '../entities/UserProgress';
@@ -18,6 +18,7 @@ export class StoreService {
     private readonly progressRepo: Repository<UserProgress>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async getCatalog(userId: number | null) {
@@ -56,53 +57,58 @@ export class StoreService {
     const item = await this.itemRepo.findOne({ where: { id: itemId, available: true } });
     if (!item) throw new NotFoundException('Item not found');
 
-    const progress = await this.progressRepo.findOne({ where: { userId } });
-    if (!progress) throw new NotFoundException('User progress not found');
+    return this.dataSource.transaction(async (manager) => {
+      await manager.query(
+        `SELECT "userId" FROM "user_progress" WHERE "userId" = $1 FOR UPDATE`,
+        [userId],
+      );
+      await this.lockPrizeGrantsForUser(manager, userId);
+      const progressRepo = manager.getRepository(UserProgress);
+      const purchaseRepo = manager.getRepository(UserPurchase);
+      const progress = await progressRepo.findOne({ where: { userId } });
+      if (!progress) throw new NotFoundException('User progress not found');
 
-    // Check already owned
-    if (item.oneTimePurchase) {
-      const existing = await this.purchaseRepo.findOne({ where: { userId, itemId } });
-      if (existing) throw new BadRequestException('Already owned');
-    }
-
-    const isEnergyRefill = item.category === 'powerup' && item.applyValue === 'energy_refill';
-    if (isEnergyRefill) {
-      applyEnergyRegen(progress);
-      if (progress.energy >= progress.maxEnergy) {
-        throw new BadRequestException('Energy is already full');
+      if (item.oneTimePurchase) {
+        const existing = await purchaseRepo.findOne({ where: { userId, itemId } });
+        if (existing) throw new BadRequestException('Already owned');
       }
-    }
 
-    // Check credits
-    if ((progress.credits ?? 0) < item.creditCost) {
-      throw new BadRequestException('Not enough credits');
-    }
+      const isEnergyRefill = item.category === 'powerup' && item.applyValue === 'energy_refill';
+      if (isEnergyRefill) {
+        applyEnergyRegen(progress);
+        if (progress.energy >= progress.maxEnergy) {
+          throw new BadRequestException('Energy is already full');
+        }
+      }
 
-    // Deduct credits
-    progress.credits = (progress.credits ?? 0) - item.creditCost;
-    if (isEnergyRefill) {
-      progress.energy = progress.maxEnergy;
-      progress.energyLastRegen = new Date();
-    }
-    await this.progressRepo.save(progress);
+      if ((progress.credits ?? 0) < item.creditCost) {
+        throw new BadRequestException('Not enough credits');
+      }
 
-    // Record purchase
-    const purchase = this.purchaseRepo.create({ userId, itemId });
-    await this.purchaseRepo.save(purchase);
+      progress.credits = (progress.credits ?? 0) - item.creditCost;
+      if (isEnergyRefill) {
+        progress.energy = progress.maxEnergy;
+        progress.energyLastRegen = new Date();
+      }
+      await progressRepo.save(progress);
 
-    return {
-      success: true,
-      credits: progress.credits,
-      energy: progress.energy,
-      item: {
-        id: item.id,
-        name: item.name,
-        category: item.category,
-        applyValue: item.applyValue,
-        cosmeticType: item.cosmeticType,
-        gameSlug: item.gameSlug,
-      },
-    };
+      const purchase = purchaseRepo.create({ userId, itemId });
+      await purchaseRepo.save(purchase);
+
+      return {
+        success: true,
+        credits: progress.credits,
+        energy: progress.energy,
+        item: {
+          id: item.id,
+          name: item.name,
+          category: item.category,
+          applyValue: item.applyValue,
+          cosmeticType: item.cosmeticType,
+          gameSlug: item.gameSlug,
+        },
+      };
+    });
   }
 
   async getOwnedItems(userId: number) {
@@ -128,19 +134,42 @@ export class StoreService {
     userId: number,
     skinApplyValue: string,
   ): Promise<{ name: string; icon: string; applyValue: string } | null> {
-    const item = await this.itemRepo.findOne({
+    return this.dataSource.transaction(async (manager) => {
+      // Match the source-attempt lock order before touching reward rows.
+      await manager.query(
+        `SELECT "userId" FROM "user_progress" WHERE "userId" = $1 FOR UPDATE`,
+        [userId],
+      );
+      return this.grantPrizeSkinInTransaction(manager, userId, skinApplyValue);
+    });
+  }
+
+  /** Use only from a transaction that already holds this user's progress row. */
+  async grantPrizeSkinInTransaction(
+    manager: EntityManager,
+    userId: number,
+    skinApplyValue: string,
+  ): Promise<{ name: string; icon: string; applyValue: string } | null> {
+    // Serializes prize checks/inserts across all cooperating grant paths without
+    // requiring a uniqueness migration against potentially duplicated history.
+    await this.lockPrizeGrantsForUser(manager, userId);
+    const item = await manager.getRepository(StoreItem).findOne({
       where: { applyValue: skinApplyValue, available: true },
     });
     if (!item) return null;
 
-    // Idempotent — don't double-grant
-    const existing = await this.purchaseRepo.findOne({ where: { userId, itemId: item.id } });
+    const purchaseRepo = manager.getRepository(UserPurchase);
+    const existing = await purchaseRepo.findOne({ where: { userId, itemId: item.id } });
     if (existing) return null;
 
     // Record as prize (no credit deduction)
-    const purchase = this.purchaseRepo.create({ userId, itemId: item.id, isPrize: true });
-    await this.purchaseRepo.save(purchase);
+    const purchase = purchaseRepo.create({ userId, itemId: item.id, isPrize: true });
+    await purchaseRepo.save(purchase);
 
     return { name: item.name, icon: item.icon, applyValue: item.applyValue };
+  }
+
+  private async lockPrizeGrantsForUser(manager: EntityManager, userId: number): Promise<void> {
+    await manager.query(`SELECT pg_advisory_xact_lock($1, $2)`, [731902, userId]);
   }
 }

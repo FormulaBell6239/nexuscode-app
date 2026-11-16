@@ -2,7 +2,8 @@
 .main {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 56px);
+  height: calc(100vh - var(--playground-header-offset, 56px));
+  height: calc(100dvh - var(--playground-header-offset, 56px));
   background: transparent;
   overflow: hidden;
   padding: 0;
@@ -539,8 +540,11 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  flex-shrink: 0;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
+.topBarActions > * { flex-shrink: 0; }
 
 
 
@@ -595,9 +599,13 @@
   padding: 0 0.75rem;
   align-items: flex-end;
   flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.editorTabs::-webkit-scrollbar { display: none; }
 
 .tab {
+  flex-shrink: 0;
   background: transparent;
   color: var(--border);
   border: none;
@@ -617,6 +625,7 @@
 }
 
 .activeTab {
+  flex-shrink: 0;
   background: transparent;
   color: color-mix(in srgb, var(--accent) 70%, white);
   border: none;
@@ -631,6 +640,23 @@
 }
 
 /* ── Editor Container ────────────────────────── */
+.ghostToggle {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.ghostToggle[aria-pressed="true"] { color: var(--accent); }
+.ghostToggle:hover, .ghostToggle:focus-visible { border-color: var(--accent); }
+
+.mobileHeader { display: none; }
+
 .editorContainer {
   flex: 1 1 0;
   display: flex;
@@ -944,6 +970,190 @@
 }
 
 /* ── Responsive ──────────────────────────────── */
+@media (max-width: 767px) {
+  .webDesktopBar, .webDesktopTabs, .webDesktopTips { display: none; }
+  .mobileHeader {
+    position: relative;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    flex: 0 0 44px;
+    height: 44px;
+    min-width: 0;
+    gap: 2px;
+    padding: 0 4px;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, var(--surface)), var(--surface));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+  }
+  .mobileFileButton, .mobileIconButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+  .mobileFileButton {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 5px;
+    padding: 0 5px;
+    color: var(--text-primary);
+    font: 600 0.75rem 'Fira Code', monospace;
+  }
+  .mobileFileButton > span:last-child {
+    flex-shrink: 0;
+    color: var(--text-muted);
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+  .mobileFileButton[aria-expanded="true"] > span:last-child {
+    color: var(--accent);
+    transform: rotate(180deg);
+  }
+  .mobileFileLabel, .mobileFolderName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mobileLanguages {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    height: 44px;
+    padding: 0 2px;
+  }
+  .mobileLanguages::before {
+    position: absolute;
+    z-index: -1;
+    inset: 4px 0;
+    border: 1px solid color-mix(in srgb, var(--accent) 16%, var(--border));
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--surface-2) 85%, var(--bg-primary));
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.22);
+    content: "";
+  }
+  .mobileLanguages button {
+    width: 38px;
+    height: 44px;
+    padding: 5px 0;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    background-clip: content-box;
+    color: var(--text-secondary);
+    font-size: 0.66rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .mobileLanguages .mobileLanguageActive {
+    background-image: linear-gradient(180deg, color-mix(in srgb, var(--accent) 25%, var(--surface-2)), color-mix(in srgb, var(--accent) 13%, var(--surface)));
+    color: var(--text-primary);
+  }
+  .mobileIconButton {
+    flex: 0 0 44px;
+    padding: 0;
+    font-size: 1rem;
+  }
+  .mobileHeaderActions { display: flex; justify-content: flex-end; min-width: 0; }
+  .mobileIconButton:last-of-type { font-size: 1.4rem; }
+  .mobileIconButton[aria-label="Show preview"]:not(:disabled) { color: var(--accent-2); }
+  .mobileIconActive, .mobileFileButton[aria-expanded="true"], .mobileIconButton[aria-expanded="true"] { color: var(--accent); }
+  .mobileHeaderActions .mobileIconButton[aria-expanded="true"] {
+    border-radius: 9px;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+  .mobileHeader button:not(:disabled):active { color: var(--accent); }
+  .mobileHeader button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .mobileHeader button:focus-visible, .mobileMenu input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+  .mobileMenu {
+    position: absolute;
+    top: 46px;
+    width: min(320px, calc(100vw - 16px));
+    max-height: min(440px, calc(100dvh - 150px));
+    overflow-y: auto;
+    padding: 10px;
+    border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border));
+    border-radius: 12px;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 5%, var(--surface-2)), var(--surface) 60%);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  }
+  .mobileFilesMenu { left: 4px; }
+  .mobileToolsMenu { right: 4px; width: min(240px, calc(100vw - 16px)); }
+  .mobileMenuTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    min-height: 36px;
+    padding: 0 6px;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .mobileMenu .fileArea {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    margin: 4px 0 8px;
+  }
+  .mobileMenu .fileNameInput { font-size: 16px; }
+  .mobileMenu .createBtn, .mobileMenu .cancelNaming { min-height: 36px; }
+  .mobileFileList {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 0;
+  }
+  .mobileFileList button, .mobileMenuAction {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 40px;
+    padding: 7px 8px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-secondary);
+    text-align: left;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  .mobileFileList button span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mobileFileList .mobileFileActive, .mobileFileList button:hover, .mobileMenuAction:hover {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    color: var(--text-primary);
+  }
+  .mobileFileList .mobileFileActive { box-shadow: inset 2px 0 var(--accent); }
+  .mobileMenuAction[aria-pressed="true"] { color: var(--accent); }
+  .mobileFileType { flex: 0 0 36px; font-size: 0.65rem; font-weight: 800; }
+  .mobileTip {
+    margin: 6px 4px 0;
+    padding: 10px 4px 2px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+  .mobileTip strong { color: var(--accent); }
+  @media (prefers-reduced-motion: reduce) {
+    .mobileFileButton > span:last-child { transition: none; }
+  }
+}
+
 @media (max-width: 700px) {
   .topBar {
     padding: 0.5rem 0.75rem;
@@ -954,11 +1164,22 @@
     row-gap: 0.4rem;
   }
   .fileArea {
-    order: 3;
-    flex: 1 1 100%;
+    flex: 1 1 155px;
+    min-width: 155px;
+  }
+  form.fileArea {
+    order: 2;
+    flex-basis: 100%;
+  }
+  .folderPill {
+    max-width: 20%;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .topBarActions {
-    margin-left: auto;
+    order: 3;
+    flex: 1 1 100%;
   }
   .tipsBox {
     margin: 0.5rem 0.6rem 0;
@@ -1154,7 +1375,7 @@
   text-transform: uppercase;
   opacity: 1;
   white-space: nowrap;
-  animation: autoIn 0.4s ease both;
+  animation: autoIn 0.4s ease both, autoOut 0.4s ease 5s forwards;
 }
 .autoDot {
   width: 7px;
@@ -1166,3 +1387,8 @@
 }
 @keyframes autoPulse { 0%, 100% { opacity: 1; box-shadow: 0 0 8px #34d399; } 50% { opacity: 0.45; box-shadow: 0 0 3px #34d399; } }
 @keyframes autoIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+@keyframes autoOut { from { opacity: 1; } to { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .autoSaved, .autoDot { animation: none; }
+}

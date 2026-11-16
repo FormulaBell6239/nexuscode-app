@@ -1,10 +1,11 @@
-import { Body, Controller, HttpException, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, ParseUUIDPipe, Post, Req, UseGuards } from '@nestjs/common';
 import type { Request } from 'express';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { AiService } from './ai.service';
 import { IsIn, IsString, MaxLength } from 'class-validator';
 import { ChatDto } from './chat.dto';
+import { AiMemoryService } from './ai-memory.service';
 
 class CompleteDto {
   @IsString() @MaxLength(6000) prefix: string;
@@ -23,7 +24,27 @@ const usage = new Map<string, { day: string; count: number }>();
 @Controller('ai')
 @UseGuards(ThrottlerGuard, JwtAuthGuard)
 export class AiController {
-  constructor(private readonly aiService: AiService) {}
+  constructor(private readonly aiService: AiService, private readonly memory: AiMemoryService) {}
+
+  @Get('conversations')
+  listConversations(@Req() req: Request) {
+    return this.memory.list(Number((req as any).user.sub));
+  }
+
+  @Post('conversations')
+  createConversation(@Req() req: Request) {
+    return this.memory.create(Number((req as any).user.sub));
+  }
+
+  @Get('conversations/:id')
+  getConversation(@Req() req: Request, @Param('id', ParseUUIDPipe) id: string) {
+    return this.memory.get(Number((req as any).user.sub), id);
+  }
+
+  @Delete('conversations/:id')
+  deleteConversation(@Req() req: Request, @Param('id', ParseUUIDPipe) id: string) {
+    return this.memory.remove(Number((req as any).user.sub), id);
+  }
 
   @Post('chat')
   @Throttle({ default: { ttl: 60000, limit: 10 } })
@@ -41,7 +62,19 @@ export class AiController {
       );
     }
     usage.set(key, { day, count: count + 1 });
-    return this.aiService.chat(dto);
+    const controller = new AbortController();
+    const response = req.res;
+    const onClose = () => {
+      if (!response?.writableEnded) controller.abort();
+    };
+    response?.once('close', onClose);
+    try {
+      return dto.conversationId
+        ? await this.memory.chat(Number(user.sub), dto, controller.signal)
+        : await this.aiService.chat(dto, controller.signal);
+    } finally {
+      response?.removeListener('close', onClose);
+    }
   }
 
   @Post('complete')

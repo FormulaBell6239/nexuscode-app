@@ -8,6 +8,7 @@ import {
   Matches,
   MaxLength,
   ValidateNested,
+  IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -44,6 +45,10 @@ export class ChatDto {
   @IsString()
   @MaxLength(40)
   mode?: string;
+
+  @IsOptional()
+  @IsUUID()
+  conversationId?: string;
 
   @IsOptional()
   @IsArray()

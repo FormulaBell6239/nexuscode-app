@@ -4,9 +4,13 @@ import StatIcon from "@/components/StatIcon";
 import dynamic from "next/dynamic";
 import styles from "./Playground.module.css";
 import HtmlCheatSheet from './HtmlCheatSheet';
+import ColorTable from './ColorTable';
+import AutosaveIndicator from './AutosaveIndicator';
+import { setProjectContext } from '../../lib/ghostLocal';
 import PlaygroundTour from './PlaygroundTour';
 import StructureGuide from "./StructureGuide";
 import { usePreviewMode, previewBaseStyle, PreviewModeToggle } from "../curriculum/LivePreview";
+import PlaygroundNameKeyboard from "./PlaygroundNameKeyboard";
 
 const PlaygroundEditor = dynamic(() => import('./PlaygroundEditor'), { ssr: false });
 
@@ -14,10 +18,18 @@ const PlaygroundEditor = dynamic(() => import('./PlaygroundEditor'), { ssr: fals
 let _pyodideInjected = false;
 
 type Mode = null | "web" | "python";
+type WebLanguage = "html" | "css" | "js";
+type MobileMenu = "files" | "more" | null;
 
 export default function PlaygroundPage() {
   const [mode, setMode] = useState<Mode>(null);
   const [activeTab, setActiveTab] = useState<"html" | "css" | "js" | "browser">("html");
+  const [lastWebTab, setLastWebTab] = useState<WebLanguage>("html");
+  const [mobileMenu, setMobileMenu] = useState<MobileMenu>(null);
+  const [mobileLayout, setMobileLayout] = useState(false);
+  const mobileHeaderRef = useRef<HTMLDivElement>(null);
+  const mobileFilesButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMoreButtonRef = useRef<HTMLButtonElement>(null);
   const [htmlCode, setHtmlCode] = useState("");
   const [cssCode, setCssCode] = useState("");
   const [jsCode, setJsCode] = useState("");
@@ -34,6 +46,9 @@ export default function PlaygroundPage() {
   const [showPyStructure, setShowPyStructure] = useState(false);
   const [draftLoaded, setDraftLoaded] = useState(false);
   const [showCheatSheet, setShowCheatSheet] = useState(false);
+  const [showColors, setShowColors] = useState(false);
+  const [ghostTextEnabled, setGhostTextEnabled] = useState(true);
+  useEffect(() => { setProjectContext({ html: htmlCode, css: cssCode, js: jsCode }); }, [htmlCode, cssCode, jsCode]);
   const [showAutosaveNote, setShowAutosaveNote] = useState(false);
   const [introState, setIntroState] = useState<'hidden' | 'ask'>('hidden');
   const [tourOn, setTourOn] = useState(false);
@@ -44,6 +59,66 @@ export default function PlaygroundPage() {
   const [namingMode, setNamingMode] = useState(true);
   const [namingValue, setNamingValue] = useState("");
   const newFileInputRef = useRef<HTMLInputElement>(null);
+  const activeNameInputRef = useRef<HTMLInputElement | null>(null);
+  const nameKeyboardRef = useRef<HTMLDivElement | null>(null);
+  const activeNameChangeRef = useRef<(value: string) => void>(() => {});
+  const [nameKeyboardOpen, setNameKeyboardOpen] = useState(false);
+  const [touchInput, setTouchInput] = useState(() => typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches);
+
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    const update = () => {
+      setMobileLayout(media.matches);
+      if (!media.matches) setMobileMenu(null);
+    };
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(pointer: coarse)");
+    const update = () => setTouchInput(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    if (!nameKeyboardOpen) return;
+    const dismiss = (event: PointerEvent) => {
+      const target = event.target;
+      if (target instanceof Node && !activeNameInputRef.current?.contains(target) && !nameKeyboardRef.current?.contains(target)) {
+        setNameKeyboardOpen(false);
+      }
+    };
+    document.addEventListener("pointerdown", dismiss);
+    return () => document.removeEventListener("pointerdown", dismiss);
+  }, [nameKeyboardOpen]);
+
+  useEffect(() => {
+    if (!mobileMenu) return;
+    const dismiss = (event: PointerEvent) => {
+      if (
+        event.target instanceof Node &&
+        !mobileHeaderRef.current?.contains(event.target) &&
+        !nameKeyboardRef.current?.contains(event.target)
+      ) {
+        setMobileMenu(null);
+      }
+    };
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setMobileMenu(null);
+      (mobileMenu === "files" ? mobileFilesButtonRef : mobileMoreButtonRef).current?.focus();
+    };
+    document.addEventListener("pointerdown", dismiss);
+    document.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("pointerdown", dismiss);
+      document.removeEventListener("keydown", escape);
+    };
+  }, [mobileMenu]);
 
   // ── Python state ──
   const [pyCode, setPyCode] = useState("# Write your Python here\nprint('Hello, NexusCode!')\n");
@@ -60,6 +135,11 @@ export default function PlaygroundPage() {
   const [pySearchTerm, setPySearchTerm] = useState("");
 
   useEffect(() => {
+    try {
+      setGhostTextEnabled(localStorage.getItem("playgroundGhostText") !== "off");
+    } catch (error) {
+      console.warn("Could not load the ghost text preference.", error);
+    }
     try {
       const saved = localStorage.getItem("playgroundProjects");
       if (saved) setProjects(JSON.parse(saved));
@@ -79,6 +159,28 @@ export default function PlaygroundPage() {
     } catch {}
     setDraftLoaded(true);
   }, []);
+
+  const toggleGhostText = () => {
+    const enabled = !ghostTextEnabled;
+    setGhostTextEnabled(enabled);
+    try {
+      localStorage.setItem("playgroundGhostText", enabled ? "on" : "off");
+    } catch (error) {
+      console.warn("Could not save the ghost text preference.", error);
+    }
+  };
+
+  const ghostTextControl = (
+    <button
+      type="button"
+      className={styles.ghostToggle}
+      aria-pressed={ghostTextEnabled}
+      onClick={toggleGhostText}
+      title="Turn inline ghost text suggestions on or off"
+    >
+      Ghost text: {ghostTextEnabled ? "On" : "Off"}
+    </button>
+  );
 
   const closeIntro = () => {
     try { localStorage.setItem("playgroundIntroSeen", "1"); } catch {}
@@ -178,6 +280,7 @@ export default function PlaygroundPage() {
 
   const handleTabClick = (tab: "html" | "css" | "js" | "browser") => {
     if (tab === "browser") handleRun();
+    else setLastWebTab(tab);
     setActiveTab(tab);
     const nameForTab = tab === "html" ? htmlFileName : tab === "css" ? cssFileName : tab === "js" ? jsFileName : "x";
     setNamingMode(!nameForTab);
@@ -212,9 +315,11 @@ export default function PlaygroundPage() {
     setWebFolder(""); setFolderInput("");
     setOutput("");
     setActiveTab("html");
+    setLastWebTab("html");
     setNamingValue("");
     setNamingMode(true);
     setShowProjects(false);
+    if (mobileLayout) setMobileMenu("files");
   };
 
   const handleDeletePyProject = (idx: number) => {
@@ -263,6 +368,18 @@ export default function PlaygroundPage() {
     activeTab === 'html' ? htmlFileName :
     activeTab === 'css'  ? cssFileName  :
     activeTab === 'js'   ? jsFileName   : '';
+  const mobileLanguage = activeTab === "browser" ? lastWebTab : activeTab;
+  const webFiles: { language: WebLanguage; label: string; name: string }[] = [
+    { language: "html", label: "HTML", name: htmlFileName },
+    { language: "css", label: "CSS", name: cssFileName },
+    { language: "js", label: "JS", name: jsFileName },
+  ];
+  const mobileFile = webFiles.find(file => file.language === mobileLanguage);
+
+  const selectMobileLanguage = (language: WebLanguage) => {
+    handleTabClick(language);
+    setMobileMenu(webFiles.find(file => file.language === language)?.name ? null : "files");
+  };
 
   const handleCreateFolder = (e?: React.FormEvent) => {
     e?.preventDefault();
@@ -272,18 +389,57 @@ export default function PlaygroundPage() {
     setFolderInput('');
     setNamingValue('');
     setNamingMode(true);
+    setNameKeyboardOpen(false);
     setShowAutosaveNote(true);
   };
+
+  const focusNameInput = (field: "folder" | "file", input: HTMLInputElement) => {
+    activeNameInputRef.current = input;
+    activeNameChangeRef.current = field === "folder" ? setFolderInput : setNamingValue;
+    setNameKeyboardOpen(touchInput);
+  };
+
+  const handleNameKeyboardInput = (text: string) => {
+    const input = activeNameInputRef.current;
+    if (!input) return;
+    const start = input.selectionStart ?? input.value.length;
+    const end = input.selectionEnd ?? start;
+    activeNameChangeRef.current(`${input.value.slice(0, start)}${text}${input.value.slice(end)}`);
+    requestAnimationFrame(() => input.setSelectionRange(start + text.length, start + text.length));
+  };
+
+  const handleNameKeyboardBackspace = () => {
+    const input = activeNameInputRef.current;
+    if (!input) return;
+    let start = input.selectionStart ?? input.value.length;
+    const end = input.selectionEnd ?? start;
+    if (start === end && start > 0) {
+      const previousCharacter = [...input.value.slice(0, start)].pop();
+      start -= previousCharacter?.length ?? 1;
+    }
+    activeNameChangeRef.current(`${input.value.slice(0, start)}${input.value.slice(end)}`);
+    requestAnimationFrame(() => input.setSelectionRange(start, start));
+  };
+
+  const nameKeyboard = touchInput && nameKeyboardOpen ? (
+    <PlaygroundNameKeyboard
+      keyboardRef={element => { nameKeyboardRef.current = element; }}
+      onInput={handleNameKeyboardInput}
+      onBackspace={handleNameKeyboardBackspace}
+      onEnter={() => activeNameInputRef.current?.form?.requestSubmit()}
+    />
+  ) : null;
 
   const folderForm = (
     <form className={styles.fileArea} onSubmit={handleCreateFolder}>
       <span className={styles.extBadge} style={{ color: '#a5b4fc', borderColor: 'rgba(129,140,248,0.35)' }}>folder</span>
       <input
         type="text"
-        autoFocus
         data-tour="folderName"
         placeholder="my-project"
         value={folderInput}
+        readOnly={touchInput}
+        onFocus={event => focusNameInput("folder", event.currentTarget)}
         onChange={e => setFolderInput(e.target.value)}
         className={styles.fileNameInput}
       />
@@ -295,7 +451,7 @@ export default function PlaygroundPage() {
     <div className={styles.folderEmpty}>
       <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg>
       <p className={styles.folderEmptyTitle}>Create a folder to get started</p>
-      <p className={styles.folderEmptyHint}>Name your project folder in the top bar, then add files and start coding. Open past folders from Files.</p>
+      <p className={styles.folderEmptyHint}>Name your project folder using the file controls, then add files and start coding. Open past folders from Files.</p>
     </div>
   );
 
@@ -314,11 +470,13 @@ export default function PlaygroundPage() {
     }
     setNamingValue('');
     setNamingMode(false);
+    setNameKeyboardOpen(false);
+    if (mode === "web" && mobileLayout) setMobileMenu(null);
   };
 
   // Auto-focus naming input
   useEffect(() => {
-    if (namingMode) newFileInputRef.current?.focus();
+    if (namingMode && !window.matchMedia("(pointer: coarse)").matches) newFileInputRef.current?.focus();
   }, [namingMode]);
 
   // ── Categorised tips ──
@@ -386,6 +544,9 @@ export default function PlaygroundPage() {
   const tourEl = !tourOn ? null : (() => {
     const skip = closeIntro;
     if (mode === null) return <PlaygroundTour key="pick" target="pick" title="1. Pick a project type" text="Click HTML for web pages with a live preview, or Python to run code in your browser." onSkip={skip} />;
+    if (mode === "web" && mobileLayout && mobileMenu !== "files" && (!folderReady || !hasFile)) {
+      return <PlaygroundTour key="fileMenu" target="fileMenu" title="Open the file menu" text="Open this menu to name your folder and file." onSkip={skip} />;
+    }
     if (!folderReady) {
       return folderInput.trim()
         ? <PlaygroundTour key="folderBtn" target="folderBtn" title="3. Create the folder" text="Now click Create folder." onSkip={skip} />
@@ -427,7 +588,7 @@ export default function PlaygroundPage() {
             <p className={styles.pickerSubtitle}>Choose a project type to get started.</p>
           </div>
           <div className={styles.pickerGrid} data-tour="pick">
-            <button className={`${styles.pickerCard} ${styles.pickerCardWeb}`} onClick={() => setMode("web")}>
+            <button className={`${styles.pickerCard} ${styles.pickerCardWeb}`} onClick={() => { setMode("web"); if (mobileLayout) setMobileMenu("files"); }}>
               <div className={styles.pickerCardBody}>
                 <span className={`${styles.pickerMicroLabel} ${styles.pickerMicroLabelWeb}`}>Web / Browser</span>
                 <p className={styles.pickerCardTitle}>HTML</p>
@@ -455,9 +616,6 @@ export default function PlaygroundPage() {
     return (
       <main className={styles.main}>
         {tourEl}
-        <div className={`${styles.tipsBox} ${fade ? styles.fadeIn : styles.fadeOut}`}>
-          <strong style={{ color: TIP_COLORS[displayedTip.type] }}>Tip</strong>{displayedTip.text}
-        </div>
         <div className={styles.topBar}>
           <button onClick={() => setMode(null)} className={styles.backBtn} aria-label="Back">←</button>
           {!pyFolder ? folderForm : (<span className={styles.folderPill}>{pyFolder}/</span>)}
@@ -469,12 +627,14 @@ export default function PlaygroundPage() {
                 type="text"
                 placeholder="script.py"
                 value={namingValue}
+                readOnly={touchInput}
+                onFocus={event => focusNameInput("file", event.currentTarget)}
                 onChange={e => setNamingValue(e.target.value)}
                 className={styles.fileNameInput}
                 data-tour="fileName"
               />
               <button type="submit" className={styles.createBtn} data-tour="fileBtn">Create</button>
-              <button type="button" className={styles.cancelNaming} onClick={() => { setNamingMode(false); setNamingValue(''); }}>✕</button>
+              <button type="button" className={styles.cancelNaming} onClick={() => { setNamingMode(false); setNamingValue(''); setNameKeyboardOpen(false); }}>✕</button>
             </form>
           ) : pyFileName ? (
             <div className={styles.fileArea}>
@@ -484,7 +644,7 @@ export default function PlaygroundPage() {
             </div>
           ) : null}
           <div className={styles.topBarActions}>
-                        {pyFolder && <span className={styles.autoSaved}><i className={styles.autoDot} />Autosaving</span>}
+            {pyFolder && <AutosaveIndicator />}
             <button onClick={() => setShowPyStructure(v => !v)} className={styles.toggleButton}>Structures</button>
             <button onClick={() => setShowPyProjects(v => !v)} className={styles.toggleButton}>Files</button>
             <button
@@ -494,6 +654,7 @@ export default function PlaygroundPage() {
             >
               {!pyodideReady ? "Loading…" : pyRunning ? "Running…" : "▶ Run"}
             </button>
+            {pyFolder && ghostTextControl}
           </div>
         </div>
 
@@ -552,6 +713,7 @@ export default function PlaygroundPage() {
             <PlaygroundEditor
               value={pyCode}
               language="python"
+              ghostTextEnabled={ghostTextEnabled}
               onChange={v => setPyCode(v)}
               className={styles.codeEditor}
             />
@@ -562,6 +724,10 @@ export default function PlaygroundPage() {
           </div>
         </div>
         )}
+        <div className={`${styles.tipsBox} ${fade ? styles.fadeIn : styles.fadeOut}`}>
+          <strong style={{ color: TIP_COLORS[displayedTip.type] }}>Tip</strong>{displayedTip.text}
+        </div>
+        {nameKeyboard}
       </main>
     );
   }
@@ -571,8 +737,139 @@ export default function PlaygroundPage() {
     <main className={styles.main}>
       {tourEl}
       {showCheatSheet && <HtmlCheatSheet onClose={() => setShowCheatSheet(false)} />}
+      {showColors && activeTab === "css" && <ColorTable onClose={() => setShowColors(false)} />}
+      <div ref={mobileHeaderRef} className={styles.mobileHeader}>
+        <button
+          ref={mobileFilesButtonRef}
+          type="button"
+          className={styles.mobileFileButton}
+          aria-label={`Files: ${webFolder ? mobileFile?.name || `New ${mobileFile?.label} file` : "choose a folder"}`}
+          aria-expanded={mobileMenu === "files"}
+          aria-controls="mobile-playground-files"
+          data-tour="fileMenu"
+          onClick={() => setMobileMenu(mobileMenu === "files" ? null : "files")}
+        >
+          <span className={styles.mobileFileLabel}>{webFolder ? mobileFile?.name || `New ${mobileFile?.label}` : "Files"}</span>
+          <span aria-hidden="true">⌄</span>
+        </button>
+        <div className={styles.mobileLanguages} role="group" aria-label="Editor language">
+          {webFiles.map(file => (
+            <button
+              key={file.language}
+              type="button"
+              className={mobileLanguage === file.language && activeTab !== "browser" ? styles.mobileLanguageActive : undefined}
+              aria-pressed={mobileLanguage === file.language && activeTab !== "browser"}
+              disabled={!webFolder}
+              onClick={() => selectMobileLanguage(file.language)}
+            >{file.label}</button>
+          ))}
+        </div>
+        <div className={styles.mobileHeaderActions}>
+          <button
+            type="button"
+            className={`${styles.mobileIconButton} ${activeTab === "browser" ? styles.mobileIconActive : ""}`}
+            aria-label={activeTab === "browser" ? "Return to editor" : "Show preview"}
+            aria-pressed={activeTab === "browser"}
+            disabled={!webFolder}
+            onClick={() => {
+              if (activeTab === "browser") selectMobileLanguage(lastWebTab);
+              else { handleTabClick("browser"); setMobileMenu(null); }
+            }}
+          >
+            {activeTab === "browser" ? <span aria-hidden="true">‹/›</span> : <span aria-hidden="true">▶</span>}
+          </button>
+          <button
+            ref={mobileMoreButtonRef}
+            type="button"
+            className={styles.mobileIconButton}
+            aria-label="More playground tools"
+            aria-expanded={mobileMenu === "more"}
+            aria-controls="mobile-playground-tools"
+            onClick={() => setMobileMenu(mobileMenu === "more" ? null : "more")}
+          >⋯</button>
+        </div>
+
+        {mobileMenu === "files" && (
+          <div id="mobile-playground-files" className={`${styles.mobileMenu} ${styles.mobileFilesMenu}`} role="region" aria-label="Project files">
+            {!webFolder ? (
+              <>
+                <div className={styles.mobileMenuTitle}>Create a project folder</div>
+                {folderForm}
+              </>
+            ) : (
+              <>
+                <div className={styles.mobileMenuTitle}>
+                  <span className={styles.mobileFolderName}>{webFolder}/</span>
+                  <AutosaveIndicator />
+                </div>
+                <div className={styles.mobileFileList} aria-label="Files in current project">
+                  {webFiles.map(file => (
+                    <button
+                      key={file.language}
+                      type="button"
+                      className={mobileLanguage === file.language && activeTab !== "browser" ? styles.mobileFileActive : undefined}
+                      onClick={() => selectMobileLanguage(file.language)}
+                    >
+                      <span className={styles.mobileFileType} style={{ color: LANG_COLORS[file.language] }}>{file.label}</span>
+                      <span>{file.name || `New ${file.label} file`}</span>
+                    </button>
+                  ))}
+                </div>
+                {namingMode && activeTab !== "browser" && (
+                  <form className={`${styles.fileArea} ${styles.mobileNamingForm}`} onSubmit={handleCreateFile}>
+                    <span className={styles.extBadge} style={{ color: LANG_COLORS[activeTab], borderColor: `${LANG_COLORS[activeTab]}44` }}>
+                      {LANG_EXT[activeTab]}
+                    </span>
+                    <input
+                      type="text"
+                      placeholder={activeTab === "css" ? "style.css" : activeTab === "js" ? "app.js" : "index.html"}
+                      value={namingValue}
+                      readOnly={touchInput}
+                      onFocus={event => focusNameInput("file", event.currentTarget)}
+                      onChange={event => setNamingValue(event.target.value)}
+                      className={styles.fileNameInput}
+                      data-tour="fileName"
+                      aria-label="New file name"
+                    />
+                    <button type="submit" className={styles.createBtn} data-tour="fileBtn">Create</button>
+                    <button type="button" className={styles.cancelNaming} aria-label="Cancel file naming" onClick={() => { setNamingMode(false); setNamingValue(""); setNameKeyboardOpen(false); }}>✕</button>
+                  </form>
+                )}
+                <button type="button" className={styles.mobileMenuAction} onClick={() => { handleSaveProject(); setMobileMenu(null); }}>Save project</button>
+                <button type="button" className={styles.mobileMenuAction} onClick={handleNewProject}>＋ New folder</button>
+              </>
+            )}
+            <button type="button" className={styles.mobileMenuAction} onClick={() => { setShowProjects(true); setMobileMenu(null); }}>Open saved folders</button>
+            <button type="button" className={styles.mobileMenuAction} onClick={() => { setMode(null); setMobileMenu(null); }}>← Project types</button>
+          </div>
+        )}
+
+        {mobileMenu === "more" && (
+          <div id="mobile-playground-tools" className={`${styles.mobileMenu} ${styles.mobileToolsMenu}`} role="region" aria-label="Playground tools">
+            <button type="button" className={styles.mobileMenuAction} onClick={() => { setShowCheatSheet(true); setMobileMenu(null); }}>Cheat Sheet</button>
+            <button type="button" className={styles.mobileMenuAction} disabled={!webFolder} aria-pressed={showStructure} onClick={() => {
+              if (activeTab === "browser") handleTabClick(lastWebTab);
+              setShowStructure(value => !value);
+              setMobileMenu(null);
+            }}>Structures</button>
+            {mobileLanguage === "css" && (
+              <button type="button" className={styles.mobileMenuAction} disabled={!webFolder} onClick={() => {
+                if (activeTab === "browser") handleTabClick("css");
+                setShowColors(true);
+                setMobileMenu(null);
+              }}>Colors</button>
+            )}
+            {webFolder && (
+              <button type="button" className={styles.mobileMenuAction} aria-pressed={ghostTextEnabled} onClick={toggleGhostText}>
+                Ghost text: {ghostTextEnabled ? "On" : "Off"}
+              </button>
+            )}
+            <div className={styles.mobileTip}><strong>Tip</strong> {displayedTip.text}</div>
+          </div>
+        )}
+      </div>
       {/* ── Top bar ── */}
-      <div className={styles.topBar}>
+      <div className={`${styles.topBar} ${styles.webDesktopBar}`}>
         <button onClick={() => setMode(null)} className={styles.backBtn} aria-label="Back">←</button>
         {!webFolder ? folderForm : (<span className={styles.folderPill}>{webFolder}/</span>)}
         {!webFolder ? null : namingMode ? (
@@ -585,12 +882,14 @@ export default function PlaygroundPage() {
               type="text"
               placeholder={activeTab === 'css' ? 'style.css' : activeTab === 'js' ? 'app.js' : 'index.html'}
               value={namingValue}
+              readOnly={touchInput}
+              onFocus={event => focusNameInput("file", event.currentTarget)}
               onChange={e => setNamingValue(e.target.value)}
               className={styles.fileNameInput}
               data-tour="fileName"
             />
             <button type="submit" className={styles.createBtn} data-tour="fileBtn">Create</button>
-            <button type="button" className={styles.cancelNaming} onClick={() => { setNamingMode(false); setNamingValue(''); }}>✕</button>
+            <button type="button" className={styles.cancelNaming} onClick={() => { setNamingMode(false); setNamingValue(''); setNameKeyboardOpen(false); }}>✕</button>
           </form>
         ) : currentTabFileName ? (
           <div className={styles.fileArea}>
@@ -602,16 +901,18 @@ export default function PlaygroundPage() {
           </div>
         ) : null}
         <div className={styles.topBarActions}>
-                    {webFolder && <span className={styles.autoSaved}><i className={styles.autoDot} />Autosaving</span>}
+          {webFolder && <AutosaveIndicator />}
           <button onClick={() => setShowCheatSheet(true)} className={styles.toggleButton}>Cheat Sheet</button>
+          {activeTab === "css" && <button onClick={() => setShowColors(true)} className={styles.toggleButton}>Colors</button>}
           <button onClick={() => setShowStructure(v => !v)} className={styles.toggleButton}>Structures</button>
           <button onClick={() => setShowProjects(!showProjects)} className={styles.toggleButton}>Files</button>
+          {webFolder && ghostTextControl}
         </div>
       </div>
 
       {!webFolder ? folderEmpty : (<>
       {/* ── Editor tabs ── */}
-      <div className={styles.editorTabs}>
+      <div className={`${styles.editorTabs} ${styles.webDesktopTabs}`}>
         <button className={activeTab === "html" ? styles.activeTab : styles.tab} onClick={() => handleTabClick("html")}>HTML</button>
         <button className={activeTab === "css" ? styles.activeTab : styles.tab} onClick={() => handleTabClick("css")}>CSS</button>
         <button className={activeTab === "js" ? styles.activeTab : styles.tab} onClick={() => handleTabClick("js")}>JavaScript</button>
@@ -621,13 +922,13 @@ export default function PlaygroundPage() {
       {/* ── Editor / Preview ── */}
       <div className={styles.editorContainer} data-tour="editor">
         {activeTab === "html" && (
-          <PlaygroundEditor value={htmlCode} language="html" onChange={value => setHtmlCode(value)} className={styles.codeEditor} />
+          <PlaygroundEditor value={htmlCode} language="html" ghostTextEnabled={ghostTextEnabled} onChange={value => setHtmlCode(value)} className={styles.codeEditor} />
         )}
         {activeTab === "css" && (
-          <PlaygroundEditor value={cssCode} language="css" onChange={value => setCssCode(value)} className={styles.codeEditor} />
+          <PlaygroundEditor value={cssCode} language="css" ghostTextEnabled={ghostTextEnabled} onChange={value => setCssCode(value)} className={styles.codeEditor} />
         )}
         {activeTab === "js" && (
-          <PlaygroundEditor value={jsCode} language="js" onChange={value => setJsCode(value)} className={styles.codeEditor} />
+          <PlaygroundEditor value={jsCode} language="js" ghostTextEnabled={ghostTextEnabled} onChange={value => setJsCode(value)} className={styles.codeEditor} />
         )}
         {activeTab === "browser" && (
           <div style={{ position: "relative", flex: 1, display: "flex", minHeight: 0 }}>
@@ -691,7 +992,7 @@ export default function PlaygroundPage() {
                     <span className={styles.drawerFilePreview}>{[proj.htmlName, proj.cssName, proj.jsName].filter(Boolean).join(', ') || 'no files yet'}</span>
                   </div>
                   <div className={styles.drawerFileBtns}>
-                    <button className={styles.drawerLoad} onClick={() => { setHtmlCode(proj.html); setCssCode(proj.css); setJsCode(proj.js); setHtmlFileName(proj.htmlName || ''); setCssFileName(proj.cssName || ''); setJsFileName(proj.jsName || ''); setWebFolder(proj.folder ?? (proj.htmlName || proj.cssName || proj.jsName || 'project').replace(/\.\w+$/, '')); setActiveTab('html'); setNamingMode(!proj.htmlName); setShowProjects(false); }}>Open</button>
+                    <button className={styles.drawerLoad} onClick={() => { setHtmlCode(proj.html); setCssCode(proj.css); setJsCode(proj.js); setHtmlFileName(proj.htmlName || ''); setCssFileName(proj.cssName || ''); setJsFileName(proj.jsName || ''); setWebFolder(proj.folder ?? (proj.htmlName || proj.cssName || proj.jsName || 'project').replace(/\.\w+$/, '')); setActiveTab('html'); setLastWebTab('html'); setNamingMode(!proj.htmlName); setShowProjects(false); if (mobileLayout && !proj.htmlName) setMobileMenu('files'); }}>Open</button>
                     <button className={styles.drawerDelete} onClick={() => handleDeleteProject(projects.indexOf(proj))}>✕</button>
                   </div>
                 </div>
@@ -702,9 +1003,10 @@ export default function PlaygroundPage() {
       )}
 
       {/* ── Tips bar ── */}
-      <div className={`${styles.tipsBox} ${fade ? styles.fadeIn : styles.fadeOut}`}>
+      <div className={`${styles.tipsBox} ${styles.webDesktopTips} ${fade ? styles.fadeIn : styles.fadeOut}`}>
         <strong style={{ color: TIP_COLORS[displayedTip.type] }}>Tip</strong>{displayedTip.text}
       </div>
+      {nameKeyboard}
     </main>
   );
 }

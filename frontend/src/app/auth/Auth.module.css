@@ -5,6 +5,19 @@
   padding: 2rem;
 }
 
+@media (max-width: 767px) {
+  .main {
+    min-height: calc(100vh - 52px - 82px - env(safe-area-inset-top, 0px) - max(8px, calc(env(safe-area-inset-bottom, 0px) - 20px)));
+    padding: 1.25rem;
+  }
+
+  @supports (height: 100dvh) {
+    .main {
+      min-height: calc(100dvh - 52px - 82px - env(safe-area-inset-top, 0px) - max(8px, calc(env(safe-area-inset-bottom, 0px) - 20px)));
+    }
+  }
+}
+
 
 /* ── Card ────────────────────────────────────── */
 .card {

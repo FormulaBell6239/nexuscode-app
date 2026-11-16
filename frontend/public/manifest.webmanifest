@@ -1,7 +1,7 @@
 {
   "name": "NexusCode",
   "short_name": "NexusCode",
-  "start_url": "/roadmap",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#080d17",
   "theme_color": "#080d17",

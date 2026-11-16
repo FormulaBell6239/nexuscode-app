@@ -1,0 +1,122 @@
+.container {
+  position: absolute;
+  right: 12px;
+  bottom: calc(62px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2999;
+}
+
+.toggleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(34, 211, 238, 0.4);
+  background: rgba(34, 211, 238, 0.08);
+  color: #22d3ee;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.toggleBtn:active,
+.toggleBtn.active {
+  background: rgba(34, 211, 238, 0.15);
+  border-color: rgba(34, 211, 238, 0.7);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+  transform: scale(0.95);
+}
+
+.quickKeys {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  background: rgba(8, 13, 23, 0.96);
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  animation: slideUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.quickKeys::-webkit-scrollbar {
+  width: 4px;
+}
+
+.quickKeys::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.quickKeys::-webkit-scrollbar-thumb {
+  background: rgba(34, 211, 238, 0.3);
+  border-radius: 2px;
+}
+
+.quickKey {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: #e6edf7;
+  font: 500 0.9rem ui-monospace, SFMono-Regular, 'Courier New', monospace;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quickKey:active,
+.quickKey.active {
+  background: rgba(34, 211, 238, 0.18);
+  border-color: rgba(34, 211, 238, 0.5);
+  color: #e6faff;
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.2);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-height: 600px) {
+  .container {
+    right: 8px;
+    bottom: calc(48px + env(safe-area-inset-bottom));
+  }
+
+  .toggleBtn {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+
+  .quickKeys {
+    padding: 8px;
+    gap: 4px;
+    max-height: 200px;
+  }
+
+  .quickKey {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+}

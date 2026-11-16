@@ -415,7 +415,7 @@ export default function Community() {
 
           <p>
             Stuck on a bug? Have an idea? Show the community what
-            you're working on and learn from people building alongside you.
+            you&apos;re working on and learn from people building alongside you.
           </p>
 
           <button

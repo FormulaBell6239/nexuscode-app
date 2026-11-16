@@ -18,7 +18,7 @@
   min-width: 0;
   min-height: calc(100vh - 116px);
   min-height: calc(100dvh - 116px);
-  overflow: hidden;
+  overflow: clip;
   color: var(--ai-text);
   background:
     radial-gradient(
@@ -192,6 +192,25 @@
   background: var(--ai-surface-2);
   transform: translateY(-1px);
 }
+
+.nexus-ai__history {
+  position: relative;
+  z-index: 4;
+  margin: 14px clamp(16px, 3vw, 42px) 0;
+  padding: 16px;
+  border: 1px solid var(--ai-border);
+  border-radius: 14px;
+  background: var(--ai-surface);
+}
+.nexus-ai__history-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.nexus-ai__history p, .nexus-ai__memory-notice { color: var(--ai-muted); font-size: 0.78rem; line-height: 1.5; }
+.nexus-ai__history ul { display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow-y: auto; margin: 12px 0 0; padding: 0; list-style: none; }
+.nexus-ai__history li { display: flex; gap: 8px; }
+.nexus-ai__history button { padding: 8px 10px; border: 1px solid var(--ai-border); border-radius: 8px; background: var(--ai-surface-2); color: var(--ai-text); font: inherit; font-size: 0.8rem; cursor: pointer; }
+.nexus-ai__history li button:first-child { flex: 1; min-width: 0; text-align: left; overflow-wrap: anywhere; }
+.nexus-ai__history button:disabled { opacity: 0.5; cursor: not-allowed; }
+.nexus-ai__history-error { margin: 12px clamp(16px, 3vw, 42px) 0; color: #fca5a5; font-size: 0.85rem; }
+.nexus-ai__memory-notice { margin: 0 0 8px; }
 
 /* =========================================================
    PAGE CONTENT
@@ -921,6 +940,35 @@
   box-shadow: none;
 }
 
+.nexus-ai__stop {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid color-mix(in srgb, var(--ai-accent) 65%, transparent);
+  border-radius: 10px;
+  color: var(--ai-text);
+  background: var(--ai-surface-2);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.nexus-ai__stop span { color: var(--ai-accent); font-size: 11px; }
+.nexus-ai__stop:hover, .nexus-ai__stop:focus-visible {
+  border-color: var(--ai-accent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--ai-accent) 25%, transparent);
+}
+.nexus-ai__stop--floating {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 20;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
 .nexus-ai__disclaimer {
   margin: 10px 0 0;
   color: var(--ai-muted);
@@ -1282,10 +1330,6 @@
    IMAGE ATTACHMENTS
    ========================================= */
 
-.nexus-ai__composer-area {
-  position: relative;
-}
-
 .nexus-ai__file-input {
   display: none;
 }
@@ -1550,4 +1594,8 @@
 
   .nexus-ai__suggestions { grid-template-columns: 1fr; gap: 10px; margin-top: 18px; }
   .nexus-ai__composer-area { margin-top: 14px; }
+  .nexus-ai__stop--floating {
+    left: 14px;
+    bottom: calc(82px + max(8px, calc(env(safe-area-inset-bottom, 0px) - 20px)));
+  }
 }

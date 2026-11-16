@@ -16,6 +16,8 @@ interface AchievementEntry {
   requiredCount: number;
   creditReward: number;
   emblemId?: string | null;
+  themeReward?: string;
+  avatarReward?: string | null;
   progress: number;
   earned: boolean;
   earnedAt: string | null;
@@ -65,40 +67,51 @@ const TYPE_ICON: Record<string, string> = {
 // ── Achievement card — horizontal row layout ────────────────────────────────
 function AchCard({ ach }: { ach: AchievementEntry }) {
   const tier = getTier(ach.creditReward);
+  const progress = ach.progress ?? 0;
   const pct = ach.requiredCount > 0
-    ? Math.min(Math.round((ach.progress / ach.requiredCount) * 100), 100)
+    ? Math.min(Math.round((progress / ach.requiredCount) * 100), 100)
     : (ach.earned ? 100 : 0);
 
-  const col = ach.earned ? '#22d3ee' : '#64748b';
   const em = ach.emblemId ? EMBLEMS[ach.emblemId] : null;
+  const theme = THEMES.find(item => item.slug === ach.themeReward);
 
   return (
-    <div
-      className={`${styles.emblemTile} ${ach.earned ? '' : styles.emblemTileLocked}`}
-      style={{ ['--ec' as string]: col }}
-    >
-      {ach.creditReward > 0 && <span className={styles.emblemRarityTag}>⬡ {ach.creditReward}</span>}
-      <div className={styles.emblemStage}>
-        <div className={styles.emblemMedal} style={{ background: 'linear-gradient(145deg,#141a2a,#070a12)', borderColor: col, filter: ach.earned ? 'none' : 'grayscale(0.8)' }}>
-          <span style={{ display: 'inline-flex', transform: 'scale(2.1)' }}>{GROUP_ICONS[TYPE_ICON[ach.type] ?? 'other']}</span>
+    <article className={`${styles.milestoneCard} ${ach.earned ? styles.milestoneEarned : ''}`}>
+      <div className={styles.milestoneHeader}>
+        <div className={`${styles.milestoneIcon} ${styles[`badge_${tier}`]}`}>
+          {GROUP_ICONS[TYPE_ICON[ach.type] ?? 'other']}
         </div>
-        {!ach.earned && <span className={styles.emblemLock}><StatIcon name="lock" size={13} /></span>}
+        <div className={styles.milestoneHeading}>
+          <span className={`${styles.milestoneTier} ${styles[`tier_${tier}`]}`}>{TIER_LABELS[tier]} milestone</span>
+          <h3>{ach.name}</h3>
+        </div>
+        <span className={`${styles.milestoneStatus} ${ach.earned ? styles.milestoneStatusEarned : ''}`}>
+          {ach.earned ? 'Completed' : 'In progress'}
+        </span>
       </div>
-      <div className={styles.emblemTileName}>{ach.name}</div>
-      <div className={styles.emblemReq}>{ach.description}</div>
+      <div className={styles.milestoneRequirement}>
+        <span>How to earn</span>
+        <p className={styles.milestoneDescription}>{ach.description}</p>
+      </div>
       {!ach.earned && ach.requiredCount > 1 && (
-        <div className={styles.msProgress}>
-          <div className={styles.msTrack}><div className={styles.msFill} style={{ width: `${pct}%` }} /></div>
-          <span>{Math.min(ach.progress, ach.requiredCount)}/{ach.requiredCount}</span>
+        <div className={styles.milestoneProgress}>
+          <div className={styles.milestoneProgressLabel}><span>Progress</span><strong>{Math.min(progress, ach.requiredCount).toLocaleString()} / {ach.requiredCount.toLocaleString()}</strong></div>
+          <div className={styles.msTrack} role="progressbar" aria-label={`${ach.name} progress`} aria-valuemin={0} aria-valuemax={ach.requiredCount} aria-valuenow={Math.min(progress, ach.requiredCount)}>
+            <div className={styles.msFill} style={{ width: `${pct}%` }} />
+          </div>
         </div>
       )}
-      <div className={styles.emblemAlt}>
-        {ach.earned
-          ? `✓ Completed${ach.earnedAt ? ' · ' + new Date(ach.earnedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : ''}`
-          : 'In progress'}
-        {em && <div style={{ marginTop: 4, color: ach.earned ? '#6ee7b7' : '#a5b4fc' }}>{ach.earned ? '✓' : <StatIcon name="lock" size={11} />} Emblem: {em.mark} {em.name}</div>}
+      <div className={styles.milestoneRewards}>
+        <span className={styles.milestoneRewardsLabel}>{ach.earned ? 'Milestone rewards' : 'Rewards on completion'}</span>
+        <div className={styles.milestoneRewardList}>
+          {ach.creditReward > 0 && <div className={styles.milestoneReward}><span className={styles.rewardIcon}>⬡</span><span><strong>+{ach.creditReward.toLocaleString()} credits</strong><small>Credits</small></span></div>}
+          {em && <div className={styles.milestoneReward}><span className={styles.rewardEmblem} style={{ background: em.background, color: em.color, borderColor: em.border, textShadow: em.textShadow }}>{em.mark}</span><span><strong>{em.name}</strong><small>Emblem</small></span></div>}
+          {theme && <div className={styles.milestoneReward}><span className={styles.rewardIcon} style={{ color: theme.accent }}>{theme.icon}</span><span><strong>{theme.name}</strong><small>Theme · unlock once</small></span></div>}
+          {ach.avatarReward === 'avatar-unbroken' && <div className={styles.milestoneReward}><span className={styles.rewardIcon}>◈</span><span><strong>Unbroken Sigil</strong><small>Avatar</small></span></div>}
+        </div>
       </div>
-    </div>
+      {ach.earned && ach.earnedAt && <span className={styles.milestoneDate}>Completed {new Date(ach.earnedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>}
+    </article>
   );
 }
 
@@ -309,7 +322,7 @@ export default function AchievementsPage() {
                 {(EMBLEM_CATEGORIES.find(c => c.id === emblemCat)?.emblems ?? []).filter(e => ownedEmblems.has(e.id) || achievements.some(x => x.emblemId === e.id && x.earned)).length}/{EMBLEM_CATEGORIES.find(c => c.id === emblemCat)?.emblems.length ?? 0}
               </span>
             </div>
-            <div className={styles.emblemShowcase}>
+            <div className={styles.milestoneGrid}>
               {(EMBLEM_CATEGORIES.find(c => c.id === emblemCat)?.emblems ?? []).map(e => {
                 const a = achievements.find(x => x.emblemId === e.id);
                 const owned = ownedEmblems.has(e.id) || !!a?.earned;

@@ -7,13 +7,14 @@ A gamified coding learning platform built to make learning to code engaging, pro
 - **Curriculum** — Structured coding lessons with an interactive code editor (Monaco + CodeMirror)
 - **Nexus Path** — Visual learning roadmap tracking your progression
 - **Games** — Coding challenges and mini-games to reinforce concepts
-- **Playground** — Free-form code sandbox for experimentation
+- **Playground** — Free-form code sandbox for experimentation. On mobile, the web editor's file menu manages the current project and saved folders; the language pill, preview button, and overflow menu provide quick access to the editor tools.
 - **Leaderboard** — Compete with other learners
 - **Achievements** — Unlock badges and rewards as you progress
 - **Store** — Spend earned points on cosmetics and profile items
 - **Profile & Calling Cards** — Customisable profile with emblem/calling card system
 - **Energy System** — Hearts-based energy mechanic tied to lesson attempts
 - **Onboarding** — Guided setup flow for new users
+- **Nexus AI memory** — Signed-in users can revisit or delete saved chats. Messages and compact extractive conversation notes are stored per account; requests use bounded recent history, up to three keyword-relevant past notes, and up to three matching earlier user messages. Attachments are sent with the current request but are not stored or available in later chats.
 - **Free Tier with Ads** — The free tier is ad-supported to keep NexusCode free for everyone. Upgrading to Pro removes ads entirely.
 
 ## Tech Stack
@@ -89,6 +90,8 @@ cd frontend && npm run dev
 ```
 
 `npm run dev` automatically runs a preflight that clears stale listeners on ports `3000` and `3001` before starting both services.
+
+Production applies the AI memory database migration on backend startup. Chat history sent before this feature was enabled cannot be recovered.
 
 ## Security
 

@@ -1,6 +1,9 @@
+'use client';
+
 import styles from './Onboarding.module.css';
 import PageShell from '@/components/PageShell';
 import Link from 'next/link';
+import { finishOnboarding } from '@/lib/onboarding';
 
 const STEPS = [
   { n: '01', icon: '◈', title: 'Learn your way',    desc: 'Follow the Nexus Path through Web, Python and SQL tracks, lesson by lesson.', href: '/roadmap' },
@@ -28,7 +31,7 @@ export default function Onboarding() {
 
         <div className={styles.stepsGrid}>
           {STEPS.map((s) => (
-            <Link key={s.n} href={s.href} className={styles.stepCard}>
+            <Link key={s.n} href={s.href} className={styles.stepCard} onClick={finishOnboarding}>
               <div className={styles.stepTop}>
                 <span className={styles.stepIcon}>{s.icon}</span>
                 <span className={styles.stepNum}>{s.n}</span>
@@ -41,8 +44,8 @@ export default function Onboarding() {
         </div>
 
         <div className={styles.ctaRow}>
-          <Link href="/curriculum" className={styles.buttonPrimary}>Start Learning →</Link>
-          <Link href="/community" className={styles.buttonGhost}>Visit Community</Link>
+          <Link href="/curriculum" className={styles.buttonPrimary} onClick={finishOnboarding}>Start Learning →</Link>
+          <Link href="/community" className={styles.buttonGhost} onClick={finishOnboarding}>Visit Community</Link>
         </div>
       </div>
     </main>

@@ -1,8 +1,7 @@
 import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Game } from '../entities/Game';
-import { UserProgress } from '../entities/UserProgress';
 import { UserPurchase } from '../entities/UserPurchase';
 import { StoreItem } from '../entities/StoreItem';
 import { AchievementsService } from '../achievements/achievements.service';
@@ -14,13 +13,12 @@ export class GameService {
   constructor(
     @InjectRepository(Game)
     private readonly gameRepo: Repository<Game>,
-    @InjectRepository(UserProgress)
-    private readonly progressRepo: Repository<UserProgress>,
     @InjectRepository(UserPurchase)
     private readonly purchaseRepo: Repository<UserPurchase>,
     @InjectRepository(StoreItem)
     private readonly storeItemRepo: Repository<StoreItem>,
     private readonly achievementsService: AchievementsService,
+    private readonly dataSource: DataSource,
   ) {}
 
   findAllGames() {
@@ -48,25 +46,36 @@ export class GameService {
       }
     }
 
-    let progress = await this.progressRepo.findOne({ where: { userId } });
-    if (!progress) {
-      progress = this.progressRepo.create({ userId });
-    }
-
-    progress.xp += XP_PER_GAME;
-    progress.level = Math.floor(progress.xp / 300) + 1;
-    progress.lastActiveDate = new Date();
-    await this.progressRepo.save(progress);
+    const gameProgress = await this.dataSource.transaction(async (manager) => {
+      await manager.query(
+        `INSERT INTO "user_progress" ("userId") VALUES ($1)
+         ON CONFLICT ("userId") DO NOTHING`,
+        [userId],
+      );
+      const rows = await manager.query(
+        `SELECT "xp" FROM "user_progress" WHERE "userId" = $1 FOR UPDATE`,
+        [userId],
+      ) as Array<{ xp: number }>;
+      const xp = Number(rows[0]?.xp ?? 0) + XP_PER_GAME;
+      const level = Math.floor(xp / 300) + 1;
+      const lastActiveDate = new Date();
+      await manager.query(
+        `UPDATE "user_progress" SET "xp" = $2, "level" = $3, "lastActiveDate" = $4,
+           "updatedAt" = now() WHERE "userId" = $1`,
+        [userId, xp, level, lastActiveDate],
+      );
+      return { xp, level };
+    });
 
     const r1 = await this.achievementsService.incrementProgress(userId, 'challenges_completed', 1);
     const r2 = await this.achievementsService.incrementProgress(userId, 'targets_hit', 1);
     let creditsAwarded = r1.creditsAwarded + r2.creditsAwarded;
     const prizes = [...r1.prizes, ...r2.prizes];
-    if (progress.level >= 5) {
+    if (gameProgress.level >= 5) {
       const r3 = await this.achievementsService.incrementProgress(userId, 'overall_performance', 1);
       creditsAwarded += r3.creditsAwarded;
       prizes.push(...r3.prizes);
     }
-    return { xp: progress.xp, level: progress.level, creditsAwarded, prizes };
+    return { xp: gameProgress.xp, level: gameProgress.level, creditsAwarded, prizes };
   }
 }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from './page.module.css';
 import Dashboard from './Dashboard';
+import { isOnboardingPending } from '@/lib/onboarding';
 
 const FEATURES = [
   { icon: '◈', title: 'Code Challenges', desc: 'Solve real-world problems every day and sharpen practical skills.' },
@@ -25,6 +26,7 @@ export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   const [isGuest, setIsGuest] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [ready, setReady] = useState(false);
   const router = useRouter();
 
@@ -32,20 +34,26 @@ export default function Home() {
     const token = localStorage.getItem('token');
     const isGuest = localStorage.getItem('nexus_guest');
     const hasVisited = localStorage.getItem('nexus_visited');
+    const onboardingPending = isOnboardingPending();
+    const mobile = window.matchMedia('(max-width: 767px)');
 
     setIsLoggedIn(!!token);
     setIsGuest(!!isGuest);
-    setReady(true);
+    setIsMobile(mobile.matches);
     if (token) {
       const stored = localStorage.getItem('username') || localStorage.getItem('name') || '';
       setUsername(stored);
     }
 
-    // First visit with no account and no guest session → send to onboarding
-    if (!token && !isGuest && !hasVisited) {
-      localStorage.setItem('nexus_visited', 'true');
+    if (onboardingPending || (!token && !isGuest && !hasVisited)) {
       router.replace('/onboarding');
+      return;
     }
+
+    setReady(true);
+    const updateMobile = (event: MediaQueryListEvent) => setIsMobile(event.matches);
+    mobile.addEventListener('change', updateMobile);
+    return () => mobile.removeEventListener('change', updateMobile);
   }, [router]);
 
   useEffect(() => {
@@ -72,7 +80,7 @@ export default function Home() {
 
   // Wait for the client check so signed-in users never flash the landing page.
   if (!ready) return null;
-  if (isLoggedIn || isGuest) return <Dashboard signedIn={isLoggedIn} />;
+  if (isMobile || isLoggedIn || isGuest) return <Dashboard signedIn={isLoggedIn} />;
 
   return (
     <main className={styles.main}>

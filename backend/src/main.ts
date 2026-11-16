@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { json, urlencoded, NextFunction, Request, Response } from 'express';
 import { AppModule } from './app.module';
+import { lessonAttemptJsonParser, requireLessonAttemptJson } from './profile/lesson-attempt-body-parser';
 
 function isPositiveInteger(raw: string | undefined): boolean {
   if (!raw) return false;
@@ -92,6 +93,8 @@ async function bootstrap() {
     next();
   });
   app.use('/api/ai', json({ limit: '30mb' }));
+  // Accept only JSON and cap it before the general parser can consume lesson attempt bodies.
+  app.use('/api/profile/lesson-attempts', requireLessonAttemptJson, lessonAttemptJsonParser());
   app.use(json());
   app.use(urlencoded({ extended: true }));
 

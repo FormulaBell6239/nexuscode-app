@@ -7,6 +7,7 @@ import StreakTracker from './StreakTracker';
 import StatIcon from './StatIcon';
 import { api, CREDITS_CHANGED_EVENT } from '@/lib/api';
 import { endSession } from '@/lib/session';
+import { OPEN_FEEDBACK_EVENT } from '@/lib/feedback';
 
 interface ProfileSnap {
   energy: number;
@@ -186,6 +187,7 @@ export default function Navbar() {
     setCollapsed((cur) => (cur.includes(label) ? cur.filter((l) => l !== label) : [...cur, label]));
   const [loggedIn, setLoggedIn] = useState(false);
   const [isGuest, setIsGuest] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   // Home is the dashboard for signed-in users and guests, so it gets the menu too.
   const noSidebar =
     (pathname === '/' && !loggedIn && !isGuest) || pathname === '/auth' || pathname === '/onboarding';
@@ -194,6 +196,7 @@ export default function Navbar() {
   useEffect(() => {
     setLoggedIn(!!localStorage.getItem('token'));
     setIsGuest(!!localStorage.getItem('nexus_guest'));
+    setAuthReady(true);
   }, [pathname]);
 
   // Close sidebar and mobile panel whenever the route changes
@@ -226,7 +229,7 @@ export default function Navbar() {
   return (
     <>
       {/* ── Top header ── */}
-      <header className={styles.topHeader}>
+      <header className={styles.topHeader} data-empty-playground-header={authReady && !loggedIn && pathname === '/playground' ? '' : undefined}>
         {/* Directory chevron — desktop only, hidden on home/auth/onboarding */}
         {!noSidebar && (
           <button
@@ -278,6 +281,20 @@ export default function Navbar() {
                   {item.label}
                 </Link>
               ))}
+              {openGroupData.id === 'utility' && (
+                <button
+                  type='button'
+                  className={`${styles.dirItem} ${styles.mobileDirItem} ${styles.mobileDirButton}`}
+                  onClick={() => {
+                    setOpenGroup(null);
+                    window.dispatchEvent(new Event(OPEN_FEEDBACK_EVENT));
+                  }}
+                >
+                  <span className={styles.dirLine} aria-hidden='true' />
+                  <span className={styles.sidebarIcon}>✉</span>
+                  feedback
+                </button>
+              )}
             </div>
           </>
         )}

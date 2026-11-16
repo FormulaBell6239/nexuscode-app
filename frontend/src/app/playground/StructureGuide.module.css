@@ -1,5 +1,6 @@
 .window {
-  position: fixed; z-index: 200;
+  position: fixed; left: 0; top: 0; z-index: 200;
+  will-change: transform; touch-action: none; overscroll-behavior: contain; -webkit-user-select: none; user-select: none;
   max-width: calc(100vw - 16px);
   background: rgba(8, 12, 24, 0.92);
   backdrop-filter: blur(20px);
@@ -9,15 +10,15 @@
   display: flex; flex-direction: column;
   color: var(--text-secondary); font-size: 0.78rem;
   overflow: hidden;
-  transition: left 0.28s cubic-bezier(.2,.8,.2,1), top 0.28s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s;
+  transition: transform 0.28s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s;
 }
 .dragging {
-  transition: box-shadow 0.2s;
+  backdrop-filter: none; background: rgba(8, 12, 24, 0.97);
   box-shadow: 0 28px 70px rgba(0,0,0,0.7), 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent);
 }
 .header {
   display: flex; align-items: center; gap: 6px;
-  padding: 8px 8px 8px 12px; cursor: grab; user-select: none; touch-action: none;
+  padding: 12px 8px 12px 12px; cursor: grab; user-select: none; -webkit-user-select: none; touch-action: none;
 }
 .header:active { cursor: grabbing; }
 .grip {
@@ -68,7 +69,7 @@
   margin: 8px 10px; padding: 10px; height: 210px; overflow: auto;
   background: #05080f; border: 1px solid rgba(255,255,255,0.06); border-radius: 9px;
   font-family: 'SF Mono', Menlo, monospace; font-size: 0.68rem; line-height: 1.55; color: #a5f3fc; white-space: pre;
-  scrollbar-width: thin;
+  scrollbar-width: thin; touch-action: pan-x pan-y; overscroll-behavior: contain; -webkit-user-select: text; user-select: text;
 }
 .actions { display: flex; gap: 6px; padding: 0 10px 10px; }
 .btn, .btnPrimary { flex: 1; padding: 7px 0; border-radius: 8px; font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }

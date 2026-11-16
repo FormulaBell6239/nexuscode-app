@@ -93,3 +93,24 @@ export const LESSON_CATALOG: Record<string, [number, number]> = {
   "ts-type-annotations": [0, 2],
   "ts-function-types": [1, 2],
 };
+
+export interface LessonReward {
+  xp: 50;
+  baseCredits: 3 | 4 | 5;
+  sectionClearBonus: 0 | 10;
+}
+
+// Keep the positional catalog intact while making the reward components explicit.
+export const LESSON_REWARDS: Record<string, LessonReward> = Object.keys(LESSON_CATALOG).reduce(
+  (catalog, lessonKey) => {
+    const [index, total] = LESSON_CATALOG[lessonKey];
+    const baseCredits: 3 | 4 | 5 = index < total / 3 ? 3 : index < (2 * total) / 3 ? 4 : 5;
+    catalog[lessonKey] = {
+      xp: 50,
+      baseCredits,
+      sectionClearBonus: index === total - 1 ? 10 : 0,
+    };
+    return catalog;
+  },
+  {} as Record<string, LessonReward>,
+);

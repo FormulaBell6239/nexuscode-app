@@ -7,6 +7,7 @@ import styles from './Auth.module.css';
 import PageShell from '@/components/PageShell';
 import { api, getProfile } from '@/lib/api';
 import { startSession } from '@/lib/session';
+import { beginOnboarding, isOnboardingPending } from '@/lib/onboarding';
 
 interface AuthResponse {
   token: string;
@@ -22,7 +23,7 @@ export default function Auth() {
 
   // If already logged in, skip the auth page
   useEffect(() => {
-    if (localStorage.getItem('token')) router.replace('/');
+    if (localStorage.getItem('token')) router.replace(isOnboardingPending() ? '/onboarding' : '/');
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -51,16 +52,13 @@ export default function Auth() {
           });
 
       startSession(session);
+      if (!isLogin) beginOnboarding();
       try {
         const profile = await getProfile();
         localStorage.setItem('nexus_completed', JSON.stringify(profile.completedLessons ?? []));
       } catch {}
 
-      if (isLogin) {
-        router.push('/');
-      } else {
-        router.push('/onboarding');
-      }
+      router.push(isOnboardingPending() ? '/onboarding' : '/');
     } catch (err) {
       setError(err instanceof TypeError
         ? 'Could not connect to server. Is the backend running?'
@@ -137,7 +135,8 @@ export default function Auth() {
           className={styles.guestBtn}
           onClick={() => {
             localStorage.setItem('nexus_guest', 'true');
-            router.push('/onboarding');
+            if (!localStorage.getItem('nexus_visited')) beginOnboarding();
+            router.push(isOnboardingPending() ? '/onboarding' : '/');
           }}
         >
           Continue as Guest

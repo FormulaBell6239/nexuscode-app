@@ -7,6 +7,7 @@ import {
   ViewUpdate,
   keymap,
 } from '@codemirror/view';
+import { getLocalTypedSuggestion, getLocalNextLine, getHtmlAttrSuggestion } from './ghostLocal';
 import { StateEffect, StateField, Extension, Prec } from '@codemirror/state';
 
 // ── Language type ─────────────────────────────────────────────────────────────
@@ -100,7 +101,34 @@ function openTagStack(text: string): { name: string; from: number }[] {
   return stack;
 }
 
-function getHtmlSuggestion(view: EditorView, typed: boolean): Suggestion | null {
+function hasClosingTagAhead(text: string, pos: number, openerFrom: number): boolean {
+  const stack = openTagStack(text.slice(0, pos));
+  if (!stack.some(tag => tag.from === openerFrom)) return false;
+
+  const blank = (m: string) => m.replace(/[^\n]/g, ' ');
+  const suffix = text.slice(pos)
+    .replace(/<!--[\s\S]*?(?:-->|$)/g, blank)
+    .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi, blank);
+  const re = /<(\/?)([a-zA-Z][\w-]*)[^<>]*?(\/?)>/g;
+  let match: RegExpExecArray | null;
+  while ((match = re.exec(suffix))) {
+    const name = match[2].toLowerCase();
+    if (match[1]) {
+      const index = stack.map(tag => tag.name).lastIndexOf(name);
+      if (index < 0) continue;
+      const closesOpener = stack[index].from === openerFrom;
+      const discardsOpener = stack.slice(index).some(tag => tag.from === openerFrom);
+      if (closesOpener) return true;
+      if (discardsOpener) return false;
+      stack.length = index;
+    } else if (!match[3] && !VOID_TAGS.has(name)) {
+      stack.push({ name, from: pos + match.index });
+    }
+  }
+  return false;
+}
+
+export function getHtmlSuggestion(view: Pick<EditorView, 'state'>, typed: boolean): Suggestion | null {
   const sel = view.state.selection.main;
   if (!sel.empty) return null;
   const pos = sel.head;
@@ -119,8 +147,9 @@ function getHtmlSuggestion(view: EditorView, typed: boolean): Suggestion | null 
     const open = /<([a-zA-Z][\w-]*)(\s[^<>]*)?>$/.exec(line.text);
     if (open && !VOID_TAGS.has(open[1].toLowerCase()) && !/\/>$/.test(line.text)) {
       const name = open[1];
-      const rest = doc.sliceString(pos, Math.min(doc.length, pos + name.length + 4));
-      if (!rest.startsWith(`</${name}`)) return { pos, text: `</${name}>`, cursor: 0 };
+      if (!hasClosingTagAhead(doc.toString(), pos, line.from + open.index)) {
+        return { pos, text: `</${name}>`, cursor: 0 };
+      }
     }
     // Partial tag name → complete it
     const partial = /<([a-zA-Z][\w-]*)$/.exec(line.text);
@@ -136,6 +165,12 @@ function getHtmlSuggestion(view: EditorView, typed: boolean): Suggestion | null 
   const prevText = line.number > 1 ? doc.line(line.number - 1).text.trim() : '';
   const chain = HTML_CHAINS[prevText];
   if (chain) {
+    const closing = /^<\/([a-z][\w-]*)>$/i.exec(chain.trim());
+    if (closing) {
+      const stack = openTagStack(doc.sliceString(0, pos));
+      const opener = [...stack].reverse().find(tag => tag.name === closing[1].toLowerCase());
+      if (opener && hasClosingTagAhead(doc.toString(), pos, opener.from)) return null;
+    }
     // Fit the chain's own indentation to what the editor already auto-indented
     const want = chain.length - chain.trimStart().length;
     const have = line.text.length;
@@ -146,6 +181,7 @@ function getHtmlSuggestion(view: EditorView, typed: boolean): Suggestion | null 
   const stack = openTagStack(doc.sliceString(0, line.from));
   const top = stack[stack.length - 1];
   if (!top) return null;
+  if (hasClosingTagAhead(doc.toString(), pos, top.from)) return null;
   const opener = doc.lineAt(top.from);
   const indent = opener.text.length - opener.text.trimStart().length;
   const need = Math.max(0, indent - line.text.length);
@@ -227,17 +263,25 @@ function makeGhostFetchPlugin(language: GhostLanguage) {
   return ViewPlugin.fromClass(
     class {
       private timer: ReturnType<typeof setTimeout> | null = null;
+      private frame: number | null = null;
+      private request: AbortController | null = null;
+      private destroyed = false;
 
       update(update: ViewUpdate) {
         if (!update.docChanged) return;
         if (this.timer) clearTimeout(this.timer);
+        if (this.frame !== null) cancelAnimationFrame(this.frame);
+        this.request?.abort();
         const view = update.view;
         const deleting = update.transactions.some(t => t.isUserEvent('delete'));
-        requestAnimationFrame(() => {
+        this.frame = requestAnimationFrame(() => {
+          this.frame = null;
           // 1. Try local suggestions first — instant, no API call
           const local = language === 'html'
-            ? (getHtmlSuggestion(view, !deleting) ?? (deleting ? null : getHtmlSuggestion(view, false)))
-            : getLocalChainSuggestion(view, language);
+            ? (getHtmlSuggestion(view, !deleting) ?? (deleting ? null : (getHtmlAttrSuggestion(view) ?? getHtmlSuggestion(view, false))))
+            : ((deleting ? null : getLocalTypedSuggestion(view, language))
+                ?? getLocalChainSuggestion(view, language)
+                ?? (deleting ? null : getLocalNextLine(view, language)));
           if (local) {
             view.dispatch({ effects: [clearSuggestion.of(null), setSuggestion.of(local)] });
             return;
@@ -249,6 +293,7 @@ function makeGhostFetchPlugin(language: GhostLanguage) {
       }
 
       async fetch(view: EditorView) {
+        if (this.destroyed) return;
         if (view.state.doc.length > 6000) return;
         const pos    = view.state.selection.main.head;
         const prefix = view.state.doc.sliceString(0, pos);
@@ -258,15 +303,18 @@ function makeGhostFetchPlugin(language: GhostLanguage) {
         try {
           const token = localStorage.getItem('token');
           if (!token) return;
+          const request = new AbortController();
+          this.request = request;
           const res = await fetch('/api/ai/complete', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
             body: JSON.stringify({ prefix, suffix, language }),
+            signal: request.signal,
           });
           if (!res.ok) return;
           const { completion } = (await res.json()) as { completion: string };
           // Don't show if cursor moved, or a local suggestion is already visible
-          if (!completion) return;
+          if (!completion || this.destroyed || request.signal.aborted) return;
           if (view.state.selection.main.head !== pos) return;
           if (view.state.field(ghostField)) return;
           view.dispatch({ effects: setSuggestion.of({ pos, text: completion }) });
@@ -276,7 +324,10 @@ function makeGhostFetchPlugin(language: GhostLanguage) {
       }
 
       destroy() {
+        this.destroyed = true;
         if (this.timer) clearTimeout(this.timer);
+        if (this.frame !== null) cancelAnimationFrame(this.frame);
+        this.request?.abort();
       }
     }
   );

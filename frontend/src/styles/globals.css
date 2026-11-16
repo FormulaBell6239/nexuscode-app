@@ -192,6 +192,16 @@
   }
 }
 
+@supports selector(body:has([data-empty-playground-header])) {
+  @media (max-width: 767px) {
+    [data-empty-playground-header] { display: none; }
+    body:has([data-empty-playground-header]) .appContent {
+      padding-top: env(safe-area-inset-top, 0px);
+      --playground-header-offset: env(safe-area-inset-top, 0px);
+    }
+  }
+}
+
 /* ── Shared ambient background (used by PageShell on every page) ── */
 .nxOrb1 {
   position: fixed; top: -180px; left: -120px; width: 600px; height: 600px;

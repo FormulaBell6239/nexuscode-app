@@ -11,7 +11,8 @@ export default function PlaygroundTour({ target, text, title, onSkip, onDone }: 
 
   useEffect(() => {
     const update = () => {
-      const el = document.querySelector<HTMLElement>(`[data-tour="${target}"]`);
+      const el = Array.from(document.querySelectorAll<HTMLElement>(`[data-tour="${target}"]`))
+        .find(element => element.getClientRects().length > 0);
       setRect(el ? el.getBoundingClientRect() : null);
     };
     update();

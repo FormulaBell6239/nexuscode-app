@@ -14,6 +14,8 @@ import { CommunityVote } from './entities/CommunityVote';
 import { CommunityReport } from './entities/CommunityReport';
 import { Feedback } from './entities/Feedback';
 import { CommunityNotification } from './entities/CommunityNotification';
+import { AiConversation } from './entities/AiConversation';
+import { AiMessage } from './entities/AiMessage';
 
 dotenv.config();
 
@@ -26,6 +28,6 @@ export default new DataSource({
   password: process.env.DB_PASSWORD || undefined,
   database: process.env.DB_NAME ?? 'nexuscode',
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: true } : false,
-  entities: [User, Game, Achievement, UserProgress, UserAchievement, StoreItem, UserPurchase, CommunityPost, CommunityReply, CommunityVote, CommunityReport, CommunityNotification, Feedback],
+  entities: [User, Game, Achievement, UserProgress, UserAchievement, StoreItem, UserPurchase, CommunityPost, CommunityReply, CommunityVote, CommunityReport, CommunityNotification, Feedback, AiConversation, AiMessage],
   migrations: [__dirname + '/migrations/*.{ts,js}'],
 });

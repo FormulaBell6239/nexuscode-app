@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { OPEN_FEEDBACK_EVENT } from '@/lib/feedback';
 import styles from './FeedbackButton.module.css';
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001';
@@ -17,6 +18,12 @@ export default function FeedbackButton() {
   const [category, setCategory] = useState<'bug' | 'idea' | 'other'>('bug');
   const [message, setMessage] = useState('');
   const [state, setState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+
+  useEffect(() => {
+    const openFeedback = () => setOpen(true);
+    window.addEventListener(OPEN_FEEDBACK_EVENT, openFeedback);
+    return () => window.removeEventListener(OPEN_FEEDBACK_EVENT, openFeedback);
+  }, []);
 
   const close = () => {
     setOpen(false);

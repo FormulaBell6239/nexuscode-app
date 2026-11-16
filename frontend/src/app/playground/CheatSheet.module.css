@@ -13,3 +13,10 @@
 .row { display: flex; gap: .7rem; padding: .22rem 0; font-size: .78rem; }
 .tag { flex: 0 0 38%; min-width: 0; color: var(--c); font-family: 'SF Mono', 'Fira Code', monospace; font-weight: 600; overflow-wrap: anywhere; }
 .desc { color: #b4c0d6; }
+.hint { margin: .5rem 0 0; max-width: 60ch; font-size: .8rem; color: #8c9db9; }
+.hint code { color: #36e4ff; font-family: 'SF Mono', 'Fira Code', monospace; }
+.colorRow { display: flex; align-items: center; gap: .6rem; width: 100%; padding: .25rem .3rem; background: transparent; border: 0; border-radius: 8px; cursor: pointer; font-size: .78rem; text-align: left; }
+.colorRow:hover { background: rgba(255,255,255,.06); }
+.swatch { flex: 0 0 22px; height: 22px; border-radius: 6px; border: 1px solid rgba(255,255,255,.25); }
+.colorName { flex: 1; color: #b4c0d6; }
+.colorHex { color: #e9f0ff; font-family: 'SF Mono', 'Fira Code', monospace; }

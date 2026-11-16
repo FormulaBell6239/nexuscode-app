@@ -657,7 +657,6 @@ export default function StructureGuide({ onClose, onInsert, language }: Props) {
   const [sel, setSel] = useState(0);
   const [copied, setCopied] = useState(false);
   const [minimized, setMinimized] = useState(false);
-  const [dragging, setDragging] = useState(false);
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const drag = useRef<{ dx: number; dy: number } | null>(null);
   const ref = useRef<HTMLDivElement>(null);
@@ -674,31 +673,62 @@ export default function StructureGuide({ onClose, onInsert, language }: Props) {
   };
   const current_pos = pos ?? place();
 
+  const raf = useRef(0);
+  const moved = useRef(false);
+  const latest = useRef({ x: 0, y: 0 });
+  const clamp = (x: number, y: number) => {
+    const w = ref.current?.offsetWidth ?? W;
+    const h = ref.current?.offsetHeight ?? 0;
+    return {
+      x: Math.min(Math.max(x, 0), Math.max(0, window.innerWidth - w)),
+      y: Math.min(Math.max(y, 0), Math.max(0, window.innerHeight - Math.min(h, 56))),
+    };
+  };
+
+  // Drag by writing transform straight to the DOM: no React re-render per move
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLElement).closest("button")) return;
+    if ((e.target as HTMLElement).closest("button, pre") || !ref.current) return;
     const start = pos ?? place();
-    setPos(start);
     drag.current = { dx: e.clientX - start.x, dy: e.clientY - start.y };
-    setDragging(true);
+    latest.current = start;
+    moved.current = false;
+    ref.current.style.transition = "none";
+    ref.current.classList.add(styles.dragging);
     e.currentTarget.setPointerCapture(e.pointerId);
   };
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!drag.current) return;
-    setPos({ x: e.clientX - drag.current.dx, y: e.clientY - drag.current.dy });
+    if (!moved.current && Math.hypot(e.clientX - drag.current.dx - latest.current.x, e.clientY - drag.current.dy - latest.current.y) < 4) return;
+    moved.current = true;
+    latest.current = clamp(e.clientX - drag.current.dx, e.clientY - drag.current.dy);
+    if (raf.current) return;
+    raf.current = requestAnimationFrame(() => {
+      raf.current = 0;
+      if (ref.current) ref.current.style.transform = `translate3d(${latest.current.x}px, ${latest.current.y}px, 0)`;
+    });
   };
   const onPointerUp = () => {
-    if (!drag.current) return;
+    if (!drag.current || !ref.current) return;
     drag.current = null;
-    setDragging(false);
+    cancelAnimationFrame(raf.current);
+    raf.current = 0;
+    const el = ref.current;
+    el.classList.remove(styles.dragging);
+    if (!moved.current) { el.style.transition = ""; return; }
     // Snap to the nearest screen corner, like a picture-in-picture window
-    const h = ref.current?.offsetHeight ?? 0;
-    const p = pos ?? place();
+    const h = el.offsetHeight;
+    const p = latest.current;
     const right = p.x + W / 2 > window.innerWidth / 2;
     const bottom = p.y + h / 2 > window.innerHeight / 2;
-    setPos({
+    const target = {
       x: right ? window.innerWidth - W - MARGIN : MARGIN,
       y: bottom ? Math.max(MARGIN, window.innerHeight - h - MARGIN) : MARGIN + 48,
-    });
+    };
+    el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0)`;
+    void el.offsetWidth; // commit the dragged position before animating
+    el.style.transition = "";
+    el.style.transform = `translate3d(${target.x}px, ${target.y}px, 0)`;
+    setPos(target);
   };
 
   const copy = async () => {
@@ -708,17 +738,17 @@ export default function StructureGuide({ onClose, onInsert, language }: Props) {
   return (
     <div
       ref={ref}
-      className={`${styles.window} ${dragging ? styles.dragging : ''}`}
-      style={{ left: current_pos.x, top: current_pos.y, width: W }}
+      className={styles.window}
+      style={{ transform: `translate3d(${current_pos.x}px, ${current_pos.y}px, 0)`, width: W }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
       role="dialog"
       aria-label={`${TITLES[language]} guide`}
     >
       <div
         className={styles.header}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
       >
         <span className={styles.grip} aria-hidden="true" />
         <span className={styles.title}>{TITLES[language]}</span>

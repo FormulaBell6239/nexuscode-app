@@ -27,6 +27,8 @@ import { CommunityReport } from './entities/CommunityReport';
 
 import { Feedback } from './entities/Feedback';
 import { FeedbackModule } from './feedback/feedback.module';
+import { AiConversation } from './entities/AiConversation';
+import { AiMessage } from './entities/AiMessage';
 
 @Module({
   imports: [
@@ -43,7 +45,7 @@ import { FeedbackModule } from './feedback/feedback.module';
         password: config.get<string>('DB_PASSWORD') || undefined,
         database: config.get<string>('DB_NAME', 'nexuscode'),
         ssl: config.get<string>('DB_SSL') === 'true' ? { rejectUnauthorized: true } : false,
-        entities: [User, Game, Achievement, UserProgress, UserAchievement, StoreItem, UserPurchase, CommunityPost, CommunityReply, CommunityVote, CommunityReport, CommunityNotification, Feedback],
+        entities: [User, Game, Achievement, UserProgress, UserAchievement, StoreItem, UserPurchase, CommunityPost, CommunityReply, CommunityVote, CommunityReport, CommunityNotification, Feedback, AiConversation, AiMessage],
         synchronize: config.get<string>('NODE_ENV') !== 'production',
         migrations: [__dirname + '/migrations/*.js'],
         migrationsRun: config.get<string>('NODE_ENV') === 'production',

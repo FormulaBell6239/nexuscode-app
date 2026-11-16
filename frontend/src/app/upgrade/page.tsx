@@ -78,7 +78,7 @@ export default function UpgradePage() {
   }
 
   return (
-    <div className="appContent">
+    <>
       <PageShell />
       <div className={styles.page}>
 
@@ -225,6 +225,6 @@ export default function UpgradePage() {
         </section>
 
       </div>
-    </div>
+    </>
   );
 }

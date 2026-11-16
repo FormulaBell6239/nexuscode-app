@@ -1,6 +1,5 @@
-import { Controller, Get, Put, Post, Body, Req, UseGuards } from '@nestjs/common';
-import { IsBoolean, IsInt, IsOptional, IsString, Matches, Max, MaxLength, Min } from 'class-validator';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { Controller, Get, Put, Post, Body, Req, UseGuards, Param, GoneException } from '@nestjs/common';
+import { IsOptional, IsString, Matches, MaxLength } from 'class-validator';
 import { ProfileService } from './profile.service';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { Request } from 'express';
@@ -26,25 +25,14 @@ class UpdateProfileDto {
   theme?: string;
 }
 
-class SubmitXpDto {
-  /** Capped at 500 server-side — prevents economy exploits via large amounts */
-  @IsInt() @Min(0) @Max(500)
-  amount: number;
+class CreateLessonAttemptDto {
+  @IsString() @MaxLength(200)
+  lessonKey: string;
+}
 
-  @IsOptional() @IsString() @MaxLength(200)
-  lessonKey?: string;
-
-  @IsOptional() @IsBoolean()
-  firstTry?: boolean;
-
-  @IsOptional() @IsInt() @Min(0) @Max(200)
-  lessonIndex?: number;
-
-  @IsOptional() @IsInt() @Min(1) @Max(200)
-  lessonTotal?: number;
-
-  @IsOptional() @IsBoolean()
-  gameRound?: boolean;
+class SubmitLessonAttemptDto {
+  @IsString()
+  code: string;
 }
 
 @Controller('profile')
@@ -65,12 +53,28 @@ export class ProfileController {
   }
 
   @Post('xp')
-  // Max 4 XP submissions per minute — prevents credit farming via rapid gameRound calls
-  @UseGuards(ThrottlerGuard)
-  @Throttle({ default: { ttl: 60000, limit: 4 } })
-  submitXp(@Req() req: Request, @Body() body: SubmitXpDto) {
+  submitXp() {
+    throw new GoneException({
+      statusCode: 410,
+      code: 'XP_ENDPOINT_RETIRED',
+      message: 'Client-authorized XP submissions are no longer supported.',
+    });
+  }
+
+  @Post('lesson-attempts')
+  createLessonAttempt(@Req() req: Request, @Body() body: CreateLessonAttemptDto) {
     const userId = (req as any).user.sub;
-    return this.profileService.addXp(userId, body);
+    return this.profileService.createLessonAttempt(userId, body.lessonKey);
+  }
+
+  @Post('lesson-attempts/:attemptId/submit')
+  submitLessonAttempt(
+    @Req() req: Request,
+    @Param('attemptId') attemptId: string,
+    @Body() body: SubmitLessonAttemptDto,
+  ) {
+    const userId = (req as any).user.sub;
+    return this.profileService.submitLessonAttempt(userId, attemptId, body.code);
   }
 
   @Get('hearts')

@@ -10,6 +10,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import "./NexusAI.css";
+import { api } from "@/lib/api";
 
 type Mode = "chat" | "learn" | "debug" | "review";
 
@@ -33,6 +34,9 @@ type ApiImage = {
   mimeType: string;
   data: string;
 };
+
+type Conversation = { id: string; title: string; updatedAt: string };
+type SavedConversation = { id: string; messages: { id: number; role: "user" | "assistant"; content: string }[] };
 
 const modes: {
   id: Mode;
@@ -74,10 +78,10 @@ const suggestions = [
 ];
 
 const welcomeMessages: Record<Mode, string> = {
-  chat: "What are we building today?",
-  learn: "What do you want to learn?",
-  debug: "Let's hunt down that bug.",
-  review: "Let's make your code better.",
+  chat: "Hey, what are we building today?",
+  learn: "Curious about something? Let's break it down together.",
+  debug: "Stuck on a bug? Let's figure it out together.",
+  review: "Share your code and let's make it even better.",
 };
 
 const MAX_IMAGES = 5;
@@ -141,10 +145,11 @@ function fileToDataUrl(file: File): Promise<string> {
 }
 
 /* Smoothly reveals the completed AI response with a glowing cursor. */
-function TypewriterText({ content }: { content: string }) {
+function TypewriterText({ content, animate, onComplete }: { content: string; animate: boolean; onComplete: () => void }) {
   const [visibleCount, setVisibleCount] = useState(0);
 
   useEffect(() => {
+    if (!animate) return;
     setVisibleCount(0);
 
     if (!content) return;
@@ -152,23 +157,22 @@ function TypewriterText({ content }: { content: string }) {
     const interval = window.setInterval(() => {
       setVisibleCount((current) => {
         const next = Math.min(current + 2, content.length);
-
-        if (next >= content.length) {
-          window.clearInterval(interval);
-        }
-
         return next;
       });
     }, 13);
 
     return () => window.clearInterval(interval);
-  }, [content]);
+  }, [content, animate]);
 
-  const isTyping = visibleCount < content.length;
+  useEffect(() => {
+    if (animate && visibleCount >= content.length) onComplete();
+  }, [animate, content.length, visibleCount, onComplete]);
+
+  const isTyping = animate && visibleCount < content.length;
 
   return (
     <p className="nexus-ai__typed-text">
-      {content.slice(0, visibleCount)}
+      {animate ? content.slice(0, visibleCount) : content}
 
       {isTyping && (
         <span
@@ -207,17 +211,55 @@ export default function NexusAI() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [chatStarted, setChatStarted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [revealingMessageId, setRevealingMessageId] = useState<number | null>(null);
+  const [composerControlVisible, setComposerControlVisible] = useState(false);
 
   const [attachments, setAttachments] = useState<AttachedImage[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [attachmentError, setAttachmentError] = useState("");
   const [signedIn, setSignedIn] = useState(true);
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [historyBusy, setHistoryBusy] = useState(false);
+  const [historyError, setHistoryError] = useState("");
 
   useEffect(() => {
-    setSignedIn(Boolean(localStorage.getItem("token")));
+    const authenticated = Boolean(localStorage.getItem("token"));
+    setSignedIn(authenticated);
+    if (authenticated) {
+      api.get<Conversation[]>("/api/ai/conversations")
+        .then(setConversations)
+        .catch(() => setHistoryError("Could not load saved conversations. Please try again."));
+    }
   }, []);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const composerControlRef = useRef<HTMLButtonElement>(null);
+  const requestRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    if ((!isLoading && revealingMessageId === null) || !composerControlRef.current) return;
+    const mobile = window.matchMedia("(max-width: 767px)");
+    let observer: IntersectionObserver;
+    const observe = () => {
+      observer?.disconnect();
+      observer = new IntersectionObserver(([entry]) => {
+        setComposerControlVisible(entry.isIntersecting && entry.intersectionRatio >= 0.99);
+      }, { threshold: 1, rootMargin: mobile.matches ? "-60px 0px -90px 0px" : "-60px 0px 0px 0px" });
+      if (composerControlRef.current) observer.observe(composerControlRef.current);
+    };
+    observe();
+    mobile.addEventListener("change", observe);
+    return () => {
+      observer.disconnect();
+      mobile.removeEventListener("change", observe);
+    };
+  }, [isLoading, revealingMessageId]);
+
+  useEffect(() => () => {
+    requestRef.current?.abort();
+  }, []);
 
   const currentMode =
     modes.find((mode) => mode.id === activeMode) ?? modes[0];
@@ -340,7 +382,7 @@ export default function NexusAI() {
 
     if (
       (!content && imagesToSend.length === 0) ||
-      isLoading
+      isLoading || requestRef.current
     ) {
       return;
     }
@@ -360,19 +402,15 @@ export default function NexusAI() {
       images: imagesToSend,
     };
 
-    // Keep the existing text history compatible with your current API.
-    // Image data is sent separately for the current request.
-    const history = messages.slice(-20).map(({ role, content }) => ({
-      role,
-      content,
-    }));
-
     setMessages((previous) => [...previous, userMessage]);
     setInput("");
     setAttachments([]);
     setAttachmentError("");
     setChatStarted(true);
     setIsLoading(true);
+    setRevealingMessageId(null);
+    const controller = new AbortController();
+    requestRef.current = controller;
 
     const apiImages: ApiImage[] = imagesToSend.map((image) => ({
       name: image.name,
@@ -384,10 +422,19 @@ export default function NexusAI() {
     }));
 
     try {
+      let activeConversationId = conversationId;
+      if (!activeConversationId) {
+        const created = await api.post<Conversation>("/api/ai/conversations");
+        if (controller.signal.aborted) return;
+        activeConversationId = created.id;
+        setConversationId(created.id);
+        setConversations(previous => [created, ...previous]);
+      }
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001"}/api/ai/chat`,
         {
           method: "POST",
+          signal: controller.signal,
           headers: {
             "Content-Type": "application/json",
             ...(localStorage.getItem("token")
@@ -397,7 +444,7 @@ export default function NexusAI() {
           body: JSON.stringify({
             message: displayContent,
             mode: activeMode,
-            history,
+            conversationId: activeConversationId,
             images: apiImages,
           }),
         },
@@ -441,11 +488,17 @@ export default function NexusAI() {
         content: data.reply,
       };
 
+      if (requestRef.current !== controller) return;
+      setRevealingMessageId(assistantMessage.id);
       setMessages((previous) => [
         ...previous,
         assistantMessage,
       ]);
+      api.get<Conversation[]>("/api/ai/conversations")
+        .then(setConversations)
+        .catch(() => setHistoryError("Could not refresh saved conversations."));
     } catch (error) {
+      if (controller.signal.aborted) return;
       console.error("Nexus AI request failed:", error);
 
       if (
@@ -470,7 +523,24 @@ export default function NexusAI() {
         },
       ]);
     } finally {
+      if (requestRef.current === controller) {
+        requestRef.current = null;
+        setIsLoading(false);
+      }
+    }
+  }
+
+  function stopResponse() {
+    if (requestRef.current) {
+      requestRef.current.abort();
+      requestRef.current = null;
       setIsLoading(false);
+      setMessages((previous) => [
+        ...previous,
+        { id: Date.now() + 1, role: "assistant", content: "Request stopped." },
+      ]);
+    } else {
+      setRevealingMessageId(null);
     }
   }
 
@@ -488,16 +558,67 @@ export default function NexusAI() {
   }
 
   function startNewChat() {
+    requestRef.current?.abort();
+    requestRef.current = null;
+    setIsLoading(false);
+    setRevealingMessageId(null);
     setMessages([]);
     setInput("");
     setAttachments([]);
     setAttachmentError("");
     setChatStarted(false);
+    setConversationId(null);
+    setHistoryOpen(false);
     setActiveMode("chat");
+  }
+
+  async function openConversation(id: string) {
+    if (isLoading || historyBusy) return;
+    setHistoryBusy(true);
+    setHistoryError("");
+    try {
+      const saved = await api.get<SavedConversation>(`/api/ai/conversations/${id}`);
+      setConversationId(saved.id);
+      setMessages(saved.messages);
+      setChatStarted(true);
+      setRevealingMessageId(null);
+      setInput("");
+      setAttachments([]);
+      setHistoryOpen(false);
+    } catch (error) {
+      setHistoryError(error instanceof Error ? error.message : "Could not open this conversation.");
+    } finally {
+      setHistoryBusy(false);
+    }
+  }
+
+  async function deleteConversation(conversation: Conversation) {
+    if (isLoading || historyBusy || !window.confirm(`Delete "${conversation.title}" and its saved messages?`)) return;
+    setHistoryBusy(true);
+    setHistoryError("");
+    try {
+      await api.delete(`/api/ai/conversations/${conversation.id}`);
+      setConversations(previous => previous.filter(item => item.id !== conversation.id));
+      if (conversation.id === conversationId) startNewChat();
+    } catch (error) {
+      setHistoryError(error instanceof Error ? error.message : "Could not delete this conversation.");
+    } finally {
+      setHistoryBusy(false);
+    }
   }
 
   return (
     <main className="nexus-ai">
+      {(isLoading || revealingMessageId !== null) && !composerControlVisible && (
+        <button
+          type="button"
+          className="nexus-ai__stop nexus-ai__stop--floating"
+          onClick={stopResponse}
+          aria-label={isLoading ? "Stop request (floating control)" : "Show complete response (floating control)"}
+        >
+          <span aria-hidden="true">■</span> {isLoading ? "Stop" : "Show all"}
+        </button>
+      )}
       <section className="nexus-ai__main">
         <header className="nexus-ai__topbar">
           <div className="nexus-ai__breadcrumb">
@@ -520,6 +641,11 @@ export default function NexusAI() {
 
             <span className="nexus-ai__version">BETA</span>
 
+            {signedIn && (
+              <button type="button" className="nexus-ai__new-chat" onClick={() => setHistoryOpen(open => !open)} aria-expanded={historyOpen}>
+                History
+              </button>
+            )}
             {chatStarted && (
               <button
                 type="button"
@@ -531,6 +657,26 @@ export default function NexusAI() {
             )}
           </div>
         </header>
+
+        {historyOpen && (
+          <section className="nexus-ai__history" aria-label="Saved conversations">
+            <div className="nexus-ai__history-heading">
+              <strong>Saved conversations</strong>
+              <button type="button" onClick={startNewChat} disabled={isLoading || historyBusy}>+ New chat</button>
+            </div>
+            <p>Messages are saved to your account. Attachments are not saved. Only relevant past context is sent with new messages.</p>
+            {conversations.length === 0 && <p>No saved conversations yet.</p>}
+            <ul>
+              {conversations.map(conversation => (
+                <li key={conversation.id}>
+                  <button type="button" onClick={() => void openConversation(conversation.id)} disabled={isLoading || historyBusy}>{conversation.title}</button>
+                  <button type="button" onClick={() => void deleteConversation(conversation)} disabled={isLoading || historyBusy} aria-label={`Delete ${conversation.title}`}>Delete</button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+        {historyError && <p className="nexus-ai__history-error" role="alert">{historyError}</p>}
 
         <div className="nexus-ai__content">
           <nav
@@ -591,8 +737,8 @@ export default function NexusAI() {
               </h1>
 
               <p className="nexus-ai__welcome-description">
-                {welcomeMessages[activeMode]} Explore ideas, solve
-                problems, and turn your next big idea into working code.
+                {welcomeMessages[activeMode]} Bring your questions, ideas, or
+                code—I&apos;ll help you find your next step.
               </p>
 
               <div className="nexus-ai__suggestions">
@@ -665,6 +811,8 @@ export default function NexusAI() {
                       {message.role === "assistant" ? (
                         <TypewriterText
                           content={message.content}
+                          animate={message.id === revealingMessageId}
+                          onComplete={() => setRevealingMessageId(null)}
                         />
                       ) : (
                         <p>{message.content}</p>
@@ -759,6 +907,9 @@ export default function NexusAI() {
                 image and file attachments.{" "}
                 <a href="/auth">Log in or create an account</a>
               </p>
+            )}
+            {signedIn && (
+              <p className="nexus-ai__memory-notice">Chats are saved to your account. Attachments are not saved. Manage or delete chats in History.</p>
             )}
 
             <form
@@ -875,17 +1026,26 @@ export default function NexusAI() {
                   </span>
                 </div>
 
-                <button
-                  className="nexus-ai__send"
-                  type="submit"
-                  disabled={
-                    isLoading ||
-                    (!input.trim() && attachments.length === 0)
-                  }
-                  aria-label="Send message"
-                >
-                  <span>↑</span>
-                </button>
+                {isLoading || revealingMessageId !== null ? (
+                  <button
+                    ref={composerControlRef}
+                    className="nexus-ai__stop"
+                    type="button"
+                    onClick={stopResponse}
+                    aria-label={isLoading ? "Stop request" : "Show complete response"}
+                  >
+                    <span aria-hidden="true">■</span> {isLoading ? "Stop" : "Show all"}
+                  </button>
+                ) : (
+                  <button
+                    className="nexus-ai__send"
+                    type="submit"
+                    disabled={!input.trim() && attachments.length === 0}
+                    aria-label="Send message"
+                  >
+                    <span>↑</span>
+                  </button>
+                )}
               </div>
             </form>
 
